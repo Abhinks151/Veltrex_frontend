@@ -1,0 +1,27 @@
+// import UserDashBoard from "@/features/user/pages/UserDashBoard";
+import { Route, Routes } from "react-router-dom"
+
+import React, { Suspense } from 'react';
+import Loader from "@/pages/Loader";
+import UserLayout from "@/features/user/components/userLayout";
+import NotFoundPage from "@/pages/NotFoundPage";
+
+const UserDashBoard = React.lazy(() => import('@/features/user/pages/UserDashBoard'))
+
+const UserRoutes = () => {
+  return (
+    <>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<UserDashBoard />} />
+            <Route path="/employees" element={<UserDashBoard />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </>
+  )
+}
+
+export default UserRoutes;
