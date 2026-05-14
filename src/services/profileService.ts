@@ -1,5 +1,5 @@
-import { axiosInstance } from "@/app/api/axios";
-import { API_ENDPOINTS } from "@/shared/constants/apiEnpointsConstants";
+import { axiosInstance } from '@/app/api/axios';
+import { API_ENDPOINTS } from '@/shared/constants/apiEnpointsConstants';
 
 export const profileService = {
   getProfile: async () => {
@@ -8,15 +8,22 @@ export const profileService = {
   updateProfile: async (name: string) => {
     return axiosInstance.patch(API_ENDPOINTS.PROFILE.UPDATE, { name });
   },
-  changePassword: async (passwordData: { currentPassword: string, newPassword: string, confirmPassword: string }) => {
-    return axiosInstance.patch(API_ENDPOINTS.PROFILE.CHANGE_PASSWORD, passwordData);
+  changePassword: async (passwordData: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    return axiosInstance.patch(
+      API_ENDPOINTS.PROFILE.CHANGE_PASSWORD,
+      passwordData,
+    );
   },
   uploadProfileImage: async (blob: Blob) => {
     const formData = new FormData();
-    formData.append("file", blob, "profile.png");
+    formData.append('file', blob, 'profile.png');
     return axiosInstance.post(API_ENDPOINTS.PROFILE.UPLOAD_IMAGE, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
   },
