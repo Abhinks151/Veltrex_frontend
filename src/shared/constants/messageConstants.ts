@@ -17,6 +17,10 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     MACHINE_UPDATED: 'Machine updated successfully',
     MACHINE_DELETED: 'Machine deleted successfully',
     MACHINE_BLOCK_TOGGLED: 'Machine status updated',
+    FIXTURE_CREATED: 'Fixture created successfully',
+    FIXTURE_UPDATED: 'Fixture updated successfully',
+    FIXTURE_DELETED: 'Fixture deleted successfully',
+    FIXTURE_BLOCK_TOGGLED: 'Fixture status updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',
@@ -37,6 +41,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FAILED_FETCH_MACHINES: 'Failed to fetch machines',
     MACHINE_CREATION_FAILED: 'Machine creation failed',
     MACHINE_UPDATE_FAILED: 'Machine update failed',
+    FAILED_FETCH_FIXTURES: 'Failed to fetch fixtures',
+    FIXTURE_CREATION_FAILED: 'Fixture creation failed',
+    FIXTURE_UPDATE_FAILED: 'Fixture update failed',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',

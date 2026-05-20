@@ -24,10 +24,9 @@ const MachineForm: React.FC<MachineFormProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields },
+    formState: { errors },
   } = useForm<MachineFormData>({
     resolver: zodResolver(machineSchema) as Resolver<MachineFormData>,
-    mode: 'onTouched',
     defaultValues: (initialData as MachineFormData) || {
       status: MachineStatus.IDLE,
       type: MachineType.MILL,
@@ -48,7 +47,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             Machine Name
           </label>
           <Input {...register('name')} placeholder="e.g. CNC Mill 01" />
-          {touchedFields.name && errors.name && (
+          {errors.name && (
             <p className="text-xs text-red-500">
               {errors.name.message as string}
             </p>
@@ -59,7 +58,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">Brand</label>
           <Input {...register('brand')} placeholder="e.g. Haas" />
-          {touchedFields.brand && errors.brand && (
+          {errors.brand && (
             <p className="text-xs text-red-500">
               {errors.brand.message as string}
             </p>
@@ -78,7 +77,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             <option value={MachineType.MILL}>Mill</option>
             <option value={MachineType.LATHE}>Lathe</option>
           </select>
-          {touchedFields.type && errors.type && (
+          {errors.type && (
             <p className="text-xs text-red-500">
               {errors.type.message as string}
             </p>
@@ -93,7 +92,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             {...register('axis', { valueAsNumber: true })}
             placeholder="Number of axis"
           />
-          {touchedFields.axis && errors.axis && (
+          {errors.axis && (
             <p className="text-xs text-red-500">
               {errors.axis.message as string}
             </p>
@@ -108,7 +107,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             {...register('maxRpm', { valueAsNumber: true })}
             placeholder="Max RPM"
           />
-          {touchedFields.maxRpm && errors.maxRpm && (
+          {errors.maxRpm && (
             <p className="text-xs text-red-500">
               {errors.maxRpm.message as string}
             </p>
@@ -125,7 +124,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             {...register('maxTravelSpeed', { valueAsNumber: true })}
             placeholder="Speed"
           />
-          {touchedFields.maxTravelSpeed && errors.maxTravelSpeed && (
+          {errors.maxTravelSpeed && (
             <p className="text-xs text-red-500">
               {errors.maxTravelSpeed.message as string}
             </p>
@@ -142,7 +141,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             {...register('holdingSize', { valueAsNumber: true })}
             placeholder="Size"
           />
-          {touchedFields.holdingSize && errors.holdingSize && (
+          {errors.holdingSize && (
             <p className="text-xs text-red-500">
               {errors.holdingSize.message as string}
             </p>
@@ -159,7 +158,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             {...register('toolCount', { valueAsNumber: true })}
             placeholder="Count"
           />
-          {touchedFields.toolCount && errors.toolCount && (
+          {errors.toolCount && (
             <p className="text-xs text-red-500">
               {errors.toolCount.message as string}
             </p>
@@ -177,7 +176,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
             <option value={MachineStatus.RUNNING}>Running</option>
             <option value={MachineStatus.MAINTENANCE}>Maintenance</option>
           </select>
-          {touchedFields.status && errors.status && (
+          {errors.status && (
             <p className="text-xs text-red-500">
               {errors.status.message as string}
             </p>

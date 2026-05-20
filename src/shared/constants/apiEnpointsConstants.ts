@@ -50,4 +50,12 @@ export const API_ENDPOINTS = {
     BLOCK: (id: string) => `/machine/block/${id}`,
     DELETE: (id: string) => `/machine/delete/${id}`,
   },
+  FIXTURE: {
+    CREATE: '/fixture/create',
+    LIST: '/fixture/list',
+    ACTIVE: '/fixture/active',
+    EDIT: (id: string) => `/fixture/edit/${id}`,
+    BLOCK: (id: string) => `/fixture/block/${id}`,
+    DELETE: (id: string) => `/fixture/delete/${id}`,
+  },
 };

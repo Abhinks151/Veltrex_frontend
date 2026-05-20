@@ -15,6 +15,9 @@ const UserDashBoard = React.lazy(
 const MachineDashBoard = React.lazy(
   () => import('@/features/machine/pages/MachineDashBoard'),
 );
+const FixtureDashBoard = React.lazy(
+  () => import('@/features/fixture/pages/FixtureDashBoard'),
+);
 
 const UserRoutes = () => {
   return (
@@ -29,6 +32,7 @@ const UserRoutes = () => {
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}
             >
               <Route path="/machines" element={<MachineDashBoard />} />
+              <Route path="/fixtures" element={<FixtureDashBoard />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
