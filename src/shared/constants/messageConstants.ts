@@ -3,7 +3,8 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     LOGOUT: 'Logged out successfully',
     LOGIN: 'Login Successful',
     PASSWORD_RESET: 'Password reset successfully! Please sign in.',
-    PASSWORD_RESET_LINK_SENT: 'Password reset link sent! Please check your email.',
+    PASSWORD_RESET_LINK_SENT:
+      'Password reset link sent! Please check your email.',
     VERIFICATION_EMAIL_SENT: 'Verification email sent successfully',
     TENANT_CREATED: 'Tenant created successfully',
     TENANT_UPDATED: 'Tenant updated successfully',
@@ -12,12 +13,21 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     TENANT_NAME_UPDATED: 'Tenant name updated',
     USER_BLOCKED: 'User blocked',
     USER_UNBLOCKED: 'User unblocked',
+    MACHINE_CREATED: 'Machine created successfully',
+    MACHINE_UPDATED: 'Machine updated successfully',
+    MACHINE_DELETED: 'Machine deleted successfully',
+    MACHINE_BLOCK_TOGGLED: 'Machine status updated',
+    FIXTURE_CREATED: 'Fixture created successfully',
+    FIXTURE_UPDATED: 'Fixture updated successfully',
+    FIXTURE_DELETED: 'Fixture deleted successfully',
+    FIXTURE_BLOCK_TOGGLED: 'Fixture status updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',
     TOKEN_REQUIRED: 'Token is required',
     SOMETHING_WENT_WRONG: 'Something went wrong',
-    INVALID_RESET_LINK: 'Invalid or expired reset link. Please request a new one.',
+    INVALID_RESET_LINK:
+      'Invalid or expired reset link. Please request a new one.',
     SESSION_EXPIRED: 'Session expired. Please register again.',
     FAILED_RESEND_EMAIL: 'Failed to resend email',
     TENANT_CREATION_FAILED: 'Tenant creation failed',
@@ -25,8 +35,15 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     SOMETHING_WENT_WRONG_TRY_AGAIN: 'Something went wrong please try again',
     FAILED_FETCH_TENANTS: 'Failed to fetch tenants',
     FAILED_UPDATE_TENANT_NAME: 'Failed to update tenant name',
-    TENANT_NAME_TAKEN: 'Organization name is already taken. Please try another.',
+    TENANT_NAME_TAKEN:
+      'Organization name is already taken. Please try another.',
     FAILED_FETCH_USERS: 'Failed to fetch users',
+    FAILED_FETCH_MACHINES: 'Failed to fetch machines',
+    MACHINE_CREATION_FAILED: 'Machine creation failed',
+    MACHINE_UPDATE_FAILED: 'Machine update failed',
+    FAILED_FETCH_FIXTURES: 'Failed to fetch fixtures',
+    FIXTURE_CREATION_FAILED: 'Fixture creation failed',
+    FIXTURE_UPDATE_FAILED: 'Fixture update failed',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',
@@ -35,5 +52,5 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     PASSWORD_MIN_LENGTH_6: 'Password must be at least 6 characters long',
     PASSWORD_MAX_LENGTH_12: 'Password must be at most 12 characters long',
     NAME_MIN_LENGTH_3: 'Name must be at least 3 characters long',
-  }
+  },
 };
