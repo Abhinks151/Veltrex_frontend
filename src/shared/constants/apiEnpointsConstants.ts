@@ -1,21 +1,21 @@
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    LOGOUT: "/auth/logout",
-    REFRESH: "/auth/refresh",
-    PROFILE: "/auth/profile",
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    LOGOUT: '/auth/logout',
+    REFRESH: '/auth/refresh',
+    PROFILE: '/auth/profile',
 
-    RESEND_VERIFICATION: "/auth/resend",
-    VERIFY_EMAIL: "/auth/verify",
+    RESEND_VERIFICATION: '/auth/resend',
+    VERIFY_EMAIL: '/auth/verify',
 
-    FORGOT_PASSWORD: "/auth/forgot",
-    RESET_PASSWORD: "/auth/reset",
+    FORGOT_PASSWORD: '/auth/forgot',
+    RESET_PASSWORD: '/auth/reset',
   },
 
   SUPER_ADMIN: {
-    TENANTS: "/super-admin/tenants",
-    USERS: "/super-admin/users",
+    TENANTS: '/super-admin/tenants',
+    USERS: '/super-admin/users',
     TOGGLE_USER_BLOCK: (id: string) => `/super-admin/users/${id}/toggle-block`,
 
     TOGGLE_TENANT_BLOCK: (id: string) =>
@@ -26,20 +26,28 @@ export const API_ENDPOINTS = {
   },
 
   TENANT: {
-    CREATE: "/tenant/create",
-    GET: "/tenant/get",
+    CREATE: '/tenant/create',
+    GET: '/tenant/get',
     CHECK_NAME: (name: string) => `/tenant/check-name/${name}`,
     UPDATE: (id: string) => `/tenant/update/${id}`,
   },
 
   SUBSCRIPTION: {
-    GET: "/subscription/get",
+    GET: '/subscription/get',
     TOGGLE_STATUS: (id: string) => `/subscription/toggle-status/${id}`,
   },
   PROFILE: {
-    GET: "/profile",
-    UPDATE: "/profile/update",
-    CHANGE_PASSWORD: "/profile/password",
-    UPLOAD_IMAGE: "/profile/upload",
+    GET: '/profile',
+    UPDATE: '/profile/update',
+    CHANGE_PASSWORD: '/profile/password',
+    UPLOAD_IMAGE: '/profile/upload',
+  },
+  MACHINE: {
+    CREATE: '/machine/create',
+    LIST: '/machine/list',
+    ACTIVE: '/machine/active',
+    EDIT: (id: string) => `/machine/edit/${id}`,
+    BLOCK: (id: string) => `/machine/block/${id}`,
+    DELETE: (id: string) => `/machine/delete/${id}`,
   },
 };
