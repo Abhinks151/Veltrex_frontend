@@ -5,6 +5,7 @@ import {
   FactoryIcon,
   Cog,
 } from 'lucide-react';
+import { Roles } from './rolesEnum';
 
 export const RESEND_EMAIL_COOLDOWN = 60;
 export const PAGINATION_LIMIT = 10;
@@ -17,8 +18,29 @@ export const navItems = [
 ];
 
 export const UserNavItems = [
-  { name: 'Dashboard', path: '/platform', icon: LayoutDashboard },
-  { name: 'Employees', path: '/platform/employees', icon: Users },
-  { name: 'Machines', path: '/platform/machines', icon: FactoryIcon },
-  { name: 'Fixtures', path: '/platform/fixtures', icon: Cog },
+  {
+    name: 'Dashboard',
+    path: '/platform',
+    icon: LayoutDashboard,
+    role: [Roles.ADMIN, Roles.MACHINIST, Roles.MAINTENANCE],
+  },
+  {
+    name: 'Employees',
+    path: '/platform/employees',
+    icon: Users,
+    role: [Roles.ADMIN],
+  },
+  {
+    name: 'Machines',
+    path: '/platform/machines',
+    icon: FactoryIcon,
+    role: [Roles.ADMIN],
+  },
+  {
+    name: 'Fixtures',
+    path: '/platform/fixtures',
+    icon: Cog,
+    role: [Roles.ADMIN],
+  },
+  { name: 'Jobs', path: '/platform/jobs', icon: Cog, role: [Roles.MACHINIST] },
 ];
