@@ -12,6 +12,9 @@ import { Roles } from '@/shared/constants/rolesEnum';
 const UserDashBoard = React.lazy(
   () => import('@/features/user/pages/UserDashBoard'),
 );
+const UserProfilePage = React.lazy(
+  () => import('@/features/user/pages/UserProfilePage'),
+);
 const MachineDashBoard = React.lazy(
   () => import('@/features/machine/pages/MachineDashBoard'),
 );
@@ -26,6 +29,7 @@ const UserRoutes = () => {
         <Routes>
           <Route element={<UserLayout />}>
             <Route path="/" element={<UserDashBoard />} />
+            <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/employees" element={<UserDashBoard />} />
 
             <Route

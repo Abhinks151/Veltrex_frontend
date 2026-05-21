@@ -4,7 +4,7 @@ import type { ForgotPasswordRequest } from '../types';
 import { forgotPassword } from '../authThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { useNavigate } from 'react-router-dom';
-import { FRONTEND_MESSAGE_CONSTANTS } from '../../../shared/constants/messageConstants';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,9 @@ const ForgotPasswordPage = () => {
   const handleForgotPassword = async (data: ForgotPasswordRequest) => {
     try {
       await dispatch(forgotPassword(data)).unwrap();
-      notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PASSWORD_RESET_LINK_SENT);
+      notifySuccess(
+        FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PASSWORD_RESET_LINK_SENT,
+      );
       navigate('/auth/login');
     } catch (error) {
       notifyError(error as string);
@@ -23,7 +25,6 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex">
-
       {/* LEFT SIDE */}
       <div className="w-1/2 bg-[#3B2E8C] text-white flex flex-col justify-center text-center gap-10 items-center p-12">
         <h1 className="text-4xl font-bold max-w-md">
@@ -41,7 +42,8 @@ const ForgotPasswordPage = () => {
         </div>
 
         <p className="text-white/70 max-w-md">
-          Streamline your CNC production, monitor real-time analytics, and optimize your workflow.
+          Streamline your CNC production, monitor real-time analytics, and
+          optimize your workflow.
         </p>
       </div>
 

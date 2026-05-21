@@ -18,7 +18,6 @@
 //     }
 //   }
 
-
 //   return (
 //     <div className="flex flex-col w-screen h-screen justify-center items-center text-center gap-4">
 //       <h1 className="text-2xl font-bold">Email sent to registered email address</h1>
@@ -31,14 +30,13 @@
 
 // export default EmailVerificationRequestPage;
 
-
-import { authService } from "@/services/authServices";
-import { Button } from "@/shared/components/ui/button";
-import { RESEND_EMAIL_COOLDOWN } from "@/shared/constants/constant";
-import { notifyError, notifySuccess } from "@/shared/utils/toasterUtils";
-import { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { FRONTEND_MESSAGE_CONSTANTS } from '../../../shared/constants/messageConstants';
+import { authService } from '@/services/authServices';
+import { Button } from '@/shared/components/ui/button';
+import { RESEND_EMAIL_COOLDOWN } from '@/shared/constants/constant';
+import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
+import { useEffect, useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 const EmailVerificationRequestPage = () => {
   // const [message, setMessage] = useState<string | null>(null);
@@ -80,8 +78,8 @@ const EmailVerificationRequestPage = () => {
         <h2 className="text-xl font-semibold mb-1">Verify Your Email</h2>
 
         <p className="text-sm text-gray-500 mb-6">
-          We’ve sent a verification link to your email address.
-          Please check your inbox and click the link to activate your account.
+          We’ve sent a verification link to your email address. Please check
+          your inbox and click the link to activate your account.
         </p>
 
         {email && (
@@ -97,7 +95,7 @@ const EmailVerificationRequestPage = () => {
           size="xl"
           className="w-full hover:cursor-pointer active:bg-blue-300 active:border-blue-300 active:scale-95"
         >
-          {timer > 0 ? `Resend in ${timer}s` : "Resend Verification Email"}
+          {timer > 0 ? `Resend in ${timer}s` : 'Resend Verification Email'}
         </Button>
 
         {/* {message && (
@@ -108,7 +106,7 @@ const EmailVerificationRequestPage = () => {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Already verified?{" "}
+            Already verified?{' '}
             <Link to="/auth/login" className="text-blue-500 hover:underline">
               Sign In
             </Link>

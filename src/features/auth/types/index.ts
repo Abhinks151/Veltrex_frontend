@@ -37,6 +37,7 @@ export interface RegisterResponse {
 
 export interface ForgotPasswordRequest {
   email: string;
+  resetLink?: string;
 }
 
 export interface ResetPasswordRequest {

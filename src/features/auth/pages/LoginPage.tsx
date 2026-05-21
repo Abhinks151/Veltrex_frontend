@@ -1,4 +1,4 @@
-// import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+// import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 // import LoginForm from '../components/LoginForm';
 // import type { LoginRequest } from '../types';
 // import { loginUser } from '../authThunk';
@@ -8,7 +8,6 @@
 //   const dispatch = useAppDispatch()
 
 //   const handleLogin = async (data: LoginRequest) => {
-
 
 //     dispatch(loginUser(data))
 
@@ -33,7 +32,7 @@
 // };
 
 // export default LoginPage;
-import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import LoginForm from '../components/LoginForm';
 import type { LoginRequest } from '../types';
 import { loginUser } from '../authThunk';
@@ -41,9 +40,8 @@ import { useNavigate } from 'react-router-dom';
 import { getTenant } from '@/features/tenant/tenantThunk';
 
 const LoginPage = () => {
-
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   // const { name } = useAppSelector((state) => state.tenant);
 
@@ -62,14 +60,12 @@ const LoginPage = () => {
     } catch (error) {
       console.log(error);
     }
-
   };
 
   const { loading, error } = useAppSelector((state) => state.auth);
 
   return (
     <div className="min-h-screen flex">
-
       {/* LEFT SIDE */}
       <div className="w-1/2 bg-[#3B2E8C] text-white flex flex-col justify-center text-center gap-10 items-center p-12">
         <h1 className="text-4xl font-bold max-w-md">
@@ -87,19 +83,16 @@ const LoginPage = () => {
         </div>
 
         <p className="text-white/70 max-w-md">
-          Streamline your CNC production, monitor real-time analytics, and optimize your workflow.
+          Streamline your CNC production, monitor real-time analytics, and
+          optimize your workflow.
         </p>
       </div>
 
       {/* RIGHT SIDE */}
       <div className="w-1/2 bg-gray-100 flex items-center justify-center">
-        <LoginForm
-          onSubmit={handleLogin}
-          loading={loading}
-          error={error}
-        />
+        <LoginForm onSubmit={handleLogin} loading={loading} error={error} />
       </div>
-    </div >
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { MachineType } from '../../../shared/types/machine-type.enum';
-import { MachineStatus } from '../../../shared/types/machine-status.enum';
+import { MachineType } from '@/shared/types/machine-type.enum';
+import { MachineStatus } from '@/shared/types/machine-status.enum';
 
 export const machineSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters'),
