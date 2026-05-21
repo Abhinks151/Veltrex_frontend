@@ -1,40 +1,50 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/shared/components/custom/DataTable';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
-  fetchMachines,
-  createMachine,
-  updateMachine,
-  toggleMachineBlock,
-  deleteMachine,
-} from '../machineThunk';
+  fetchEmployees,
+  createEmployee,
+  updateEmployee,
+  toggleEmployeeBlock,
+  deleteEmployee,
+} from '../employeeThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { DEBOUNCE_DELAY, PAGINATION_LIMIT } from '@/shared/constants/constant';
 import { Input } from '@/shared/components/ui/input';
 import { Button, buttonVariants } from '@/shared/components/ui/button';
-import { Plus, Search, RefreshCcw } from 'lucide-react';
+import { Plus, Search, RefreshCcw, Filter } from 'lucide-react';
 import ReusableModal from '@/shared/components/custom/ReusableModal';
-import MachineForm from '../components/MachineForm';
-import type { Machine, MachineRequest } from '../types';
-import type { MachineFormData } from '../validators/machineValidator';
+import EmployeeForm from '../components/EmployeeForm';
+import type { Employee, EmployeeRequest } from '../types';
+import type {
+  EmployeeCreateFormData,
+  EmployeeUpdateFormData,
+} from '../validators/employeeValidator';
 import Swal from 'sweetalert2';
 
-const columnHelper = createColumnHelper<Machine>();
+const columnHelper = createColumnHelper<Employee>();
 
-const MachineDashBoard = () => {
+const EmployeeDashBoard = () => {
   const dispatch = useAppDispatch();
-  const { machines, total, loading } = useAppSelector((state) => state.machine);
+  const { employees, total, loading } = useAppSelector(
+    (state) => state.employee,
+  );
 
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
   const [currentPage, setCurrentPage] = useState(0);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const swalWithBootstrapButtons = Swal.mixin({
@@ -54,13 +64,15 @@ const MachineDashBoard = () => {
 
   const loadData = useCallback(() => {
     dispatch(
-      fetchMachines({
+      fetchEmployees({
         page: currentPage + 1,
         limit: PAGINATION_LIMIT,
         search: debouncedSearch,
+        status: statusFilter,
+        sort: sortOrder,
       }),
     );
-  }, [dispatch, currentPage, debouncedSearch]);
+  }, [dispatch, currentPage, debouncedSearch, statusFilter, sortOrder]);
 
   useEffect(() => {
     loadData();
@@ -68,16 +80,18 @@ const MachineDashBoard = () => {
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, statusFilter, sortOrder]);
 
-  const handleAddMachine = async (data: MachineFormData) => {
+  const handleAddEmployee = async (
+    data: EmployeeCreateFormData | EmployeeUpdateFormData,
+  ) => {
     try {
       setIsSubmitting(true);
       const result = await dispatch(
-        createMachine(data as MachineRequest),
+        createEmployee(data as EmployeeRequest),
       ).unwrap();
       if (result.success) {
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.MACHINE_CREATED);
+        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_CREATED);
         setIsAddModalOpen(false);
       }
     } catch (error) {
@@ -85,30 +99,35 @@ const MachineDashBoard = () => {
         (error as { message?: string })?.message || (error as string);
       notifyError(
         errorMessage ||
-          FRONTEND_MESSAGE_CONSTANTS.ERROR.MACHINE_CREATION_FAILED,
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.EMPLOYEE_CREATION_FAILED,
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleEditMachine = async (data: MachineFormData) => {
-    if (!selectedMachine) return;
+  const handleEditEmployee = async (
+    data: EmployeeCreateFormData | EmployeeUpdateFormData,
+  ) => {
+    if (!selectedEmployee) return;
     try {
       setIsSubmitting(true);
       const result = await dispatch(
-        updateMachine({ id: selectedMachine.id, data: data as MachineRequest }),
+        updateEmployee({
+          id: selectedEmployee.id,
+          data: data as Partial<EmployeeRequest>,
+        }),
       ).unwrap();
       if (result.success) {
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.MACHINE_UPDATED);
+        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_UPDATED);
         setIsEditModalOpen(false);
-        setSelectedMachine(null);
+        setSelectedEmployee(null);
       }
     } catch (error) {
       const errorMessage =
         (error as { message?: string })?.message || (error as string);
       notifyError(
-        errorMessage || FRONTEND_MESSAGE_CONSTANTS.ERROR.MACHINE_UPDATE_FAILED,
+        errorMessage || FRONTEND_MESSAGE_CONSTANTS.ERROR.EMPLOYEE_UPDATE_FAILED,
       );
     } finally {
       setIsSubmitting(false);
@@ -116,22 +135,22 @@ const MachineDashBoard = () => {
   };
 
   const handleToggleBlock = useCallback(
-    async (machine: Machine) => {
+    async (employee: Employee) => {
       const result = await swalWithBootstrapButtons.fire({
         title: 'Are you sure?',
-        text: `Do you want to ${machine.isBlocked ? 'Unblock' : 'Block'} this machine?`,
+        text: `Do you want to ${employee.isBlocked ? 'Unblock' : 'Block'} this employee?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: `Yes, ${machine.isBlocked ? 'Unblock' : 'Block'} its!`,
+        confirmButtonText: `Yes, ${employee.isBlocked ? 'Unblock' : 'Block'} them!`,
         cancelButtonText: 'No, cancel!',
         reverseButtons: true,
       });
 
       if (result.isConfirmed) {
         try {
-          await dispatch(toggleMachineBlock(machine.id)).unwrap();
+          await dispatch(toggleEmployeeBlock(employee.id)).unwrap();
           notifySuccess(
-            FRONTEND_MESSAGE_CONSTANTS.SUCCESS.MACHINE_BLOCK_TOGGLED,
+            FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_BLOCK_TOGGLED,
           );
         } catch (error) {
           const errorMessage =
@@ -147,7 +166,7 @@ const MachineDashBoard = () => {
     async (id: string) => {
       const result = await swalWithBootstrapButtons.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this machine!",
+        text: "You won't be able to revert this! This is a soft delete.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, delete it!',
@@ -157,66 +176,48 @@ const MachineDashBoard = () => {
 
       if (result.isConfirmed) {
         try {
-          await dispatch(deleteMachine(id)).unwrap();
-          notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.MACHINE_DELETED);
+          await dispatch(deleteEmployee(id)).unwrap();
+          notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_DELETED);
         } catch (error) {
           const errorMessage =
             (error as { message?: string })?.message || (error as string);
-          notifyError(errorMessage || 'Failed to delete machine');
+          notifyError(errorMessage || 'Failed to delete employee');
         }
       }
     },
     [dispatch, swalWithBootstrapButtons],
   );
 
-  const columns: ColumnDef<Machine, unknown>[] = useMemo(
+  const columns: ColumnDef<Employee, unknown>[] = useMemo(
     () => [
       columnHelper.accessor('name', {
-        header: 'Machine Name',
+        header: 'Name',
         cell: (info) => (
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900">
               {info.getValue() as string}
             </span>
             <span className="text-xs text-gray-500">
-              {info.row.original.brand}
+              {info.row.original.email}
             </span>
           </div>
         ),
-      }) as ColumnDef<Machine, unknown>,
-      columnHelper.accessor('type', {
-        header: 'Type',
+      }) as ColumnDef<Employee, unknown>,
+      columnHelper.accessor('role', {
+        header: 'Role',
         cell: (info) => (
           <span className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium uppercase">
             {info.getValue() as string}
           </span>
         ),
-      }) as ColumnDef<Machine, unknown>,
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: (info) => {
-          const status = info.getValue() as string;
-          const colors: Record<string, string> = {
-            IDLE: 'bg-gray-100 text-gray-700',
-            RUNNING: 'bg-green-100 text-green-700',
-            MAINTENANCE: 'bg-orange-100 text-orange-700',
-          };
-          return (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${colors[status] || 'bg-indigo-50 text-indigo-700'}`}
-            >
-              {status}
-            </span>
-          );
-        },
-      }) as ColumnDef<Machine, unknown>,
+      }) as ColumnDef<Employee, unknown>,
       columnHelper.accessor('isBlocked', {
-        header: 'Availability',
+        header: 'Status',
         cell: (info) => {
           const isBlocked = info.getValue() as boolean;
           return (
             <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${
+              className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                 isBlocked
                   ? 'bg-red-100 text-red-700'
                   : 'bg-green-100 text-green-700'
@@ -226,19 +227,19 @@ const MachineDashBoard = () => {
             </span>
           );
         },
-      }) as ColumnDef<Machine, unknown>,
+      }) as ColumnDef<Employee, unknown>,
       columnHelper.display({
         id: 'actions',
         header: 'Actions',
         cell: (info) => {
-          const machine = info.row.original;
+          const employee = info.row.original;
           return (
             <div className="flex items-center gap-2">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => {
-                  setSelectedMachine(machine);
+                  setSelectedEmployee(employee);
                   setIsEditModalOpen(true);
                 }}
                 className="h-8 px-3 text-xs font-semibold"
@@ -248,15 +249,15 @@ const MachineDashBoard = () => {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleToggleBlock(machine)}
-                className={`h-8 px-3 text-xs font-semibold ${machine.isBlocked ? 'text-green-600' : 'text-orange-600'}`}
+                onClick={() => handleToggleBlock(employee)}
+                className={`h-8 px-3 text-xs font-semibold ${employee.isBlocked ? 'text-green-600' : 'text-orange-600'}`}
               >
-                {machine.isBlocked ? 'Unblock' : 'Block'}
+                {employee.isBlocked ? 'Unblock' : 'Block'}
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleDelete(machine.id)}
+                onClick={() => handleDelete(employee.id)}
                 className="h-8 px-3 text-xs font-semibold text-red-600"
               >
                 Delete
@@ -264,7 +265,7 @@ const MachineDashBoard = () => {
             </div>
           );
         },
-      }) as ColumnDef<Machine, unknown>,
+      }) as ColumnDef<Employee, unknown>,
     ],
     [handleDelete, handleToggleBlock],
   );
@@ -274,10 +275,10 @@ const MachineDashBoard = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Machine Management
+            Employee Management
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Configure and manage manufacturing units
+            Manage your team members and their roles
           </p>
         </div>
         <Button
@@ -286,11 +287,11 @@ const MachineDashBoard = () => {
           className="flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
         >
           <Plus size={18} />
-          <span>Add Machine</span>
+          <span>Add Employee</span>
         </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
         <div className="relative w-full md:w-96">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -299,11 +300,83 @@ const MachineDashBoard = () => {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search machines or brands..."
+            placeholder="Search by name or email..."
             className="pl-10"
           />
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Filter:
+            </span>
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="appearance-none pl-10 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all cursor-pointer hover:bg-gray-100"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="blocked">Blocked</option>
+              </select>
+              <Filter
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                size={16}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l pl-2 border-gray-200">
+                <svg
+                  className="w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Sort:
+            </span>
+            <div className="relative">
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                className="appearance-none pl-10 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all cursor-pointer hover:bg-gray-100"
+              >
+                <option value="asc">Name A-Z</option>
+                <option value="desc">Name Z-A</option>
+              </select>
+              <RefreshCcw
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                size={16}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none border-l pl-2 border-gray-200">
+                <svg
+                  className="w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <Button
             variant="secondary"
             onClick={() => loadData()}
@@ -324,7 +397,7 @@ const MachineDashBoard = () => {
         )}
         <DataTable
           columns={columns}
-          data={machines}
+          data={employees}
           manualPagination
           pageCount={Math.ceil(total / PAGINATION_LIMIT)}
           pageIndex={currentPage}
@@ -336,10 +409,10 @@ const MachineDashBoard = () => {
       <ReusableModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Add New Machine"
-        maxWidth="max-w-2xl"
+        title="Add New Employee"
+        maxWidth="max-w-md"
       >
-        <MachineForm onSubmit={handleAddMachine} loading={isSubmitting} />
+        <EmployeeForm onSubmit={handleAddEmployee} loading={isSubmitting} />
       </ReusableModal>
 
       {/* Edit Modal */}
@@ -347,19 +420,19 @@ const MachineDashBoard = () => {
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
-          setSelectedMachine(null);
+          setSelectedEmployee(null);
         }}
-        title="Edit Machine"
-        maxWidth="max-w-2xl"
+        title="Edit Employee"
+        maxWidth="max-w-md"
       >
-        {selectedMachine && (
-          <MachineForm
-            initialData={
-              selectedMachine
-                ? (selectedMachine as unknown as MachineFormData)
-                : undefined
-            }
-            onSubmit={handleEditMachine}
+        {selectedEmployee && (
+          <EmployeeForm
+            isEdit
+            initialData={{
+              name: selectedEmployee.name,
+              role: selectedEmployee.role,
+            }}
+            onSubmit={handleEditEmployee}
             loading={isSubmitting}
           />
         )}
@@ -368,4 +441,4 @@ const MachineDashBoard = () => {
   );
 };
 
-export default MachineDashBoard;
+export default EmployeeDashBoard;
