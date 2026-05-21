@@ -8,9 +8,13 @@ import Error from '@/shared/components/custom/Error';
 import { notifyError } from '@/shared/utils/toasterUtils';
 import { useEffect } from 'react';
 import type { LoginFormProps } from '@/features/auth/types/propsTypes';
-import { loginSchema, type loginFormData } from '@/features/auth/validators/login.schema';
+import {
+  loginSchema,
+  type loginFormData,
+} from '@/features/auth/validators/login.schema';
+import { Link } from 'react-router-dom';
 
-const SuperAdminLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
+const UserLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
   // const [email, setEmail] = useState<string>('');
   // const [password, setPassword] = useState<string>('');
   useEffect(() => {
@@ -18,11 +22,13 @@ const SuperAdminLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
       notifyError(error);
     }
   }, [error]);
-  const { register, handleSubmit, formState: { errors } } = useForm<loginFormData>({
-    resolver: zodResolver(loginSchema)
-  })
-
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<loginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
   return (
     <div>
@@ -30,14 +36,10 @@ const SuperAdminLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white rounded-xl shadow-md p-8 w-[100]"
       >
-        <div className='w-full text-center'>
-          <h2 className="text-xl font-semibold mb-1">
-            Sign In
-          </h2>
+        <div className="w-full text-center">
+          <h2 className="text-xl font-semibold mb-1">Sign In</h2>
 
-          <p className="text-sm text-gray-500 mb-6">
-            Log in to veltrex
-          </p>
+          <p className="text-sm text-gray-500 mb-6">Log in to veltrex</p>
         </div>
 
         {/* Email */}
@@ -51,27 +53,34 @@ const SuperAdminLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
             <Input
               placeholder="john@company.com"
               className="pl-10"
-              {...register("email")}
+              {...register('email')}
             />
           </div>
         </div>
 
         {/* Password */}
         <div className="mb-4">
-          <label className="text-sm text-gray-600 mb-1 block">
-            Password
-          </label>
+          <label className="text-sm text-gray-600 mb-1 block">Password</label>
 
           <Input
             type="password"
             placeholder="••••••••"
-            {...register("password")}
+            {...register('password')}
           />
         </div>
 
         {errors.email && <Error message={errors.email.message} />}
         {errors.password && <Error message={errors.password.message} />}
 
+        {/* Forgot Password link */}
+        <div className="text-right mb-4">
+          <Link
+            to="/platform/forgot-password"
+            className="text-sm text-blue-500 hover:text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
         {/* Button */}
         <Button
@@ -83,10 +92,9 @@ const SuperAdminLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
         >
           {loading ? 'Login...' : 'Login'}
         </Button>
-
       </form>
     </div>
   );
 };
 
-export default SuperAdminLoginForm;
+export default UserLoginForm;

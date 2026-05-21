@@ -1,5 +1,5 @@
-import { MachineType } from '../../../shared/types/machine-type.enum';
-import { MachineStatus } from '../../../shared/types/machine-status.enum';
+import { MachineType } from '@/shared/types/machine-type.enum';
+import { MachineStatus } from '@/shared/types/machine-status.enum';
 
 export interface Machine {
   id: string;

@@ -1,4 +1,4 @@
-import { FixtureType } from '../../../shared/types/fixture-type.enum';
+import { FixtureType } from '@/shared/types/fixture-type.enum';
 
 export interface FixtureDimensions {
   width: number;

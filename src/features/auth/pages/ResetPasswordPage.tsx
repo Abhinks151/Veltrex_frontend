@@ -4,7 +4,7 @@ import type { ResetPasswordRequest } from '../types';
 import { resetPassword } from '../authThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FRONTEND_MESSAGE_CONSTANTS } from '../../../shared/constants/messageConstants';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -20,7 +20,9 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await dispatch(resetPassword({ token, password: data.password })).unwrap();
+      await dispatch(
+        resetPassword({ token, password: data.password }),
+      ).unwrap();
       notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PASSWORD_RESET);
       navigate('/auth/login');
     } catch (error) {
@@ -30,7 +32,6 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex">
-
       {/* LEFT SIDE */}
       <div className="w-1/2 bg-[#3B2E8C] text-white flex flex-col justify-center text-center gap-10 items-center p-12">
         <h1 className="text-4xl font-bold max-w-md">
@@ -48,7 +49,8 @@ const ResetPasswordPage = () => {
         </div>
 
         <p className="text-white/70 max-w-md">
-          Streamline your CNC production, monitor real-time analytics, and optimize your workflow.
+          Streamline your CNC production, monitor real-time analytics, and
+          optimize your workflow.
         </p>
       </div>
 
@@ -56,7 +58,9 @@ const ResetPasswordPage = () => {
       <div className="w-1/2 bg-gray-100 flex items-center justify-center">
         {!token ? (
           <div className="bg-white rounded-xl shadow-md p-8 w-[100] text-center">
-            <h2 className="text-xl font-semibold mb-2 text-red-500">Invalid Reset Link</h2>
+            <h2 className="text-xl font-semibold mb-2 text-red-500">
+              Invalid Reset Link
+            </h2>
             <p className="text-sm text-gray-500 mb-4">
               This password reset link is invalid or has expired.
             </p>

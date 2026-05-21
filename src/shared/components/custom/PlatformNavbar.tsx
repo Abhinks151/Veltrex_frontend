@@ -62,7 +62,7 @@ const DUMMY_NOTIFICATIONS: Notification[] = [
   },
 ];
 
-const AdminNavbar = () => {
+const PlatformNavbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -98,7 +98,7 @@ const AdminNavbar = () => {
     try {
       await dispatch(logoutUser()).unwrap();
       notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.LOGOUT);
-      navigate('/auth/login');
+      navigate('/platform/login');
     } catch (error) {
       notifyError(
         (error as string) || FRONTEND_MESSAGE_CONSTANTS.ERROR.LOGOUT_FAILED,
@@ -265,7 +265,7 @@ const AdminNavbar = () => {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem onClick={() => navigate('/profile')}>
+            <DropdownMenuItem onClick={() => navigate('/platform/profile')}>
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/settings')}>
@@ -281,4 +281,4 @@ const AdminNavbar = () => {
   );
 };
 
-export default AdminNavbar;
+export default PlatformNavbar;

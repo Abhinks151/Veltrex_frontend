@@ -5,8 +5,6 @@
 // import { notifyError, notifySuccess } from "@/shared/utils/toasterUtils";
 // import type { Tenant } from "../types";
 
-
-
 // const columnHelper = createColumnHelper<Tenant>();
 
 // const TenantsPage = () => {
@@ -135,19 +133,18 @@
 
 // export default TenantsPage;
 
-
-import { useEffect, useState, useCallback } from "react";
-import { createColumnHelper } from "@tanstack/react-table";
-import { DataTable } from "@/shared/components/custom/DataTable";
-import { superAdminService } from "@/services/superAdminService";
-import { notifyError, notifySuccess } from "@/shared/utils/toasterUtils";
-import type { Tenant } from "../types";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
-import EditNameModal from "@/shared/components/custom/EditNameModal";
-import { FRONTEND_MESSAGE_CONSTANTS } from '../../../shared/constants/messageConstants';
-import { useDebounce } from "@/shared/hooks/use-debounce";
-import { DEBOUNCE_DELAY, PAGINATION_LIMIT } from "@/shared/constants/constant";
+import { useEffect, useState, useCallback } from 'react';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable } from '@/shared/components/custom/DataTable';
+import { superAdminService } from '@/services/superAdminService';
+import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
+import type { Tenant } from '../types';
+import { Input } from '@/shared/components/ui/input';
+import { Button } from '@/shared/components/ui/button';
+import EditNameModal from '@/shared/components/custom/EditNameModal';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
+import { useDebounce } from '@/shared/hooks/use-debounce';
+import { DEBOUNCE_DELAY, PAGINATION_LIMIT } from '@/shared/constants/constant';
 
 const columnHelper = createColumnHelper<Tenant>();
 
@@ -158,12 +155,12 @@ const TenantsPage = () => {
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [updating, setUpdating] = useState(false);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
 
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "blocked"
-  >("all");
+    'all' | 'active' | 'blocked'
+  >('all');
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
@@ -197,22 +194,22 @@ const TenantsPage = () => {
     setCurrentPage(0);
   }, [debouncedSearch, statusFilter]);
 
-  const handleToggleBlock = async (
-    id: string,
-    currentlyBlocked: boolean
-  ) => {
+  const handleToggleBlock = async (id: string, currentlyBlocked: boolean) => {
     try {
       await superAdminService.toggleTenantBlock(id);
       setData((prev) =>
-        prev.map((t) =>
-          t.id === id ? { ...t, isBlocked: !t.isBlocked } : t
-        )
+        prev.map((t) => (t.id === id ? { ...t, isBlocked: !t.isBlocked } : t)),
       );
       notifySuccess(
-        currentlyBlocked ? FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_UNBLOCKED : FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_BLOCKED
+        currentlyBlocked
+          ? FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_UNBLOCKED
+          : FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_BLOCKED,
       );
     } catch (error: unknown) {
-      notifyError((error as { response?: { data?: { message?: string } } }).response?.data?.message || FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG);
+      notifyError(
+        (error as { response?: { data?: { message?: string } } }).response?.data
+          ?.message || FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG,
+      );
     }
   };
 
@@ -227,76 +224,72 @@ const TenantsPage = () => {
     try {
       setUpdating(true);
 
-      await superAdminService.updateTenantName(
-        selectedTenant.id,
-        newName
-      );
+      await superAdminService.updateTenantName(selectedTenant.id, newName);
 
       setData((prev) =>
         prev.map((t) =>
-          t.id === selectedTenant.id
-            ? { ...t, name: newName }
-            : t
-        )
+          t.id === selectedTenant.id ? { ...t, name: newName } : t,
+        ),
       );
 
       notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_NAME_UPDATED);
       setIsModalOpen(false);
       setSelectedTenant(null);
     } catch (error: unknown) {
-      notifyError((error as { response?: { data?: { message?: string } } }).response?.data?.message || FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_UPDATE_TENANT_NAME);
+      notifyError(
+        (error as { response?: { data?: { message?: string } } }).response?.data
+          ?.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_UPDATE_TENANT_NAME,
+      );
     } finally {
       setUpdating(false);
     }
   };
 
   const columns = [
-    columnHelper.accessor("name", {
-      header: "Name",
+    columnHelper.accessor('name', {
+      header: 'Name',
       cell: (info) => (
-        <div className="font-medium text-gray-900">
-          {info.getValue()}
-        </div>
+        <div className="font-medium text-gray-900">{info.getValue()}</div>
       ),
     }),
-    columnHelper.accessor("isBlocked", {
-      header: "Status",
+    columnHelper.accessor('isBlocked', {
+      header: 'Status',
       cell: ({ getValue }) => {
         const isBlocked = getValue();
         return (
           <span
-            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${isBlocked
-              ? "bg-red-100 text-red-800"
-              : "bg-green-100 text-green-800"
-              }`}
+            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              isBlocked
+                ? 'bg-red-100 text-red-800'
+                : 'bg-green-100 text-green-800'
+            }`}
           >
-            {isBlocked ? "Blocked" : "Active"}
+            {isBlocked ? 'Blocked' : 'Active'}
           </span>
         );
       },
     }),
-    columnHelper.accessor("createdAt", {
-      header: "Created",
-      cell: ({ getValue }) =>
-        new Date(getValue()).toLocaleDateString(),
+    columnHelper.accessor('createdAt', {
+      header: 'Created',
+      cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
     }),
     columnHelper.display({
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       cell: ({ row }) => {
         const tenant = row.original;
         return (
           <div className="flex gap-2">
             <button
-              onClick={() =>
-                handleToggleBlock(tenant.id, tenant.isBlocked)
-              }
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${tenant.isBlocked
-                ? "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                : "bg-red-50 text-red-700 hover:bg-red-100"
-                }`}
+              onClick={() => handleToggleBlock(tenant.id, tenant.isBlocked)}
+              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                tenant.isBlocked
+                  ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                  : 'bg-red-50 text-red-700 hover:bg-red-100'
+              }`}
             >
-              {tenant.isBlocked ? "Unblock" : "Block"}
+              {tenant.isBlocked ? 'Unblock' : 'Block'}
             </button>
 
             <button
@@ -314,9 +307,7 @@ const TenantsPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Tenants
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900">Tenants</h1>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
@@ -328,7 +319,7 @@ const TenantsPage = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full md:w-64"
           />
-          <Button size={"lg"} variant={"primary"} onClick={() => setSearch("")}>
+          <Button size={'lg'} variant={'primary'} onClick={() => setSearch('')}>
             Clear
           </Button>
         </div>
@@ -336,7 +327,7 @@ const TenantsPage = () => {
         <select
           value={statusFilter}
           onChange={(e) =>
-            setStatusFilter(e.target.value as "all" | "active" | "blocked")
+            setStatusFilter(e.target.value as 'all' | 'active' | 'blocked')
           }
           className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
@@ -367,7 +358,7 @@ const TenantsPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleUpdateName}
-        defaultValue={selectedTenant?.name || ""}
+        defaultValue={selectedTenant?.name || ''}
         loading={updating}
       />
     </div>

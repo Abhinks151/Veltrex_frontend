@@ -1,22 +1,23 @@
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import UpdateTenantForm from "../components/UpdateTenantForm";
-import { getTenant, updateTenant } from "../tenantThunk";
-import { useNavigate } from "react-router-dom";
-import type { TenantRequest } from "../types";
-import { useEffect } from "react";
-import { notifyError, notifySuccess } from "@/shared/utils/toasterUtils";
-import { FRONTEND_MESSAGE_CONSTANTS } from '../../../shared/constants/messageConstants';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import UpdateTenantForm from '../components/UpdateTenantForm';
+import { getTenant, updateTenant } from '../tenantThunk';
+import { useNavigate } from 'react-router-dom';
+import type { TenantRequest } from '../types';
+import { useEffect } from 'react';
+import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 const UpdateTenantPage = () => {
-
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getTenant());
   }, [dispatch]);
 
-  const { loading, error, name, id, isBlocked, isDeleted } = useAppSelector((state) => state.tenant);
+  const { loading, error, name, id, isBlocked, isDeleted } = useAppSelector(
+    (state) => state.tenant,
+  );
 
   if (isBlocked || isDeleted) {
     notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_BLOCKED_OR_DELETED);
@@ -26,9 +27,10 @@ const UpdateTenantPage = () => {
 
   const handleUpdate = async (data: TenantRequest) => {
     try {
-
       if (!id) {
-        notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG_TRY_AGAIN);
+        notifyError(
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG_TRY_AGAIN,
+        );
         return;
       }
 
@@ -43,7 +45,6 @@ const UpdateTenantPage = () => {
 
   return (
     <div className="min-h-screen flex">
-
       {/* LEFT SIDE */}
       <div className="w-1/2 bg-[#3B2E8C] text-white flex flex-col justify-center text-center gap-10 items-center p-12">
         <h1 className="text-4xl font-bold max-w-md">
@@ -61,7 +62,8 @@ const UpdateTenantPage = () => {
         </div>
 
         <p className="text-white/70 max-w-md">
-          Streamline your CNC production, monitor real-time analytics, and optimize your workflow.
+          Streamline your CNC production, monitor real-time analytics, and
+          optimize your workflow.
         </p>
       </div>
 
@@ -76,8 +78,8 @@ const UpdateTenantPage = () => {
           />
         )}
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 export default UpdateTenantPage;

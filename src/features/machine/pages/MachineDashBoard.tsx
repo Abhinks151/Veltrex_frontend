@@ -66,7 +66,6 @@ const MachineDashBoard = () => {
     loadData();
   }, [loadData]);
 
-  // Reset to page 0 on search change
   useEffect(() => {
     setCurrentPage(0);
   }, [debouncedSearch]);
@@ -259,7 +258,6 @@ const MachineDashBoard = () => {
         },
       }),
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 

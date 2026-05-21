@@ -1,4 +1,4 @@
-// // import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+// // import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 // // import LoginForm from '../components/LoginForm';
 // // import type { LoginRequest } from '../types';
 // // import { loginUser } from '../authThunk';
@@ -25,7 +25,6 @@
 //     }
 //   };
 
-
 //   return (
 //     <div>
 //       <h1 className="text-center">Register Page</h1>
@@ -40,12 +39,11 @@
 
 // export default RegisterPage;
 
-
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import RegisterForm from "../components/RegisterForm";
-import type { RegisterRequest } from "../types";
-import { registerUser } from "../authThunk";
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import RegisterForm from '../components/RegisterForm';
+import type { RegisterRequest } from '../types';
+import { registerUser } from '../authThunk';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +53,7 @@ const RegisterPage = () => {
   const handleRegister = async (data: RegisterRequest) => {
     try {
       await dispatch(registerUser(data)).unwrap();
-      navigate("/auth/check-email", { state: { email: data.email } });
+      navigate('/auth/check-email', { state: { email: data.email } });
     } catch (err) {
       console.log(err);
     }
@@ -63,7 +61,6 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen flex">
-
       {/* LEFT SIDE */}
       <div className="w-1/2 bg-[#3B2E8C] text-white flex flex-col justify-center text-center gap-10 items-center p-12">
         <h1 className="text-4xl font-bold max-w-md">
@@ -81,7 +78,8 @@ const RegisterPage = () => {
         </div>
 
         <p className="text-white/70 max-w-md">
-          Streamline your CNC production, monitor real-time analytics, and optimize your workflow.
+          Streamline your CNC production, monitor real-time analytics, and
+          optimize your workflow.
         </p>
       </div>
 
@@ -92,11 +90,8 @@ const RegisterPage = () => {
           loading={loading}
           error={error}
         />
-
-
       </div>
-
-    </div >
+    </div>
   );
 };
 

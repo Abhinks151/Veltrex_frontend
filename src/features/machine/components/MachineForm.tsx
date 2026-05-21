@@ -7,8 +7,8 @@ import {
   machineSchema,
   type MachineFormData,
 } from '../validators/machineValidator';
-import { MachineType } from '../../../shared/types/machine-type.enum';
-import { MachineStatus } from '../../../shared/types/machine-status.enum';
+import { MachineType } from '@/shared/types/machine-type.enum';
+import { MachineStatus } from '@/shared/types/machine-status.enum';
 
 interface MachineFormProps {
   initialData?: Partial<MachineFormData>;
