@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { logoutUser } from '@/features/auth/authThunk';
 import { UserNavItems } from '@/shared/constants/constant';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
@@ -11,6 +11,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const user = useAppSelector((state) => state.auth.user);
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
@@ -40,7 +41,9 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex-1 px-4 py-6 space-y-1">
-        {UserNavItems.map((item) => {
+        {UserNavItems.filter(
+          (item) => user?.role && item.role.includes(user.role),
+        ).map((item) => {
           const isActive =
             location.pathname === item.path ||
             (item.path !== '/platform' &&
