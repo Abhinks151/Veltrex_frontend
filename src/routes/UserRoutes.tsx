@@ -21,6 +21,9 @@ const MachineDashBoard = React.lazy(
 const FixtureDashBoard = React.lazy(
   () => import('@/features/fixture/pages/FixtureDashBoard'),
 );
+const EmployeeDashBoard = React.lazy(
+  () => import('@/features/employee/pages/EmployeeDashBoard'),
+);
 
 const UserRoutes = () => {
   return (
@@ -30,11 +33,11 @@ const UserRoutes = () => {
           <Route element={<UserLayout />}>
             <Route path="/" element={<UserDashBoard />} />
             <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/employees" element={<UserDashBoard />} />
 
             <Route
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}
             >
+              <Route path="/employees" element={<EmployeeDashBoard />} />
               <Route path="/machines" element={<MachineDashBoard />} />
               <Route path="/fixtures" element={<FixtureDashBoard />} />
             </Route>

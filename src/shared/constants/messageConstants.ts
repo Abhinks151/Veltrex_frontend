@@ -21,6 +21,10 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FIXTURE_UPDATED: 'Fixture updated successfully',
     FIXTURE_DELETED: 'Fixture deleted successfully',
     FIXTURE_BLOCK_TOGGLED: 'Fixture status updated',
+    EMPLOYEE_CREATED: 'Employee created successfully',
+    EMPLOYEE_UPDATED: 'Employee updated successfully',
+    EMPLOYEE_DELETED: 'Employee deleted successfully',
+    EMPLOYEE_BLOCK_TOGGLED: 'Employee status updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',
@@ -44,6 +48,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FAILED_FETCH_FIXTURES: 'Failed to fetch fixtures',
     FIXTURE_CREATION_FAILED: 'Fixture creation failed',
     FIXTURE_UPDATE_FAILED: 'Fixture update failed',
+    FAILED_FETCH_EMPLOYEES: 'Failed to fetch employees',
+    EMPLOYEE_CREATION_FAILED: 'Employee creation failed',
+    EMPLOYEE_UPDATE_FAILED: 'Employee update failed',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',
