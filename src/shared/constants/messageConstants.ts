@@ -25,6 +25,10 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     EMPLOYEE_UPDATED: 'Employee updated successfully',
     EMPLOYEE_DELETED: 'Employee deleted successfully',
     EMPLOYEE_BLOCK_TOGGLED: 'Employee status updated',
+    PLAN_CREATED: 'Plan created successfully',
+    PLAN_UPDATED: 'Plan updated successfully',
+    PLAN_DELETED: 'Plan deleted successfully',
+    PLAN_BLOCK_TOGGLED: 'Plan status updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',
@@ -51,6 +55,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FAILED_FETCH_EMPLOYEES: 'Failed to fetch employees',
     EMPLOYEE_CREATION_FAILED: 'Employee creation failed',
     EMPLOYEE_UPDATE_FAILED: 'Employee update failed',
+    FAILED_FETCH_PLANS: 'Failed to fetch plans',
+    FAILED_UPDATE_PLAN: 'Failed to update plan',
+    FAILED_DELETE_PLAN: 'Failed to delete plan',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',

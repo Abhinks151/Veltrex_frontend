@@ -1,21 +1,19 @@
-import { PlanType } from "@/features/subscription/types";
-
 export interface TenantType {
   name: string | null;
   id: string | null;
   isBlocked: boolean;
   isDeleted: boolean;
-  loading: boolean,
-  error: string | null,
+  loading: boolean;
+  error: string | null;
 }
 
 export interface TenantRequest {
   name: string;
-  plan?: PlanType;
+  plan?: string; // plan code e.g. 'TRIAL', 'LIFETIME'
 }
 
 export interface TenantUpdateRequest {
-  data: TenantRequest,
+  data: TenantRequest;
   id: string;
 }
 
@@ -25,4 +23,3 @@ export interface TenantResponse {
   isBlocked: boolean;
   isDeleted: boolean;
 }
-

@@ -1,27 +1,26 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch } from "@/app/store/hooks";
-import { tenant } from "@/features/tenant/tenantThunk";
-import { type tenantFormData } from "@/features/tenant/validators/tenant.schema";
-import { PlanType } from "@/features/subscription/types";
-import { tenantService } from "@/services/tenantService";
+import { useAppDispatch } from '@/app/store/hooks';
+import { tenant } from '@/features/tenant/tenantThunk';
+import { type tenantFormData } from '@/features/tenant/validators/tenant.schema';
+import { tenantService } from '@/services/tenantService';
 
-import Navbar from "@/shared/components/custom/Navbar";
-import { notifySuccess, notifyError } from "@/shared/utils/toasterUtils";
-import { FRONTEND_MESSAGE_CONSTANTS } from "@/shared/constants/messageConstants";
+import Navbar from '@/shared/components/custom/Navbar';
+import { notifySuccess, notifyError } from '@/shared/utils/toasterUtils';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
-import StepIndicator from "./components/onboarding/StepIndicator";
-import TenantStep from "./components/onboarding/TenantStep";
-import PlanStep from "./components/onboarding/PlanStep";
-import { type Step } from "./components/onboarding/types";
+import StepIndicator from './components/onboarding/StepIndicator';
+import TenantStep from './components/onboarding/TenantStep';
+import PlanStep from './components/onboarding/PlanStep';
+import { type Step } from './components/onboarding/types';
 
 const OnboardingPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [step, setStep] = useState<Step>("tenant");
-  const [tenantName, setTenantName] = useState("");
+  const [step, setStep] = useState<Step>('tenant');
+  const [tenantName, setTenantName] = useState('');
   const [checkingName, setCheckingName] = useState(false);
 
   const handleTenantSubmit = async (data: tenantFormData) => {
@@ -33,7 +32,7 @@ const OnboardingPage = () => {
         return;
       }
       setTenantName(data.name);
-      setStep("plan");
+      setStep('plan');
     } catch {
       notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG);
     } finally {
@@ -41,14 +40,15 @@ const OnboardingPage = () => {
     }
   };
 
-  const handlePlanFinish = async (planId: PlanType) => {
+  const handlePlanFinish = async (planCode: string) => {
     try {
-      await dispatch(tenant({ name: tenantName, plan: planId })).unwrap();
+      await dispatch(tenant({ name: tenantName, plan: planCode })).unwrap();
       notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_CREATED);
-      navigate("/home");
+      navigate('/home');
     } catch (error) {
       notifyError(
-        (error as string) || FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_CREATION_FAILED
+        (error as string) ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_CREATION_FAILED,
       );
     }
   };
@@ -103,7 +103,7 @@ const OnboardingPage = () => {
         <main className="flex-1 max-w-2xl">
           <StepIndicator current={step} />
 
-          {step === "tenant" ? (
+          {step === 'tenant' ? (
             <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
               <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">
                 Step 1 of 2
@@ -132,19 +132,19 @@ const OnboardingPage = () => {
               <p className="text-gray-500 text-sm mb-7">
                 {tenantName
                   ? `Almost done, ${tenantName}! Pick the plan that works for you.`
-                  : "Pick the plan that works best for your team."}
+                  : 'Pick the plan that works best for your team.'}
               </p>
 
               <PlanStep
                 tenantName={tenantName}
-                onBack={() => setStep("tenant")}
+                onBack={() => setStep('tenant')}
                 onFinish={handlePlanFinish}
               />
             </div>
           )}
 
           <p className="text-center text-xs text-gray-400 mt-6">
-            Already have an organization?{" "}
+            Already have an organization?{' '}
             <a href="/home" className="text-indigo-600 hover:underline">
               Go to dashboard
             </a>

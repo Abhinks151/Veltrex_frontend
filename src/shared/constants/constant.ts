@@ -4,6 +4,7 @@ import {
   Building,
   FactoryIcon,
   Cog,
+  CreditCard,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -15,6 +16,7 @@ export const navItems = [
   { name: 'Dashboard', path: '/super-admin', icon: LayoutDashboard },
   { name: 'Tenants', path: '/super-admin/tenants', icon: Building },
   { name: 'Users', path: '/super-admin/users', icon: Users },
+  { name: 'Plans', path: '/super-admin/plans', icon: CreditCard },
 ];
 
 export const UserNavItems = [
@@ -43,4 +45,10 @@ export const UserNavItems = [
     role: [Roles.ADMIN],
   },
   { name: 'Jobs', path: '/platform/jobs', icon: Cog, role: [Roles.MACHINIST] },
+  {
+    name: 'Tickets',
+    path: '/platform/tickets',
+    icon: Cog,
+    role: [Roles.MAINTENANCE],
+  },
 ];

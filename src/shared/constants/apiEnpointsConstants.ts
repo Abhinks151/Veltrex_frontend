@@ -17,12 +17,15 @@ export const API_ENDPOINTS = {
     TENANTS: '/super-admin/tenants',
     USERS: '/super-admin/users',
     TOGGLE_USER_BLOCK: (id: string) => `/super-admin/users/${id}/toggle-block`,
-
     TOGGLE_TENANT_BLOCK: (id: string) =>
       `/super-admin/tenants/${id}/toggle-block`,
-
     UPDATE_TENANT_NAME: (id: string) =>
       `/super-admin/tenants/${id}/update-name`,
+    PLANS: '/super-admin/plans',
+    CREATE_PLAN: '/super-admin/plans',
+    UPDATE_PLAN: (id: string) => `/super-admin/plans/${id}`,
+    TOGGLE_PLAN_BLOCK: (id: string) => `/super-admin/plans/${id}/toggle-block`,
+    DELETE_PLAN: (id: string) => `/super-admin/plans/${id}`,
   },
 
   TENANT: {

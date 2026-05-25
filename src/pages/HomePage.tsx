@@ -74,7 +74,6 @@ import { Link } from 'react-router-dom';
 import { Button, buttonVariants } from '@/shared/components/ui/button';
 import Navbar from '@/shared/components/custom/Navbar';
 import TenantRestrictedView from '@/features/tenant/components/TenantRestrictedView';
-import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import Swal from 'sweetalert2';
 import Loader from './Loader';
 
@@ -147,13 +146,20 @@ const HomePage = () => {
       });
   }
 
+  const isExpired =
+    status === 'EXPIRED' ||
+    (status === 'ACTIVE' && endDate && new Date(endDate) < new Date());
+
   if (tenantLoading || subLoading) {
     return <Loader />;
   }
 
   if (isBlocked || isDeleted) {
-    console.log(FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_BLOCKED_OR_DELETED);
     return <TenantRestrictedView />;
+  }
+
+  if (isExpired) {
+    return <TenantRestrictedView reason="expired" />;
   }
 
   return (
@@ -229,29 +235,26 @@ const HomePage = () => {
 
             <div className="text-sm text-gray-500 space-y-2">
               <p>
-                Plan:{' '}
-                {plan
-                  ? `${plan.charAt(0) + plan.slice(1).toLowerCase()} Subscription`
-                  : 'No Active Plan'}
+                Plan: {plan ? `${plan.name} Subscription` : 'No Active Plan'}
               </p>
               <p>
                 Billing:{' '}
-                {plan === 'PRO'
-                  ? '₹4,999 / month'
-                  : plan === 'FREE'
-                    ? '₹0 / month'
-                    : 'Contact Sales'}
-              </p>
-              <p>
-                Next Billing:{' '}
-                {endDate
-                  ? new Date(endDate).toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    })
+                {plan
+                  ? `${plan.currency} ${plan.price.toLocaleString()} / ${plan.durationDays ? `${plan.durationDays} days` : 'lifetime'}`
                   : 'N/A'}
               </p>
+              {plan?.durationDays && (
+                <p>
+                  Next Billing:{' '}
+                  {endDate
+                    ? new Date(endDate).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                    : 'N/A'}
+                </p>
+              )}
             </div>
 
             <button
