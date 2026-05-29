@@ -1,7 +1,16 @@
-import { useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { getTenant } from '@/features/tenant/tenantThunk';
+import { useEffect } from 'react';
 
 const AdminDashBoard = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getTenant());
+  }, [dispatch]);
+
   const { user } = useAppSelector((state) => state.auth);
+  const { name } = useAppSelector((state) => state.tenant);
 
   return (
     <div className="space-y-4">
@@ -10,6 +19,10 @@ const AdminDashBoard = () => {
         <p className="text-gray-600">
           Welcome{' '}
           <span className="font-semibold text-gray-900">{user?.name}</span>
+        </p>
+        <p className="text-gray-600">
+          Your organization name is{' '}
+          <span className="font-semibold text-gray-900">{name}</span>
         </p>
         <p className="text-gray-600 mt-2">
           Your role is{' '}

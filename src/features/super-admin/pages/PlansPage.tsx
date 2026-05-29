@@ -139,28 +139,37 @@ const PlansPage = () => {
     [],
   );
 
-  const handleDelete = useCallback(async (id: string) => {
-    const result = await swalWithBootstrapButtons.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-    });
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const result = await swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+      });
 
-    if (result.isConfirmed) {
-      try {
-        await planService.deletePlan(id);
-        setData((prev) => prev.filter((p) => p.id !== id));
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PLAN_DELETED);
-      } catch (error: unknown) {
-        const message =
-          (error as AxiosError)?.response?.data?.message ||
-          FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_DELETE_PLAN;
-        notifyError(message);
+      if (result.isConfirmed) {
+        try {
+          await planService.deletePlan(id);
+          setData((prev) => prev.filter((p) => p.id !== id));
+          notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PLAN_DELETED);
+
+          if (data.length === 1 && currentPage > 0) {
+            setCurrentPage((prev) => prev - 1);
+          } else {
+            fetchData();
+          }
+        } catch (error: unknown) {
+          const message =
+            (error as AxiosError)?.response?.data?.message ||
+            FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_DELETE_PLAN;
+          notifyError(message);
+        }
       }
-    }
-  }, []);
+    },
+    [data.length, currentPage, fetchData],
+  );
 
   const handleSubmit = async () => {
     if (formData.price < 0) {

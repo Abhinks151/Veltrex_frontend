@@ -56,6 +56,9 @@ const ProfilePage = React.lazy(() => import('@/pages/ProfilePage'));
 const ChangePasswordPage = React.lazy(
   () => import('@/pages/ChangePasswordPage'),
 );
+const TenantBlockedPage = React.lazy(
+  () => import('@/pages/error/TenantBlocked'),
+);
 
 const IndexRoutes = () => {
   return (
@@ -66,6 +69,7 @@ const IndexRoutes = () => {
           <Route path="/auth/*" element={<AuthRoutes />} />
           <Route path="/super-admin/login" element={<LoginPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="/tenant-blocked" element={<TenantBlockedPage />} />
           <Route path="/platform/login" element={<UserLoginPage />} />
           <Route
             path="/platform/forgot-password"

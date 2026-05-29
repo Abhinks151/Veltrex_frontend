@@ -154,6 +154,12 @@ const FixtureDashBoard = () => {
       try {
         await dispatch(deleteFixture(id)).unwrap();
         notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.FIXTURE_DELETED);
+
+        if (fixtures.length === 1 && currentPage > 0) {
+          setCurrentPage((prev) => prev - 1);
+        } else {
+          loadData();
+        }
       } catch (error) {
         const errorMessage =
           (error as { message?: string })?.message || (error as string);

@@ -19,11 +19,12 @@ const PlanStep = ({ tenantName, onBack, onFinish }: PlanStepProps) => {
     const fetchPlans = async () => {
       try {
         const res = await planService.getAllPlans();
-        const activePlans: Plan[] = (res.data?.data || []).filter(
+        const activePlans: Plan[] = (res.data.data.plans || []).filter(
           (p: Plan) => !p.isBlocked,
         );
         setPlans(activePlans);
-      } catch {
+      } catch (error) {
+        console.log(error);
         notifyError('Failed to load plans. Please try again.');
       } finally {
         setFetching(false);
