@@ -6,7 +6,7 @@ import { notifyError } from '@/shared/utils/toasterUtils';
 interface PlanStepProps {
   tenantName: string;
   onBack: () => void;
-  onFinish: (planCode: string) => void;
+  onFinish: (plan: Plan) => void;
 }
 
 const PlanStep = ({ tenantName, onBack, onFinish }: PlanStepProps) => {
@@ -33,14 +33,14 @@ const PlanStep = ({ tenantName, onBack, onFinish }: PlanStepProps) => {
     fetchPlans();
   }, []);
 
+  const selectedPlan = plans.find((p) => p.code === selected);
+
   const handleSubscribe = async () => {
-    if (!selected) return;
+    if (!selectedPlan) return;
     setLoading(true);
-    onFinish(selected);
+    onFinish(selectedPlan);
     setLoading(false);
   };
-
-  const selectedPlan = plans.find((p) => p.code === selected);
 
   if (fetching) {
     return (

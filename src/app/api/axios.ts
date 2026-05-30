@@ -71,6 +71,20 @@ axiosInstance.interceptors.response.use(
       }
     }
 
+    if (error.response?.status === 403) {
+      const message = error.response.data?.message || '';
+      if (
+        message.includes('Subscription has expired') ||
+        message.includes('No active subscription found') ||
+        message.includes('Subscription is restricted')
+      ) {
+        if (window.location.pathname !== '/subscription-expired') {
+          window.location.href = '/subscription-expired';
+        }
+        return Promise.reject(error);
+      }
+    }
+
     return Promise.reject(error);
   },
 );

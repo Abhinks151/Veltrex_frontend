@@ -11,8 +11,10 @@ const initialState: SubscriptionType = {
   status: null,
   startDate: null,
   endDate: null,
+  trialUsed: false,
   razorpaySubscriptionId: null,
   loading: false,
+  initialized: false,
   toggling: false,
   error: null,
 };
@@ -38,6 +40,7 @@ const subscriptionSlice = createSlice({
           action: PayloadAction<ApiResponse<SubscriptionResponse> | null>,
         ) => {
           state.loading = false;
+          state.initialized = true;
           if (!action.payload || !action.payload.data) {
             state.id = null;
             state.tenantId = null;
@@ -58,6 +61,7 @@ const subscriptionSlice = createSlice({
             status,
             startDate,
             endDate,
+            trialUsed,
             razorpaySubscriptionId,
           } = action.payload.data;
           state.id = id;
@@ -67,11 +71,13 @@ const subscriptionSlice = createSlice({
           state.status = status;
           state.startDate = startDate;
           state.endDate = endDate;
+          state.trialUsed = trialUsed;
           state.razorpaySubscriptionId = razorpaySubscriptionId;
         },
       )
       .addCase(getSubscription.rejected, (state, action) => {
         state.loading = false;
+        state.initialized = true;
         state.error = action.payload as string;
       })
 

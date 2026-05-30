@@ -85,7 +85,6 @@ const PlansPage = () => {
     fetchData();
   }, [fetchData]);
 
-  // Reset to first page when search or filter changes
   useEffect(() => {
     setCurrentPage(0);
   }, [debouncedSearch, statusFilter]);

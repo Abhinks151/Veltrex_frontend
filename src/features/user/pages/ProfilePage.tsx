@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { notifySuccess, notifyError } from "@/shared/utils/toasterUtils";
-import { Button } from "@/shared/components/ui/button";
-import Navbar from "@/shared/components/custom/Navbar";
-import { profileService } from "@/services/profileService";
-import { ImageCropper } from "@/shared/components/custom/ImageCropper";
-import { Edit, Lock, Save } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { updateUser } from "@/features/auth/authSlice";
-import type { AxiosError } from "axios";
+import { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { notifySuccess, notifyError } from '@/shared/utils/toasterUtils';
+import { Button } from '@/shared/components/ui/button';
+import Navbar from '@/shared/components/custom/Navbar';
+import { profileService } from '@/services/profileService';
+import { ImageCropper } from '@/shared/components/custom/ImageCropper';
+import { Edit, Lock, Save } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { updateUser } from '@/features/auth/authSlice';
+import type { AxiosError } from 'axios';
 
 const ProfilePage = () => {
   const { user } = useAppSelector((state) => state.auth);
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [profileImage, setProfileImage] = useState(user?.profileImage || "");
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [profileImage, setProfileImage] = useState(user?.profileImage || '');
   const [isUpdating, setIsUpdating] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
@@ -26,7 +26,7 @@ const ProfilePage = () => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
-      setProfileImage(user.profileImage || "");
+      setProfileImage(user.profileImage || '');
     }
   }, [user]);
 
@@ -35,9 +35,12 @@ const ProfilePage = () => {
       setIsUpdating(true);
       const res = await profileService.updateProfile(name);
       dispatch(updateUser(res.data.data));
-      notifySuccess("Profile updated successfully");
+      notifySuccess('Profile updated successfully');
     } catch (error: unknown) {
-      notifyError((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update profile");
+      notifyError(
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || 'Failed to update profile',
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -61,20 +64,18 @@ const ProfilePage = () => {
       const url = res.data.data.url;
       setProfileImage(url);
       dispatch(updateUser({ profileImage: url }));
-      notifySuccess("Profile image updated successfully");
+      notifySuccess('Profile image updated successfully');
     } catch (error: unknown) {
       const err = error as AxiosError<{ message: string }>;
 
-      notifyError(
-        err.response?.data?.message || "Failed to upload image"
-      );
+      notifyError(err.response?.data?.message || 'Failed to upload image');
     }
   };
 
   const handleResetPassword = () => {
     // Navigate to a separate page or show a modal
     // For now, let's assume we show a password change section or redirect
-    navigate("/profile/change-password");
+    navigate('/profile/change-password');
   };
 
   return (
@@ -84,8 +85,12 @@ const ProfilePage = () => {
       <main className="flex-1 p-6 md:p-12 flex flex-col items-center">
         <div className="max-w-xl w-full">
           <header className="mb-8 text-center md:text-left">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Profile Settings</h1>
-            <p className="text-gray-500">Manage your personal information and security</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Profile Settings
+            </h1>
+            <p className="text-gray-500">
+              Manage your personal information and security
+            </p>
           </header>
 
           <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-10 flex flex-col items-center relative overflow-hidden">
@@ -95,10 +100,14 @@ const ProfilePage = () => {
             <div className="relative mb-8 group">
               <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-indigo-50 flex items-center justify-center">
                 {profileImage ? (
-                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <span className="text-4xl font-bold text-indigo-300">
-                    {name?.[0]?.toUpperCase() || "U"}
+                    {name?.[0]?.toUpperCase() || 'U'}
                   </span>
                 )}
               </div>
@@ -119,7 +128,7 @@ const ProfilePage = () => {
             </div>
 
             <button
-              onClick={() => document.getElementById("avatar-upload")?.click()}
+              onClick={() => document.getElementById('avatar-upload')?.click()}
               className="text-xs font-bold text-indigo-900 uppercase tracking-widest mb-10 hover:text-indigo-700 transition-colors"
             >
               Upload Image
@@ -152,7 +161,10 @@ const ProfilePage = () => {
                     disabled
                     className="w-full bg-gray-100 border-none rounded-xl p-4 text-gray-400 font-medium cursor-not-allowed pr-12"
                   />
-                  <Lock size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300" />
+                  <Lock
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  />
                 </div>
                 <p className="text-[10px] text-gray-400 ml-1">
                   Email addresses are managed by your industrial administrator.
@@ -180,7 +192,7 @@ const ProfilePage = () => {
                     className="flex-1 rounded-2xl h-14 font-bold shadow-lg shadow-indigo-200"
                   >
                     <Save size={18} className="mr-2" />
-                    {isUpdating ? "Saving..." : "Save Changes"}
+                    {isUpdating ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
               </div>

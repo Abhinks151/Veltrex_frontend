@@ -23,7 +23,7 @@ import { Route, Routes } from 'react-router-dom';
 
 const AuthRoutes = React.lazy(() => import('./AuthRoutes'));
 const LandingPage = React.lazy(() => import('@/pages/LandingPage'));
-const HomePage = React.lazy(() => import('@/pages/HomePage'));
+const HomePage = React.lazy(() => import('@/features/tenant/pages/HomePage'));
 const Sample = React.lazy(() => import('@/pages/dev/Sample'));
 const ProtectedRoute = React.lazy(() => import('@/pages/ProtectedRoute'));
 const RoleProtectedRoute = React.lazy(
@@ -51,13 +51,32 @@ const Menu = React.lazy(() => import('@/pages/dev/Menu'));
 const PricingPage = React.lazy(() => import('@/pages/PricingPage'));
 const NotFoundPage = React.lazy(() => import('@/pages/NotFoundPage'));
 const Loader = React.lazy(() => import('@/pages/Loader'));
-const OnboardingPage = React.lazy(() => import('@/pages/OnboardingPage'));
-const ProfilePage = React.lazy(() => import('@/pages/ProfilePage'));
+const OnboardingPage = React.lazy(
+  () => import('@/features/tenant/pages/OnboardingPage'),
+);
+const ProfilePage = React.lazy(
+  () => import('@/features/user/pages/ProfilePage'),
+);
 const ChangePasswordPage = React.lazy(
-  () => import('@/pages/ChangePasswordPage'),
+  () => import('@/features/user/pages/ChangePasswordPage'),
 );
 const TenantBlockedPage = React.lazy(
-  () => import('@/pages/error/TenantBlocked'),
+  () => import('@/features/tenant/pages/TenantBlocked'),
+);
+const AccessRestrictedPage = React.lazy(
+  () => import('@/features/subscription/pages/AccessRestrictedPage'),
+);
+const PlansPage = React.lazy(
+  () => import('@/features/subscription/pages/PlansPage'),
+);
+const PaymentStatusSplash = React.lazy(
+  () => import('@/features/subscription/pages/PaymentStatusSplash'),
+);
+const PaymentRetryPage = React.lazy(
+  () => import('@/features/subscription/pages/PaymentRetryPage'),
+);
+const SubscriptionCancelledPage = React.lazy(
+  () => import('@/features/subscription/pages/SubscriptionCancelledPage'),
 );
 
 const IndexRoutes = () => {
@@ -79,6 +98,14 @@ const IndexRoutes = () => {
             path="/platform/reset-password"
             element={<UserResetPasswordPage />}
           />
+          <Route
+            path="/subscription-expired"
+            element={<AccessRestrictedPage />}
+          />
+          <Route
+            path="/subscription-cancelled"
+            element={<SubscriptionCancelledPage />}
+          />
 
           <Route element={<ProtectedRoute />}>
             <Route
@@ -92,6 +119,12 @@ const IndexRoutes = () => {
               <Route
                 path="/profile/change-password"
                 element={<ChangePasswordPage />}
+              />
+              <Route path="/plans" element={<PlansPage />} />
+              <Route path="/payment-status" element={<PaymentStatusSplash />} />
+              <Route
+                path="/payment/retry/:paymentId"
+                element={<PaymentRetryPage />}
               />
             </Route>
 

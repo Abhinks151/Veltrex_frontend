@@ -9,15 +9,26 @@ import { tenantService } from '@/services/tenantService';
 import Navbar from '@/shared/components/custom/Navbar';
 import { notifySuccess, notifyError } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
+import Loader from '@/pages/Loader';
 
-import StepIndicator from './components/onboarding/StepIndicator';
-import TenantStep from './components/onboarding/TenantStep';
-import PlanStep from './components/onboarding/PlanStep';
-import { type Step } from './components/onboarding/types';
+import StepIndicator from '../components/onboarding/StepIndicator';
+import TenantStep from '../components/onboarding/TenantStep';
+import PlanStep from '../components/onboarding/PlanStep';
+import { type Step } from '../components/onboarding/types';
+import { type Plan } from '@/services/planService';
+import { paymentService } from '@/services/paymentService';
+import { loadRazorpay } from '@/shared/utils/razorpayUtils';
+
+import type {
+  RazorpayOptions,
+  RazorpayResponse,
+  RazorpayErrorResponse,
+} from '@/types/razorpay';
 
 const OnboardingPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const [step, setStep] = useState<Step>('tenant');
   const [tenantName, setTenantName] = useState('');
@@ -40,11 +51,95 @@ const OnboardingPage = () => {
     }
   };
 
-  const handlePlanFinish = async (planCode: string) => {
+  const handlePlanFinish = async (selectedPlan: Plan) => {
     try {
-      await dispatch(tenant({ name: tenantName, plan: planCode })).unwrap();
-      notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_CREATED);
-      navigate('/home');
+      const tenantRes = await dispatch(
+        tenant({ name: tenantName, plan: selectedPlan.code }),
+      ).unwrap();
+
+      const tenantId = tenantRes.data?.id;
+      if (!tenantId) throw new Error('Tenant ID not returned');
+
+      if (selectedPlan.price > 0) {
+        const isLoaded = await loadRazorpay();
+        if (!isLoaded) {
+          notifyError('Razorpay SDK failed to load. Please try again.');
+          return;
+        }
+
+        const orderRes = await paymentService.createOrder({
+          tenantId,
+          planId: selectedPlan.id,
+        });
+
+        const { orderId, amount, currency, paymentId } = orderRes.data;
+
+        const options: RazorpayOptions = {
+          key: import.meta.env.VITE_RAZORPAY_KEY,
+          amount,
+          currency,
+          name: 'Veltrex',
+          description: `Subscription: ${selectedPlan.name}`,
+          order_id: orderId,
+          handler: (response: RazorpayResponse) => {
+            setIsVerifying(true);
+            paymentService
+              .verifyPayment({
+                paymentId,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              })
+              .then(() => {
+                notifySuccess('Payment successful! Welcome to Veltrex.');
+                navigate('/payment-status?status=success');
+              })
+              .catch(() => {
+                setIsVerifying(false);
+                notifyError(
+                  'Payment verification failed. Please contact support.',
+                );
+              });
+          },
+          prefill: {
+            name: '',
+            email: '',
+          },
+          theme: {
+            color: '#4F46E5',
+          },
+          modal: {
+            ondismiss: () => {
+              if (paymentFailureReason) {
+                notifyError(
+                  `Payment failed: ${paymentFailureReason}. Please try again or contact support.`,
+                );
+                navigate(
+                  `/payment-status?status=failure&reason=${encodeURIComponent(paymentFailureReason)}`,
+                );
+              } else {
+                notifyError('Payment was not completed.');
+                navigate(
+                  '/payment-status?status=failure&reason=User cancelled',
+                );
+              }
+            },
+          },
+        };
+
+        let paymentFailureReason = '';
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', (response: RazorpayErrorResponse) => {
+          paymentFailureReason =
+            response.error.description ||
+            response.error.reason ||
+            'Unknown error';
+        });
+        rzp.open();
+      } else {
+        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.TENANT_CREATED);
+        navigate('/home');
+      }
     } catch (error) {
       notifyError(
         (error as string) ||
@@ -52,6 +147,10 @@ const OnboardingPage = () => {
       );
     }
   };
+
+  if (isVerifying) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

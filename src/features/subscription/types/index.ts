@@ -23,8 +23,10 @@ export interface SubscriptionType {
   status: SubscriptionStatus | null;
   startDate: string | null;
   endDate: string | null;
+  trialUsed: boolean;
   razorpaySubscriptionId: string | null;
   loading: boolean;
+  initialized: boolean;
   toggling: boolean;
   error: string | null;
 }
@@ -37,5 +39,6 @@ export interface SubscriptionResponse {
   status: SubscriptionStatus;
   startDate: string;
   endDate: string;
+  trialUsed: boolean;
   razorpaySubscriptionId: string | null;
 }
