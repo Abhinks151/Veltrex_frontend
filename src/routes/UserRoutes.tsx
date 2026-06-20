@@ -21,6 +21,9 @@ const MachineDashBoard = React.lazy(
 const FixtureDashBoard = React.lazy(
   () => import('@/features/fixture/pages/FixtureDashBoard'),
 );
+const RawMaterialDashBoard = React.lazy(
+  () => import('@/features/raw-material/pages/RawMaterialDashBoard'),
+);
 const EmployeeDashBoard = React.lazy(
   () => import('@/features/employee/pages/EmployeeDashBoard'),
 );
@@ -40,6 +43,7 @@ const UserRoutes = () => {
               <Route path="/employees" element={<EmployeeDashBoard />} />
               <Route path="/machines" element={<MachineDashBoard />} />
               <Route path="/fixtures" element={<FixtureDashBoard />} />
+              <Route path="/raw-materials" element={<RawMaterialDashBoard />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

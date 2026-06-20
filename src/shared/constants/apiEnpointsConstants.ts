@@ -61,4 +61,12 @@ export const API_ENDPOINTS = {
     BLOCK: (id: string) => `/fixture/block/${id}`,
     DELETE: (id: string) => `/fixture/delete/${id}`,
   },
+  RAW_MATERIAL: {
+    CREATE: '/raw-material/create',
+    LIST: '/raw-material/list',
+    ACTIVE: '/raw-material/active',
+    EDIT: (id: string) => `/raw-material/edit/${id}`,
+    BLOCK: (id: string) => `/raw-material/block/${id}`,
+    DELETE: (id: string) => `/raw-material/delete/${id}`,
+  },
 };

@@ -4,6 +4,7 @@ import TenantReducer from '@/features/tenant/tenantSlice';
 import SubscriptionReducer from '@/features/subscription/subscriptionSlice';
 import MachineReducer from '@/features/machine/machineSlice';
 import FixtureReducer from '@/features/fixture/fixtureSlice';
+import RawMaterialReducer from '@/features/raw-material/rawMaterialSlice';
 import EmployeeReducer from '@/features/employee/employeeSlice';
 
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
     subscription: SubscriptionReducer,
     machine: MachineReducer,
     fixture: FixtureReducer,
+    rawMaterial: RawMaterialReducer,
     employee: EmployeeReducer,
   },
 });
