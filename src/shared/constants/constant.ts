@@ -6,6 +6,9 @@ import {
   Cog,
   CreditCard,
   Package,
+  Component,
+  Briefcase,
+  Ticket,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -51,11 +54,22 @@ export const UserNavItems = [
     icon: Package,
     role: [Roles.ADMIN],
   },
-  { name: 'Jobs', path: '/platform/jobs', icon: Cog, role: [Roles.MACHINIST] },
+  {
+    name: 'Parts',
+    path: '/platform/parts',
+    icon: Component,
+    role: [Roles.ADMIN],
+  },
+  {
+    name: 'Jobs',
+    path: '/platform/jobs',
+    icon: Briefcase,
+    role: [Roles.ADMIN],
+  },
   {
     name: 'Tickets',
     path: '/platform/tickets',
-    icon: Cog,
+    icon: Ticket,
     role: [Roles.MAINTENANCE],
   },
 ];

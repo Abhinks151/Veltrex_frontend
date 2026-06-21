@@ -39,6 +39,7 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     PART_CREATED: 'Part created successfully',
     PART_UPDATED: 'Part updated successfully',
     PART_DELETED: 'Part deleted successfully',
+    PART_BLOCK_TOGGLED: 'Part status updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',

@@ -153,11 +153,19 @@ const JobDashBoard = () => {
       }),
       columnHelper.accessor('partId', {
         header: 'Part',
-        cell: (info) => (
-          <span className="font-semibold text-gray-900">
-            Part ({info.getValue().substring(0, 8)})
-          </span>
-        ),
+        cell: (info) => {
+          const part = info.row.original.part;
+          return (
+            <div className="flex flex-col">
+              <span className="font-semibold text-gray-900">
+                {part?.name || 'Unknown Part'}
+              </span>
+              <span className="text-[10px] text-gray-500 font-mono">
+                {part?.partNumber || info.getValue().substring(0, 8)}
+              </span>
+            </div>
+          );
+        },
       }),
       columnHelper.accessor('quantity', {
         header: 'Qty',

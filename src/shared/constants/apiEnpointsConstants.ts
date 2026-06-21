@@ -80,6 +80,7 @@ export const API_ENDPOINTS = {
     LIST: '/part/list',
     ACTIVE: '/part/active',
     EDIT: (id: string) => `/part/edit/${id}`,
+    BLOCK: (id: string) => `/part/block/${id}`,
     DELETE: (id: string) => `/part/delete/${id}`,
   },
 };
