@@ -27,6 +27,9 @@ const RawMaterialDashBoard = React.lazy(
 const EmployeeDashBoard = React.lazy(
   () => import('@/features/employee/pages/EmployeeDashBoard'),
 );
+const JobDashBoard = React.lazy(
+  () => import('@/features/job/pages/JobDashBoard'),
+);
 
 const UserRoutes = () => {
   return (
@@ -36,6 +39,7 @@ const UserRoutes = () => {
           <Route element={<UserLayout />}>
             <Route path="/" element={<UserDashBoard />} />
             <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/jobs" element={<JobDashBoard />} />
 
             <Route
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}

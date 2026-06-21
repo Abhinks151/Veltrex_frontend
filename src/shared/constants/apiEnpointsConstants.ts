@@ -69,4 +69,17 @@ export const API_ENDPOINTS = {
     BLOCK: (id: string) => `/raw-material/block/${id}`,
     DELETE: (id: string) => `/raw-material/delete/${id}`,
   },
+  JOB: {
+    CREATE: '/job/create',
+    LIST: '/job/list',
+    EDIT: (id: string) => `/job/edit/${id}`,
+    DELETE: (id: string) => `/job/delete/${id}`,
+  },
+  PART: {
+    CREATE: '/part/create',
+    LIST: '/part/list',
+    ACTIVE: '/part/active',
+    EDIT: (id: string) => `/part/edit/${id}`,
+    DELETE: (id: string) => `/part/delete/${id}`,
+  },
 };
