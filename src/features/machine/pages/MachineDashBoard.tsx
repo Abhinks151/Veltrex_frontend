@@ -159,6 +159,12 @@ const MachineDashBoard = () => {
         try {
           await dispatch(deleteMachine(id)).unwrap();
           notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.MACHINE_DELETED);
+
+          if (machines.length === 1 && currentPage > 0) {
+            setCurrentPage((prev) => prev - 1);
+          } else {
+            loadData();
+          }
         } catch (error) {
           const errorMessage =
             (error as { message?: string })?.message || (error as string);
@@ -166,7 +172,13 @@ const MachineDashBoard = () => {
         }
       }
     },
-    [dispatch, swalWithBootstrapButtons],
+    [
+      dispatch,
+      swalWithBootstrapButtons,
+      machines.length,
+      currentPage,
+      loadData,
+    ],
   );
 
   const columns: ColumnDef<Machine, unknown>[] = useMemo(

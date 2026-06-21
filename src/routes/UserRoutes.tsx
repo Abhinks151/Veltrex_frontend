@@ -21,8 +21,14 @@ const MachineDashBoard = React.lazy(
 const FixtureDashBoard = React.lazy(
   () => import('@/features/fixture/pages/FixtureDashBoard'),
 );
+const RawMaterialDashBoard = React.lazy(
+  () => import('@/features/raw-material/pages/RawMaterialDashBoard'),
+);
 const EmployeeDashBoard = React.lazy(
   () => import('@/features/employee/pages/EmployeeDashBoard'),
+);
+const JobDashBoard = React.lazy(
+  () => import('@/features/job/pages/JobDashBoard'),
 );
 
 const UserRoutes = () => {
@@ -33,6 +39,7 @@ const UserRoutes = () => {
           <Route element={<UserLayout />}>
             <Route path="/" element={<UserDashBoard />} />
             <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/jobs" element={<JobDashBoard />} />
 
             <Route
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}
@@ -40,6 +47,7 @@ const UserRoutes = () => {
               <Route path="/employees" element={<EmployeeDashBoard />} />
               <Route path="/machines" element={<MachineDashBoard />} />
               <Route path="/fixtures" element={<FixtureDashBoard />} />
+              <Route path="/raw-materials" element={<RawMaterialDashBoard />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

@@ -1,68 +1,3 @@
-// import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-// import { logoutUser } from '@/features/auth/authThunk';
-// import { getTenant } from '@/features/tenant/tenantThunk';
-// import { Button } from '@/shared/components/ui/button';
-// import { useEffect } from 'react';
-// import { Link } from 'react-router-dom';
-// // import { useEffect } from "react";
-
-// const HomePage = () => {
-//   const { user, token } = useAppSelector((state) => state.auth);
-//   const { name } = useAppSelector((state) => state.tenant)
-//   // console.log(user, token)
-//   // useEffect(() => {
-//   //   const fetchProfile = async () => {
-//   //     try {
-//   //       const res = await fetch("http://localhost:3000/auth/profile", {
-//   //         method: "GET",
-//   //         headers: {
-//   //           "Content-Type": "application/json",
-//   //           "Authorization": `Bearer ${token}`
-//   //         }
-//   //       })
-//   //       const data = await res.json()
-//   //       console.log(data)
-//   //     } catch (error) {
-//   //       console.log(error)
-//   //     }
-//   //   }
-//   //   fetchProfile()
-//   // }, [])
-//   const dispatch = useAppDispatch()
-
-//   function handleLogout() {
-//     dispatch(logoutUser());
-//   }
-//   useEffect(() => {
-//     dispatch(getTenant())
-//   }, [])
-
-//   return (
-//     <div>
-//       <h1>Home</h1>
-//       <p>Name: {user?.name}</p>
-//       <p>Email: {user?.email}</p>
-//       <p>Token:{token}</p>
-//       <p>Tenant Name:{name}</p>
-
-//       <Button disabled={name ? true : false} variant={'primary'}>
-//         <Link to="/tenant/create">
-//           Tenant creation
-//         </Link>
-//       </Button>
-//       <Link to="/tenant/update">
-//         <Button variant={'primary'}>Update Tenant</Button>
-//       </Link>
-//       <Link to="/platform/login">
-//         <Button variant={'outline'}>Go to platform</Button>
-//       </Link>
-//       <Button onClick={handleLogout}>Logout</Button>
-//     </div>
-//   );
-// };
-
-// export default HomePage;
-
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { getTenant } from '@/features/tenant/tenantThunk';
@@ -70,16 +5,17 @@ import {
   getSubscription,
   toggleSubscriptionStatus,
 } from '@/features/subscription/subscriptionThunk';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, buttonVariants } from '@/shared/components/ui/button';
 import Navbar from '@/shared/components/custom/Navbar';
 import TenantRestrictedView from '@/features/tenant/components/TenantRestrictedView';
-import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
+import Loader from '@/pages/Loader';
+import SubscriptionBanner from '@/features/subscription/components/SubscriptionBanner';
 import Swal from 'sweetalert2';
-import Loader from './Loader';
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getTenant());
@@ -100,6 +36,10 @@ const HomePage = () => {
     toggling,
     id,
   } = useAppSelector((state) => state.subscription);
+  const { user } = useAppSelector((state) => state.auth);
+
+  const isTrialPlan = !plan || plan.price === 0;
+  const isTrialActive = status === 'ACTIVE' && isTrialPlan;
 
   function handleCancelSubscription() {
     if (!id) return;
@@ -152,12 +92,29 @@ const HomePage = () => {
   }
 
   if (isBlocked || isDeleted) {
-    console.log(FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_BLOCKED_OR_DELETED);
     return <TenantRestrictedView />;
   }
 
+  const isAdmin = user?.role === 'ADMIN';
+  const isExpired = endDate && new Date(endDate) < new Date();
+
+  if (status === 'CANCELLED' && !isAdmin && user?.role !== 'SUPER_ADMIN') {
+    return <TenantRestrictedView reason="expired" />;
+  }
+
+  const isRestricted =
+    status === 'EXPIRED' ||
+    !id ||
+    (status === 'ACTIVE' && isExpired) ||
+    (status === 'CANCELLED' && isExpired);
+
+  if (isRestricted && user?.role !== 'SUPER_ADMIN') {
+    return <TenantRestrictedView reason="expired" />;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <SubscriptionBanner />
       <Navbar />
 
       <div className="p-8 max-w-6xl mx-auto">
@@ -220,51 +177,82 @@ const HomePage = () => {
           <div className="bg-white p-6 rounded-xl shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold">Subscription</h3>
-              <span
-                className={`text-xs px-2 py-1 rounded ${status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}
-              >
-                {status || 'INACTIVE'}
-              </span>
+              <div className="flex items-center gap-2">
+                {isTrialActive && (
+                  <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-600">
+                    Free Trial
+                  </span>
+                )}
+                <span
+                  className={`text-xs px-2 py-1 rounded ${status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}
+                >
+                  {status || 'INACTIVE'}
+                </span>
+              </div>
             </div>
+
+            {isTrialActive && endDate && (
+              <div className="mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-700">
+                Your free trial ends on{' '}
+                <strong>
+                  {new Date(endDate).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </strong>
+                . Upgrade before it expires to avoid interruption.
+              </div>
+            )}
 
             <div className="text-sm text-gray-500 space-y-2">
               <p>
-                Plan:{' '}
-                {plan
-                  ? `${plan.charAt(0) + plan.slice(1).toLowerCase()} Subscription`
-                  : 'No Active Plan'}
+                Plan: {plan ? `${plan.name} Subscription` : 'No Active Plan'}
               </p>
               <p>
                 Billing:{' '}
-                {plan === 'PRO'
-                  ? '₹4,999 / month'
-                  : plan === 'FREE'
-                    ? '₹0 / month'
-                    : 'Contact Sales'}
-              </p>
-              <p>
-                Next Billing:{' '}
-                {endDate
-                  ? new Date(endDate).toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    })
+                {plan
+                  ? plan.price === 0
+                    ? 'Free Trial'
+                    : `${plan.currency} ${plan.price.toLocaleString()} / ${plan.durationDays ? `${plan.durationDays} days` : 'lifetime'}`
                   : 'N/A'}
               </p>
+              {!isTrialPlan && plan?.durationDays && (
+                <p>
+                  Next Billing:{' '}
+                  {endDate
+                    ? new Date(endDate).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                    : 'N/A'}
+                </p>
+              )}
             </div>
 
-            <button
-              onClick={handleCancelSubscription}
-              disabled={!id || !status || toggling}
-              className="text-red-500 text-sm mt-4 hover:cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {toggling
-                ? 'Updating...'
-                : status === 'ACTIVE'
-                  ? 'Cancel Subscription'
-                  : 'Reactivate Subscription'}
-            </button>
+            <div className="mt-4 flex flex-col gap-2">
+              {isTrialActive && (
+                <Button
+                  variant="primary"
+                  className="w-full hover:opacity-90 transition-all font-semibold"
+                  onClick={() => navigate('/plans?mode=upgrade')}
+                >
+                  Upgrade to Pro
+                </Button>
+              )}
+              <button
+                onClick={handleCancelSubscription}
+                disabled={!id || !status || toggling}
+                className="text-red-500 text-sm hover:cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left"
+              >
+                {toggling
+                  ? 'Updating...'
+                  : status === 'ACTIVE'
+                    ? 'Cancel Subscription'
+                    : 'Reactivate Subscription'}
+              </button>
+            </div>
           </div>
 
           {/* Next Steps */}

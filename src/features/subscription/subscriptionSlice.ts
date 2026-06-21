@@ -1,11 +1,12 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { SubscriptionResponse, SubscriptionType } from "./types";
-import { getSubscription, toggleSubscriptionStatus } from "./subscriptionThunk";
-import type { ApiResponse } from "@/shared/types/apiResponse";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { SubscriptionResponse, SubscriptionType } from './types';
+import { getSubscription, toggleSubscriptionStatus } from './subscriptionThunk';
+import type { ApiResponse } from '@/shared/types/apiResponse';
 
 const initialState: SubscriptionType = {
   id: null,
   tenantId: null,
+  planId: null,
   plan: null,
   status: null,
   startDate: null,
@@ -13,12 +14,13 @@ const initialState: SubscriptionType = {
   trialUsed: false,
   razorpaySubscriptionId: null,
   loading: false,
+  initialized: false,
   toggling: false,
   error: null,
 };
 
 const subscriptionSlice = createSlice({
-  name: "subscription",
+  name: 'subscription',
   initialState,
   reducers: {
     clearSubscription: (state) => {
@@ -33,37 +35,51 @@ const subscriptionSlice = createSlice({
       })
       .addCase(
         getSubscription.fulfilled,
-        (state, action: PayloadAction<ApiResponse<SubscriptionResponse> | null>) => {
+        (
+          state,
+          action: PayloadAction<ApiResponse<SubscriptionResponse> | null>,
+        ) => {
           state.loading = false;
+          state.initialized = true;
           if (!action.payload || !action.payload.data) {
             state.id = null;
             state.tenantId = null;
+            state.planId = null;
             state.plan = null;
             state.status = null;
             state.startDate = null;
             state.endDate = null;
-            state.trialUsed = false;
             state.razorpaySubscriptionId = null;
             return;
           }
 
-          const { id, tenantId, plan, status, startDate, endDate, trialUsed, razorpaySubscriptionId } = action.payload.data;
+          const {
+            id,
+            tenantId,
+            planId,
+            plan,
+            status,
+            startDate,
+            endDate,
+            trialUsed,
+            razorpaySubscriptionId,
+          } = action.payload.data;
           state.id = id;
           state.tenantId = tenantId;
-          state.plan = plan;
+          state.planId = planId;
+          state.plan = plan || null;
           state.status = status;
           state.startDate = startDate;
           state.endDate = endDate;
           state.trialUsed = trialUsed;
           state.razorpaySubscriptionId = razorpaySubscriptionId;
-        }
+        },
       )
       .addCase(getSubscription.rejected, (state, action) => {
         state.loading = false;
+        state.initialized = true;
         state.error = action.payload as string;
       })
-
-
 
       .addCase(toggleSubscriptionStatus.pending, (state) => {
         state.toggling = true;
@@ -71,20 +87,32 @@ const subscriptionSlice = createSlice({
       })
       .addCase(
         toggleSubscriptionStatus.fulfilled,
-        (state, action: PayloadAction<ApiResponse<SubscriptionResponse> | null>) => {
+        (
+          state,
+          action: PayloadAction<ApiResponse<SubscriptionResponse> | null>,
+        ) => {
           state.toggling = false;
           if (!action.payload || !action.payload.data) return;
 
-          const { id, tenantId, plan, status, startDate, endDate, trialUsed, razorpaySubscriptionId } = action.payload.data;
+          const {
+            id,
+            tenantId,
+            planId,
+            plan,
+            status,
+            startDate,
+            endDate,
+            razorpaySubscriptionId,
+          } = action.payload.data;
           state.id = id;
           state.tenantId = tenantId;
-          state.plan = plan;
+          state.planId = planId;
+          state.plan = plan || null;
           state.status = status;
           state.startDate = startDate;
           state.endDate = endDate;
-          state.trialUsed = trialUsed;
           state.razorpaySubscriptionId = razorpaySubscriptionId;
-        }
+        },
       )
       .addCase(toggleSubscriptionStatus.rejected, (state, action) => {
         state.toggling = false;

@@ -61,7 +61,7 @@ export const getTenant = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
-        return null; // ✅ expected case
+        return null;
       }
 
       return rejectWithValue(

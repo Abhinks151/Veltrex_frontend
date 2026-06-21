@@ -1,12 +1,15 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BuildingIcon } from "lucide-react";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BuildingIcon } from 'lucide-react';
 
-import { useAppSelector } from "@/app/store/hooks";
-import { tenantSchema, type tenantFormData } from "@/features/tenant/validators/tenant.schema";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import Error from "@/shared/components/custom/Error";
+import { useAppSelector } from '@/app/store/hooks';
+import {
+  tenantSchema,
+  type tenantFormData,
+} from '@/features/tenant/validators/tenant.schema';
+import { Button } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
+import Error from '@/shared/components/custom/Error';
 
 interface TenantStepProps {
   onNext: (data: tenantFormData) => Promise<void>;
@@ -25,7 +28,7 @@ const TenantStep = ({ onNext, isLoading, defaultName }: TenantStepProps) => {
   } = useForm<tenantFormData>({
     resolver: zodResolver(tenantSchema),
     defaultValues: {
-      name: defaultName || "",
+      name: defaultName || '',
     },
   });
 
@@ -40,7 +43,7 @@ const TenantStep = ({ onNext, isLoading, defaultName }: TenantStepProps) => {
           <Input
             placeholder="e.g. Acme Machining Pvt. Ltd."
             className="pl-10"
-            {...register("name")}
+            {...register('name')}
           />
         </div>
         {errors.name && <Error message={errors.name.message} />}
@@ -53,11 +56,10 @@ const TenantStep = ({ onNext, isLoading, defaultName }: TenantStepProps) => {
         className="w-full mt-2"
         disabled={loading}
       >
-        {loading ? (isLoading ? "Checking..." : "Creating…") : "Continue →"}
+        {loading ? (isLoading ? 'Checking...' : 'Creating…') : 'Continue →'}
       </Button>
     </form>
   );
 };
-
 
 export default TenantStep;

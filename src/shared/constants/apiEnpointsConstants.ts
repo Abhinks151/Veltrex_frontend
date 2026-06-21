@@ -17,12 +17,15 @@ export const API_ENDPOINTS = {
     TENANTS: '/super-admin/tenants',
     USERS: '/super-admin/users',
     TOGGLE_USER_BLOCK: (id: string) => `/super-admin/users/${id}/toggle-block`,
-
     TOGGLE_TENANT_BLOCK: (id: string) =>
       `/super-admin/tenants/${id}/toggle-block`,
-
     UPDATE_TENANT_NAME: (id: string) =>
       `/super-admin/tenants/${id}/update-name`,
+    PLANS: '/super-admin/plans',
+    CREATE_PLAN: '/super-admin/plans',
+    UPDATE_PLAN: (id: string) => `/super-admin/plans/${id}`,
+    TOGGLE_PLAN_BLOCK: (id: string) => `/super-admin/plans/${id}/toggle-block`,
+    DELETE_PLAN: (id: string) => `/super-admin/plans/${id}`,
   },
 
   TENANT: {
@@ -57,5 +60,26 @@ export const API_ENDPOINTS = {
     EDIT: (id: string) => `/fixture/edit/${id}`,
     BLOCK: (id: string) => `/fixture/block/${id}`,
     DELETE: (id: string) => `/fixture/delete/${id}`,
+  },
+  RAW_MATERIAL: {
+    CREATE: '/raw-material/create',
+    LIST: '/raw-material/list',
+    ACTIVE: '/raw-material/active',
+    EDIT: (id: string) => `/raw-material/edit/${id}`,
+    BLOCK: (id: string) => `/raw-material/block/${id}`,
+    DELETE: (id: string) => `/raw-material/delete/${id}`,
+  },
+  JOB: {
+    CREATE: '/job/create',
+    LIST: '/job/list',
+    EDIT: (id: string) => `/job/edit/${id}`,
+    DELETE: (id: string) => `/job/delete/${id}`,
+  },
+  PART: {
+    CREATE: '/part/create',
+    LIST: '/part/list',
+    ACTIVE: '/part/active',
+    EDIT: (id: string) => `/part/edit/${id}`,
+    DELETE: (id: string) => `/part/delete/${id}`,
   },
 };

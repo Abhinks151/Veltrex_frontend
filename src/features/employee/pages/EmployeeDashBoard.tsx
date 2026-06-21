@@ -178,6 +178,12 @@ const EmployeeDashBoard = () => {
         try {
           await dispatch(deleteEmployee(id)).unwrap();
           notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_DELETED);
+
+          if (employees.length === 1 && currentPage > 0) {
+            setCurrentPage((prev) => prev - 1);
+          } else {
+            loadData();
+          }
         } catch (error) {
           const errorMessage =
             (error as { message?: string })?.message || (error as string);
@@ -185,7 +191,13 @@ const EmployeeDashBoard = () => {
         }
       }
     },
-    [dispatch, swalWithBootstrapButtons],
+    [
+      dispatch,
+      swalWithBootstrapButtons,
+      employees.length,
+      currentPage,
+      loadData,
+    ],
   );
 
   const columns: ColumnDef<Employee, unknown>[] = useMemo(

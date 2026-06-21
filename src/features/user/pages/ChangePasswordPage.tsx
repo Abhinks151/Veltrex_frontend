@@ -1,37 +1,44 @@
-import { useState } from "react";
-import { notifySuccess, notifyError } from "@/shared/utils/toasterUtils";
-import { Button } from "@/shared/components/ui/button";
-import Navbar from "@/shared/components/custom/Navbar";
-import { profileService } from "@/services/profileService";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { notifySuccess, notifyError } from '@/shared/utils/toasterUtils';
+import { Button } from '@/shared/components/ui/button';
+import Navbar from '@/shared/components/custom/Navbar';
+import { profileService } from '@/services/profileService';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ChangePasswordPage = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
   const navigate = useNavigate();
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      notifyError("Passwords do not match");
+      notifyError('Passwords do not match');
       return;
     }
 
     if (newPassword.length < 8) {
-      notifyError("Password must be at least 8 characters long");
+      notifyError('Password must be at least 8 characters long');
       return;
     }
 
     try {
       setIsUpdating(true);
-      await profileService.changePassword({ currentPassword, newPassword, confirmPassword });
-      notifySuccess("Password changed successfully");
-      navigate("/profile");
+      await profileService.changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
+      notifySuccess('Password changed successfully');
+      navigate('/profile');
     } catch (error: unknown) {
-      notifyError((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to change password");
+      notifyError(
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || 'Failed to change password',
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -45,11 +52,13 @@ const ChangePasswordPage = () => {
         <div className="max-w-xl w-full">
           <header className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Security</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                Security
+              </h1>
               <p className="text-gray-500">Update your account password</p>
             </div>
             <button
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate('/profile')}
               className="p-3 bg-white rounded-2xl shadow-sm border border-gray-100 text-gray-400 hover:text-indigo-600 transition-colors"
             >
               <ArrowLeft size={20} />
@@ -112,7 +121,7 @@ const ChangePasswordPage = () => {
                   disabled={isUpdating}
                   className="w-full rounded-2xl h-14 font-bold shadow-lg shadow-indigo-200 mt-4"
                 >
-                  {isUpdating ? "Updating..." : "Update Password"}
+                  {isUpdating ? 'Updating...' : 'Update Password'}
                 </Button>
               </div>
             </div>

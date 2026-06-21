@@ -3,12 +3,12 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '@/shared/components/custom/DataTable';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
-  fetchFixtures,
-  createFixture,
-  updateFixture,
-  toggleFixtureBlock,
-  deleteFixture,
-} from '../fixtureThunk';
+  fetchRawMaterials,
+  createRawMaterial,
+  updateRawMaterial,
+  toggleRawMaterialBlock,
+  deleteRawMaterial,
+} from '../rawMaterialThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { useDebounce } from '@/shared/hooks/use-debounce';
@@ -17,16 +17,18 @@ import { Input } from '@/shared/components/ui/input';
 import { Button, buttonVariants } from '@/shared/components/ui/button';
 import { Plus, Search, RefreshCcw } from 'lucide-react';
 import ReusableModal from '@/shared/components/custom/ReusableModal';
-import FixtureForm from '../components/FixtureForm';
-import type { Fixture, FixtureRequest } from '../types';
-import type { FixtureFormData } from '../validators/fixtureValidator';
+import RawMaterialForm from '../components/RawMaterialForm';
+import type { RawMaterial, RawMaterialRequest } from '../types';
+import type { RawMaterialFormData } from '../validators/rawMaterialValidator';
 import Swal from 'sweetalert2';
 
-const columnHelper = createColumnHelper<Fixture>();
+const columnHelper = createColumnHelper<RawMaterial>();
 
-const FixtureDashBoard = () => {
+const RawMaterialDashBoard = () => {
   const dispatch = useAppDispatch();
-  const { fixtures, total, loading } = useAppSelector((state) => state.fixture);
+  const { rawMaterials, total, loading } = useAppSelector(
+    (state) => state.rawMaterial,
+  );
 
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
@@ -34,7 +36,8 @@ const FixtureDashBoard = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
+  const [selectedRawMaterial, setSelectedRawMaterial] =
+    useState<RawMaterial | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const swalWithBootstrapButtons = Swal.mixin({
@@ -54,7 +57,7 @@ const FixtureDashBoard = () => {
 
   const loadData = useCallback(() => {
     dispatch(
-      fetchFixtures({
+      fetchRawMaterials({
         page: currentPage + 1,
         limit: PAGINATION_LIMIT,
         search: debouncedSearch,
@@ -66,71 +69,77 @@ const FixtureDashBoard = () => {
     loadData();
   }, [loadData]);
 
-  // Reset to page 0 on search change
   useEffect(() => {
     setCurrentPage(0);
   }, [debouncedSearch]);
 
-  const handleAddFixture = async (data: FixtureFormData) => {
+  const handleAddRawMaterial = async (data: RawMaterialFormData) => {
     try {
       setIsSubmitting(true);
       const result = await dispatch(
-        createFixture(data as FixtureRequest),
+        createRawMaterial(data as RawMaterialRequest),
       ).unwrap();
       if (result.success) {
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.FIXTURE_CREATED);
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.RAW_MATERIAL_CREATED ||
+            'Raw material created successfully',
+        );
         setIsAddModalOpen(false);
       }
     } catch (error) {
       const errorMessage =
         (error as { message?: string })?.message || (error as string);
-      notifyError(
-        errorMessage ||
-          FRONTEND_MESSAGE_CONSTANTS.ERROR.FIXTURE_CREATION_FAILED,
-      );
+      notifyError(errorMessage || 'Failed to create raw material');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleEditFixture = async (data: FixtureFormData) => {
-    if (!selectedFixture) return;
+  const handleEditRawMaterial = async (data: RawMaterialFormData) => {
+    if (!selectedRawMaterial) return;
     try {
       setIsSubmitting(true);
       const result = await dispatch(
-        updateFixture({ id: selectedFixture.id, data: data as FixtureRequest }),
+        updateRawMaterial({
+          id: selectedRawMaterial.id,
+          data: data as RawMaterialRequest,
+        }),
       ).unwrap();
       if (result.success) {
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.FIXTURE_UPDATED);
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.RAW_MATERIAL_UPDATED ||
+            'Raw material updated successfully',
+        );
         setIsEditModalOpen(false);
-        setSelectedFixture(null);
+        setSelectedRawMaterial(null);
       }
     } catch (error) {
       const errorMessage =
         (error as { message?: string })?.message || (error as string);
-      notifyError(
-        errorMessage || FRONTEND_MESSAGE_CONSTANTS.ERROR.FIXTURE_UPDATE_FAILED,
-      );
+      notifyError(errorMessage || 'Failed to update raw material');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleToggleBlock = async (fixture: Fixture) => {
+  const handleToggleBlock = async (rm: RawMaterial) => {
     const result = await swalWithBootstrapButtons.fire({
       title: 'Are you sure?',
-      text: `Do you want to ${fixture.isBlocked ? 'Unblock' : 'Block'} this fixture?`,
+      text: `Do you want to ${rm.isBlocked ? 'Unblock' : 'Block'} this raw material?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: `Yes, ${fixture.isBlocked ? 'Unblock' : 'Block'} its!`,
+      confirmButtonText: `Yes, ${rm.isBlocked ? 'Unblock' : 'Block'} it!`,
       cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     });
 
     if (result.isConfirmed) {
       try {
-        await dispatch(toggleFixtureBlock(fixture.id)).unwrap();
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.FIXTURE_BLOCK_TOGGLED);
+        await dispatch(toggleRawMaterialBlock(rm.id)).unwrap();
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.RAW_MATERIAL_BLOCK_TOGGLED ||
+            'Raw material block status updated',
+        );
       } catch (error) {
         const errorMessage =
           (error as { message?: string })?.message || (error as string);
@@ -142,7 +151,7 @@ const FixtureDashBoard = () => {
   const handleDelete = async (id: string) => {
     const result = await swalWithBootstrapButtons.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this fixture!",
+      text: "You won't be able to revert this raw material!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
@@ -152,10 +161,13 @@ const FixtureDashBoard = () => {
 
     if (result.isConfirmed) {
       try {
-        await dispatch(deleteFixture(id)).unwrap();
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.FIXTURE_DELETED);
+        await dispatch(deleteRawMaterial(id)).unwrap();
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.RAW_MATERIAL_DELETED ||
+            'Raw material deleted successfully',
+        );
 
-        if (fixtures.length === 1 && currentPage > 0) {
+        if (rawMaterials.length === 1 && currentPage > 0) {
           setCurrentPage((prev) => prev - 1);
         } else {
           loadData();
@@ -163,7 +175,7 @@ const FixtureDashBoard = () => {
       } catch (error) {
         const errorMessage =
           (error as { message?: string })?.message || (error as string);
-        notifyError(errorMessage || 'Failed to delete fixture');
+        notifyError(errorMessage || 'Failed to delete raw material');
       }
     }
   };
@@ -171,21 +183,22 @@ const FixtureDashBoard = () => {
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
-        header: 'Fixture Name',
+        header: 'Material Name',
         cell: (info) => (
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900">
               {info.getValue()}
             </span>
+            <span className="text-xs text-gray-500 uppercase tracking-wider">
+              {info.row.original.material}
+            </span>
           </div>
         ),
       }),
-      columnHelper.accessor('type', {
-        header: 'Type',
+      columnHelper.accessor('minQty', {
+        header: 'Min Qty',
         cell: (info) => (
-          <span className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium uppercase">
-            {info.getValue()}
-          </span>
+          <span className="text-gray-700 font-medium">{info.getValue()}</span>
         ),
       }),
       columnHelper.accessor('dimensions', {
@@ -220,14 +233,14 @@ const FixtureDashBoard = () => {
         id: 'actions',
         header: 'Actions',
         cell: (info) => {
-          const fixture = info.row.original;
+          const rm = info.row.original;
           return (
             <div className="flex items-center gap-2">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => {
-                  setSelectedFixture(fixture);
+                  setSelectedRawMaterial(rm);
                   setIsEditModalOpen(true);
                 }}
                 className="h-8 px-3 text-xs font-semibold"
@@ -237,15 +250,15 @@ const FixtureDashBoard = () => {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleToggleBlock(fixture)}
-                className={`h-8 px-3 text-xs font-semibold ${fixture.isBlocked ? 'text-green-600' : 'text-orange-600'}`}
+                onClick={() => handleToggleBlock(rm)}
+                className={`h-8 px-3 text-xs font-semibold ${rm.isBlocked ? 'text-green-600' : 'text-orange-600'}`}
               >
-                {fixture.isBlocked ? 'Unblock' : 'Block'}
+                {rm.isBlocked ? 'Unblock' : 'Block'}
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleDelete(fixture.id)}
+                onClick={() => handleDelete(rm.id)}
                 className="h-8 px-3 text-xs font-semibold text-red-600"
               >
                 Delete
@@ -264,10 +277,10 @@ const FixtureDashBoard = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Fixture Management
+            Raw Material Management
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Configure and manage workholding fixtures
+            Manage inventory and specifications for raw materials
           </p>
         </div>
         <Button
@@ -276,7 +289,7 @@ const FixtureDashBoard = () => {
           className="flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
         >
           <Plus size={18} />
-          <span>Add Fixture</span>
+          <span>Add Material</span>
         </Button>
       </div>
 
@@ -289,7 +302,7 @@ const FixtureDashBoard = () => {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search fixtures..."
+            placeholder="Search materials..."
             className="pl-10"
           />
         </div>
@@ -314,8 +327,8 @@ const FixtureDashBoard = () => {
         )}
         <DataTable
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          columns={columns as unknown as any[]}
-          data={fixtures}
+          columns={columns as any[]}
+          data={rawMaterials}
           manualPagination
           pageCount={Math.ceil(total / PAGINATION_LIMIT)}
           pageIndex={currentPage}
@@ -327,10 +340,13 @@ const FixtureDashBoard = () => {
       <ReusableModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Add New Fixture"
+        title="Add New Raw Material"
         maxWidth="max-w-2xl"
       >
-        <FixtureForm onSubmit={handleAddFixture} loading={isSubmitting} />
+        <RawMaterialForm
+          onSubmit={handleAddRawMaterial}
+          loading={isSubmitting}
+        />
       </ReusableModal>
 
       {/* Edit Modal */}
@@ -338,19 +354,19 @@ const FixtureDashBoard = () => {
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
-          setSelectedFixture(null);
+          setSelectedRawMaterial(null);
         }}
-        title="Edit Fixture"
+        title="Edit Raw Material"
         maxWidth="max-w-2xl"
       >
-        {selectedFixture && (
-          <FixtureForm
+        {selectedRawMaterial && (
+          <RawMaterialForm
             initialData={
-              selectedFixture
-                ? (selectedFixture as unknown as FixtureFormData)
+              selectedRawMaterial
+                ? (selectedRawMaterial as unknown as RawMaterialFormData)
                 : undefined
             }
-            onSubmit={handleEditFixture}
+            onSubmit={handleEditRawMaterial}
             loading={isSubmitting}
           />
         )}
@@ -359,4 +375,4 @@ const FixtureDashBoard = () => {
   );
 };
 
-export default FixtureDashBoard;
+export default RawMaterialDashBoard;

@@ -4,19 +4,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
 import {
-  fixtureSchema,
-  type FixtureFormData,
-} from '../validators/fixtureValidator';
-import { FixtureType } from '@/shared/types/fixture-type.enum';
-import { DimensionUnit } from '../types/dimensionConstants';
+  rawMaterialSchema,
+  type RawMaterialFormData,
+} from '../validators/rawMaterialValidator';
+import { DimensionUnit } from '@/features/fixture/types/dimensionConstants';
 
-interface FixtureFormProps {
-  initialData?: Partial<FixtureFormData>;
-  onSubmit: (data: FixtureFormData) => void;
+interface RawMaterialFormProps {
+  initialData?: Partial<RawMaterialFormData>;
+  onSubmit: (data: RawMaterialFormData) => void;
   loading?: boolean;
 }
 
-const FixtureForm: React.FC<FixtureFormProps> = ({
+const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
   initialData,
   onSubmit,
   loading = false,
@@ -25,11 +24,12 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FixtureFormData>({
-    resolver: zodResolver(fixtureSchema) as Resolver<FixtureFormData>,
-    defaultValues: (initialData as FixtureFormData) || {
+  } = useForm<RawMaterialFormData>({
+    resolver: zodResolver(rawMaterialSchema) as Resolver<RawMaterialFormData>,
+    defaultValues: (initialData as RawMaterialFormData) || {
       name: '',
-      type: FixtureType.MILL,
+      material: '',
+      minQty: 0,
       dimensions: {
         width: 0,
         length: 0,
@@ -48,9 +48,9 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
         {/* Name */}
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">
-            Fixture Name
+            Raw Material Name
           </label>
-          <Input {...register('name')} placeholder="e.g. Vise Plate A" />
+          <Input {...register('name')} placeholder="e.g. Aluminum 6061 Block" />
           {errors.name && (
             <p className="text-xs text-red-500">
               {errors.name.message as string}
@@ -58,21 +58,52 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
           )}
         </div>
 
-        {/* Type */}
+        {/* Material */}
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">
-            Fixture Type
+            Material Specification
+          </label>
+          <Input {...register('material')} placeholder="e.g. Al6061-T6" />
+          {errors.material && (
+            <p className="text-xs text-red-500">
+              {errors.material.message as string}
+            </p>
+          )}
+        </div>
+
+        {/* Min Qty */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">
+            Minimum Stock Level
+          </label>
+          <Input
+            type="number"
+            {...register('minQty', { valueAsNumber: true })}
+            placeholder="e.g. 10"
+          />
+          {errors.minQty && (
+            <p className="text-xs text-red-500">
+              {errors.minQty.message as string}
+            </p>
+          )}
+        </div>
+
+        {/* Unit */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">
+            Dimension Unit
           </label>
           <select
-            {...register('type')}
+            {...register('dimensions.unit')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
           >
-            <option value={FixtureType.MILL}>Mill</option>
-            <option value={FixtureType.LATHE}>Lathe</option>
+            <option value={DimensionUnit.MM}>mm</option>
+            <option value={DimensionUnit.CM}>cm</option>
+            <option value={DimensionUnit.INCH}>in</option>
           </select>
-          {errors.type && (
+          {errors.dimensions?.unit && (
             <p className="text-xs text-red-500">
-              {errors.type.message as string}
+              {errors.dimensions.unit.message as string}
             </p>
           )}
         </div>
@@ -121,24 +152,6 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
             </p>
           )}
         </div>
-
-        {/* Unit */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">Unit</label>
-          <select
-            {...register('dimensions.unit')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={DimensionUnit.MM}>mm</option>
-            <option value={DimensionUnit.CM}>cm</option>
-            <option value={DimensionUnit.INCH}>in</option>
-          </select>
-          {errors.dimensions?.unit && (
-            <p className="text-xs text-red-500">
-              {errors.dimensions.unit.message as string}
-            </p>
-          )}
-        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
@@ -148,11 +161,11 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
           disabled={loading}
           className="w-full md:w-auto px-10"
         >
-          {loading ? 'Saving...' : 'Save Fixture'}
+          {loading ? 'Saving...' : 'Save Raw Material'}
         </Button>
       </div>
     </form>
   );
 };
 
-export default FixtureForm;
+export default RawMaterialForm;
