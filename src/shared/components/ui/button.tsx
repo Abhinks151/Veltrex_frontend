@@ -57,61 +57,51 @@
 
 // export { Button, buttonVariants }
 
-import { Button as ButtonPrimitive } from "@base-ui/react/button";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/shared/utils/utils";
+import { Button as ButtonPrimitive } from '@base-ui/react/button';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/shared/utils/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all outline-none disabled:pointer-events-none disabled:opacity-50 hover:cursor-pointer",
+  'inline-flex items-center justify-center whitespace-nowrap font-medium transition-all outline-none disabled:pointer-events-none disabled:opacity-50 hover:cursor-pointer',
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-primary-foreground hover:bg-primary/80",
+        default: 'bg-primary text-primary-foreground hover:bg-primary/80',
 
-        primary:
-          "bg-[#3B2E8C] text-white hover:bg-[#32267a] shadow-lg",
+        primary: 'bg-[#3B2E8C] text-white hover:bg-[#32267a] shadow-lg',
 
-        outline:
-          "border border-border bg-background hover:bg-muted",
+        outline: 'border border-border bg-background hover:bg-muted',
 
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
 
-        ghost:
-          "hover:bg-muted hover:text-foreground",
+        ghost: 'hover:bg-muted hover:text-foreground',
 
-        destructive:
-          "bg-red-600 text-white hover:bg-red-700",
+        destructive: 'bg-red-600 text-white hover:bg-red-700',
       },
 
       size: {
-        default: "h-8 px-3 text-sm rounded-md",
-
-        sm: "h-9 px-4 text-sm rounded-md",
-
-        lg: "h-10 px-6 text-base rounded-xl",
-
-        xl: "h-12 px-8 text-lg rounded-xl font-semibold",
+        default: 'h-8 px-3 text-sm rounded-md',
+        sm: 'h-9 px-4 text-sm rounded-md',
+        lg: 'h-10 px-6 text-base rounded-xl',
+        xl: 'h-12 px-8 text-lg rounded-xl font-semibold',
+        icon: 'size-8 flex items-center justify-center p-0 rounded-md',
+        'icon-xs': 'size-6 flex items-center justify-center p-0 rounded-sm',
+        'icon-sm': 'size-7 flex items-center justify-center p-0 rounded-md',
+        'icon-lg': 'size-10 flex items-center justify-center p-0 rounded-xl',
       },
     },
 
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
-  }
+  },
 );
 
-type ButtonProps = ButtonPrimitive.Props &
-  VariantProps<typeof buttonVariants>;
+type ButtonProps = ButtonPrimitive.Props & VariantProps<typeof buttonVariants>;
 
-function Button({
-  className,
-  variant,
-  size,
-  ...props
-}: ButtonProps) {
+function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
     <ButtonPrimitive
       className={cn(buttonVariants({ variant, size, className }))}

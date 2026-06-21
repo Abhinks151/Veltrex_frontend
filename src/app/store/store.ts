@@ -7,6 +7,7 @@ import FixtureReducer from '@/features/fixture/fixtureSlice';
 import RawMaterialReducer from '@/features/raw-material/rawMaterialSlice';
 import EmployeeReducer from '@/features/employee/employeeSlice';
 import JobReducer from '@/features/job/jobSlice';
+import PartReducer from '@/features/part/partSlice';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     rawMaterial: RawMaterialReducer,
     employee: EmployeeReducer,
     job: JobReducer,
+    part: PartReducer,
   },
 });
 

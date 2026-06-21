@@ -23,6 +23,10 @@ export interface Job {
   createdByUserId: string;
   assignedToUserId: string | null;
   isDeleted: boolean;
+  part?: {
+    name: string;
+    partNumber: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
