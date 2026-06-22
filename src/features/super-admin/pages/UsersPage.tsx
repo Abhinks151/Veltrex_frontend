@@ -9,6 +9,7 @@ import { Button } from '@/shared/components/ui/button';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { DEBOUNCE_DELAY, PAGINATION_LIMIT } from '@/shared/constants/constant';
+import UserDetailsModal from '../components/UserDetailsModal';
 
 const columnHelper = createColumnHelper<User>();
 
@@ -35,7 +36,7 @@ const UsersPage = () => {
         search: debouncedSearch,
         status: statusFilter,
       });
-
+      console.log(res);
       const { users, total } = res.data?.data || { users: [], total: 0 };
       setData(users);
       setTotalCount(total);
@@ -45,6 +46,15 @@ const UsersPage = () => {
       setLoading(false);
     }
   }, [currentPage, debouncedSearch, statusFilter]);
+
+  // View user details
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+
+  const handleView = (user: User) => {
+    setSelectedUser(user);
+    setIsViewOpen(true);
+  };
 
   useEffect(() => {
     fetchData();
@@ -114,16 +124,21 @@ const UsersPage = () => {
           const user = row.original;
           return (
             <div className="flex gap-2">
-              <button
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => handleView(user)}
+              >
+                View
+              </Button>
+
+              <Button
+                size="sm"
+                variant={user.isBlocked ? 'secondary' : 'destructive'}
                 onClick={() => handleToggleBlock(user.id, user.isBlocked)}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                  user.isBlocked
-                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-                    : 'bg-red-50 text-red-700 hover:bg-red-100'
-                }`}
               >
                 {user.isBlocked ? 'Unblock' : 'Block'}
-              </button>
+              </Button>
             </div>
           );
         },
@@ -181,6 +196,11 @@ const UsersPage = () => {
           onPageChange={setCurrentPage}
         />
       </div>
+      <UserDetailsModal
+        isOpen={isViewOpen}
+        onClose={() => setIsViewOpen(false)}
+        user={selectedUser}
+      />
     </div>
   );
 };
