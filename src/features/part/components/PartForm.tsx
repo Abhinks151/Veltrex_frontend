@@ -81,6 +81,24 @@ const PartForm: React.FC<PartFormProps> = ({
     loadOptions();
   }, []);
 
+  useEffect(() => {
+    if (initialData?.machineId && machines.length > 0) {
+      setValue('machineId', initialData.machineId);
+    }
+  }, [machines, initialData?.machineId, setValue]);
+
+  useEffect(() => {
+    if (initialData?.fixtureId && fixtures.length > 0) {
+      setValue('fixtureId', initialData.fixtureId);
+    }
+  }, [fixtures, initialData?.fixtureId, setValue]);
+
+  useEffect(() => {
+    if (initialData?.rawMaterialId && materials.length > 0) {
+      setValue('rawMaterialId', initialData.rawMaterialId);
+    }
+  }, [materials, initialData?.rawMaterialId, setValue]);
+
   const [setupSheetFile, setSetupSheetFile] = useState<File | null>(null);
   const [engineeringDrawingFile, setEngDrawingFile] = useState<File | null>(
     null,
