@@ -59,6 +59,18 @@ const JobForm: React.FC<JobFormProps> = ({
     dispatch(fetchEmployees({ page: 1, limit: 100 }));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (initialData?.partId && parts.length > 0) {
+      setValue('partId', initialData.partId);
+    }
+  }, [parts, initialData?.partId, setValue]);
+
+  useEffect(() => {
+    if (initialData?.assignedToUserId && employees.length > 0) {
+      setValue('assignedToUserId', initialData.assignedToUserId || '');
+    }
+  }, [employees, initialData?.assignedToUserId, setValue]);
+
   const eligibleAssignees = employees.filter(
     (emp) =>
       emp.role === UserRole.MACHINIST || emp.role === UserRole.MAINTENANCE,
