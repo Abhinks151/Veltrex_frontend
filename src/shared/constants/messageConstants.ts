@@ -79,9 +79,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FAILED_UPDATE_PLAN: 'Failed to update plan',
     FAILED_DELETE_PLAN: 'Failed to delete plan',
     SUBSCRIPTION_EXPIRED:
-      'Your subscription has expired. Please renew to continue.',
+      'Access blocked: Your subscription has expired. Please unblock to continue.',
     SUBSCRIPTION_CANCELLED:
-      'Your subscription has been cancelled. Please renew to restore platform access.',
+      'Access blocked: Your access has been manually blocked. Please unblock to restore platform access.',
     SUBSCRIPTION_INACTIVE:
       'No active subscription found for your organization.',
     PAYMENT_FAILED_REASON: 'Payment failed: {reason}. Please try again.',

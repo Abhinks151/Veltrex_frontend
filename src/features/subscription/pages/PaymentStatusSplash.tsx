@@ -53,8 +53,8 @@ const PaymentStatusSplash = () => {
               </div>
               <h1 className="text-3xl font-extrabold mb-2">Welcome Aboard!</h1>
               <p className="text-muted-foreground mb-8 text-lg">
-                Your subscription is now active. All platform features have been
-                unlocked.
+                Your platform access is now unblocked. All platform features
+                have been unlocked.
               </p>
               <Button
                 size="lg"
@@ -78,7 +78,7 @@ const PaymentStatusSplash = () => {
                   size="lg"
                   variant="primary"
                   className="w-full h-12 text-lg"
-                  onClick={() => navigate('/plans')}
+                  onClick={() => navigate('/plans?mode=upgrade')}
                 >
                   <RefreshCcw className="mr-2 h-5 w-5" />
                   Try Again
@@ -97,7 +97,7 @@ const PaymentStatusSplash = () => {
                 )}
 
                 <button
-                  onClick={() => navigate('/plans')}
+                  onClick={() => navigate('/plans?mode=upgrade')}
                   className="text-sm text-muted-foreground hover:text-primary transition-colors block w-full text-center"
                 >
                   Choose a different plan

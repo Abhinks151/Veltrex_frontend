@@ -67,7 +67,7 @@ const AccessRestrictedPage = () => {
           <div className="mt-12 pt-12 border-t border-border">
             <p className="text-sm text-muted-foreground">
               {isAdmin
-                ? "Once you've renewed your subscription, all platform features will be instantly unlocked."
+                ? "Once you've unblocked your access, all platform features will be instantly unlocked."
                 : 'Your organization administrator has been notified. Please reach out to them for updates.'}
             </p>
           </div>

@@ -3,6 +3,8 @@ import { OperationType, PartPriority } from '../types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
 export const partSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters'),
   partNumber: z.string().trim().min(1, 'Part number is required'),
@@ -26,14 +28,22 @@ export const partSchema = z.object({
     .or(z.literal('')),
   dimensions: z
     .object({
-      width: z.number().positive('Width must be positive'),
-      length: z.number().positive('Length must be positive'),
-      height: z.number().positive('Height must be positive'),
+      width: z.number().nonnegative('Width cannot be negative'),
+      length: z.number().nonnegative('Length cannot be negative'),
+      height: z.number().nonnegative('Height cannot be negative'),
       unit: z.string().min(1, 'Unit is required'),
     })
     .optional(),
-  cycleTime: z.string().optional(),
-  setupTime: z.string().optional(),
+  cycleTime: z
+    .string()
+    .regex(timeRegex, 'Format must be HH:MM:SS (e.g. 00:30:00)')
+    .optional()
+    .or(z.literal('')),
+  setupTime: z
+    .string()
+    .regex(timeRegex, 'Format must be HH:MM:SS (e.g. 00:15:00)')
+    .optional()
+    .or(z.literal('')),
   priority: z.nativeEnum(PartPriority).optional(),
   setupSheet: z
     .instanceof(File)

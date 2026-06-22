@@ -236,6 +236,9 @@ const PartForm: React.FC<PartFormProps> = ({
             Cycle Time
           </label>
           <Input {...register('cycleTime')} placeholder="e.g. 00:30:00" />
+          {errors.cycleTime && (
+            <p className="text-xs text-red-500">{errors.cycleTime.message}</p>
+          )}
         </div>
 
         <div className="space-y-1">
@@ -243,6 +246,9 @@ const PartForm: React.FC<PartFormProps> = ({
             Setup Time
           </label>
           <Input {...register('setupTime')} placeholder="e.g. 00:15:00" />
+          {errors.setupTime && (
+            <p className="text-xs text-red-500">{errors.setupTime.message}</p>
+          )}
         </div>
       </div>
 
@@ -259,6 +265,11 @@ const PartForm: React.FC<PartFormProps> = ({
               {...register('dimensions.width', { valueAsNumber: true })}
               placeholder="Width"
             />
+            {errors.dimensions?.width && (
+              <p className="text-[10px] text-red-500">
+                {errors.dimensions.width.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
             <label className="text-xs text-gray-500">Length</label>
@@ -267,6 +278,11 @@ const PartForm: React.FC<PartFormProps> = ({
               {...register('dimensions.length', { valueAsNumber: true })}
               placeholder="Length"
             />
+            {errors.dimensions?.length && (
+              <p className="text-[10px] text-red-500">
+                {errors.dimensions.length.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
             <label className="text-xs text-gray-500">Height</label>
@@ -275,6 +291,11 @@ const PartForm: React.FC<PartFormProps> = ({
               {...register('dimensions.height', { valueAsNumber: true })}
               placeholder="Height"
             />
+            {errors.dimensions?.height && (
+              <p className="text-[10px] text-red-500">
+                {errors.dimensions.height.message}
+              </p>
+            )}
           </div>
           <div className="space-y-1">
             <label className="text-xs text-gray-500">Unit</label>

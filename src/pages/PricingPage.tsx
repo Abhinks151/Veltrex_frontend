@@ -1,32 +1,32 @@
-import Navbar from "@/shared/components/custom/Navbar";
-import { Button } from "@/shared/components/ui/button";
-import { Link } from "react-router-dom";
+import Navbar from '@/shared/components/custom/Navbar';
+import { Button } from '@/shared/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const plans = [
   {
-    title: "Free Trial",
-    price: "₹0",
-    duration: "/30 days",
+    title: 'Free Trial',
+    price: '₹0',
+    duration: '/30 days',
     features: [
-      "Full access to all features",
-      "30 days risk-free trial",
-      "Email support",
+      'Full access to all features',
+      '30 days risk-free trial',
+      'Email support',
     ],
-    buttonText: "Start Free Trial",
+    buttonText: 'Start Free Trial',
     highlighted: false,
   },
   {
-    title: "Monthly Plan",
-    price: "₹4,999",
-    duration: "/month",
+    title: 'Monthly Plan',
+    price: '₹4,999',
+    duration: '/month',
     features: [
-      "Unlimited access to all features",
-      "Full CNC management tools",
-      "Real-time production tracking",
-      "Priority 24/7 technical support",
-      "Advanced analytics dashboard",
+      'Unlimited access to all features',
+      'Full CNC management tools',
+      'Real-time production tracking',
+      'Priority 24/7 technical support',
+      'Advanced analytics dashboard',
     ],
-    buttonText: "Subscribe Now",
+    buttonText: 'Subscribe Now',
     highlighted: true,
   },
 ];
@@ -50,10 +50,11 @@ const PricingPage = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`rounded-xl p-6 border ${plan.highlighted
-                ? "border-indigo-500 shadow-md bg-white"
-                : "bg-white"
-                }`}
+              className={`rounded-xl p-6 border ${
+                plan.highlighted
+                  ? 'border-indigo-500 shadow-md bg-white'
+                  : 'bg-white'
+              }`}
             >
               {plan.highlighted && (
                 <span className="text-xs bg-indigo-500 text-white px-3 py-1 rounded-full">
@@ -65,10 +66,7 @@ const PricingPage = () => {
 
               <div className="mt-2">
                 <span className="text-2xl font-bold">{plan.price}</span>
-                <span className="text-gray-500 text-sm">
-                  {" "}
-                  {plan.duration}
-                </span>
+                <span className="text-gray-500 text-sm"> {plan.duration}</span>
               </div>
 
               <ul className="mt-4 space-y-2 text-sm text-gray-600">
@@ -77,29 +75,27 @@ const PricingPage = () => {
                 ))}
               </ul>
 
-              {
-                plan.highlighted ? (
-                  <Link to={"/payment"}>
-                    <Button
-                      variant={"primary"}
-                      size={"lg"}
-                      className={`w-full mt-6`}
-                    >
-                      {plan.buttonText}
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to={"/home"}>
-                    <Button
-                      variant={"outline"}
-                      size={"lg"}
-                      className={`w-full mt-6`}
-                    >
-                      {plan.buttonText}
-                    </Button>
-                  </Link>
-                )
-              }
+              {plan.highlighted ? (
+                <Link to={'/payment'}>
+                  <Button
+                    variant={'primary'}
+                    size={'lg'}
+                    className={`w-full mt-6`}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </Link>
+              ) : (
+                <Link to={'/home'}>
+                  <Button
+                    variant={'outline'}
+                    size={'lg'}
+                    className={`w-full mt-6`}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </Link>
+              )}
             </div>
           ))}
         </div>
@@ -112,9 +108,10 @@ const PricingPage = () => {
 
           <div className="space-y-3">
             <details className="bg-white p-4 rounded-md border cursor-pointer">
-              <summary>Can I cancel anytime?</summary>
+              <summary>Can I block my access anytime?</summary>
               <p className="text-sm text-gray-500 mt-2">
-                Yes, you can cancel your subscription anytime.
+                Yes, you can block your platform access anytime from your
+                dashboard.
               </p>
             </details>
 

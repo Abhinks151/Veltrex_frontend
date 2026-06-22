@@ -15,8 +15,8 @@ const SubscriptionCancelledPage = () => {
       <Navbar />
       <div className="max-w-4xl mx-auto px-6 py-20">
         <div className="glass rounded-3xl p-12 text-center shadow-2xl animate-in fade-in zoom-in duration-500">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
-            Subscription Cancelled
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4 text-destructive">
+            Platform Access Blocked
           </h1>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
@@ -35,7 +35,7 @@ const SubscriptionCancelledPage = () => {
                   onClick={() => navigate('/home')}
                 >
                   <CreditCard className="mr-2 h-5 w-5" />
-                  Renew Subscription
+                  Go to Home
                 </Button>
                 <Button
                   size="lg"
@@ -63,7 +63,7 @@ const SubscriptionCancelledPage = () => {
           <div className="mt-12 pt-12 border-t border-border">
             <p className="text-sm text-muted-foreground">
               {isAdmin
-                ? 'Your organization data is safe, but platform access is restricted until a new plan is activated.'
+                ? 'Your organization data is safe, but platform access is restricted until you unblock your access by choosing a plan.'
                 : 'Your organization administrator has been notified. Please reach out to them for updates.'}
             </p>
           </div>

@@ -33,8 +33,8 @@ const SubscriptionBanner = () => {
         {isTrial ? <Sparkles size={16} /> : <Clock size={16} />}
         <span>
           {isTrial
-            ? `Free trial ending in ${daysLeft} days. Upgrade now to avoid service interruption.`
-            : `Subscription expires in ${daysLeft} days.`}
+            ? `Free trial ending in ${daysLeft} days. Unblock now to avoid platform access interruption.`
+            : `Platform access expires in ${daysLeft} days.`}
         </span>
       </div>
 
@@ -45,7 +45,7 @@ const SubscriptionBanner = () => {
           className="h-7 px-3 text-xs bg-white text-indigo-700 hover:bg-white/90"
           onClick={() => navigate('/home?tab=billing')}
         >
-          Upgrade Now
+          Get Full Access
         </Button>
       )}
 

@@ -47,7 +47,7 @@ const PaymentRetryPage = () => {
         amount,
         currency,
         name: 'Veltrex',
-        description: 'Complete Subscription Payment',
+        description: 'Complete Access Payment',
         order_id: orderId,
         handler: (response: RazorpayResponse) => {
           setIsVerifying(true);
@@ -109,8 +109,8 @@ const PaymentRetryPage = () => {
             Complete Payment
           </h1>
           <p className="text-gray-500 mb-8 text-sm">
-            You have a pending subscription payment. Please complete it to
-            unlock your organization's full features.
+            You have a pending payment. Please complete it to unblock your
+            organization's full features.
           </p>
 
           <Button
@@ -123,7 +123,7 @@ const PaymentRetryPage = () => {
           </Button>
 
           <button
-            onClick={() => navigate('/plans')}
+            onClick={() => navigate('/plans?mode=upgrade')}
             className="mt-4 text-gray-400 text-xs hover:text-indigo-600 transition-colors"
           >
             Choose a different plan instead

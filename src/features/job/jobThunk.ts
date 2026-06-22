@@ -7,7 +7,13 @@ import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants'
 
 export const fetchJobs = createAsyncThunk<
   ApiResponse<{ items: Job[]; total: number }>,
-  { page: number; limit: number; search?: string; status?: string },
+  {
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+    priority?: string;
+  },
   { rejectValue: string }
 >('job/fetchAll', async (params, { rejectWithValue }) => {
   try {

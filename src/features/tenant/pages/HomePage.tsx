@@ -61,10 +61,10 @@ const HomePage = () => {
     swalWithBootstrapButtons
       .fire({
         title: 'Are you sure?',
-        text: `Do you want to ${status === 'ACTIVE' ? 'cancel' : 'activate'} your subscription?`,
+        text: `Do you want to ${status === 'ACTIVE' ? 'block access to platform' : 'unblock access to platform'}?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: `Yes, ${status === 'ACTIVE' ? 'cancel' : 'activate'} it!`,
+        confirmButtonText: `Yes, ${status === 'ACTIVE' ? 'block access to platform' : 'unblock access to platform'}!`,
         cancelButtonText: 'No, cancel!',
         reverseButtons: true,
       })
@@ -73,14 +73,14 @@ const HomePage = () => {
           dispatch(toggleSubscriptionStatus(id));
 
           swalWithBootstrapButtons.fire({
-            title: `${status === 'ACTIVE' ? 'Cancelled' : 'Activated'}!`,
-            text: `Your subscription has been ${status === 'ACTIVE' ? 'cancelled' : 'activated'}.`,
+            title: `${status === 'ACTIVE' ? 'Blocked' : 'Unblocked'}!`,
+            text: `Your subscription has been ${status === 'ACTIVE' ? 'blocked' : 'unblocked'}.`,
             icon: 'success',
           });
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
-            title: `${status === 'ACTIVE' ? 'Cancelled' : 'Activated'}`,
-            text: `Your subscription is not ${status === 'ACTIVE' ? 'cancelled' : 'activated'} :)`,
+            title: `${status === 'ACTIVE' ? 'Blocked' : 'Unblocked'}`,
+            text: `Your subscription is not ${status === 'ACTIVE' ? 'blocked' : 'unblocked'}`,
             icon: 'error',
           });
         }
@@ -249,8 +249,8 @@ const HomePage = () => {
                 {toggling
                   ? 'Updating...'
                   : status === 'ACTIVE'
-                    ? 'Cancel Subscription'
-                    : 'Reactivate Subscription'}
+                    ? 'Block access to platform'
+                    : 'Unblock access to platform'}
               </button>
             </div>
           </div>

@@ -58,9 +58,10 @@ const JobDashBoard = () => {
         limit: PAGINATION_LIMIT,
         search: debouncedSearch,
         status: statusFilter === 'all' ? undefined : statusFilter,
+        priority: priorityFilter === 'all' ? undefined : priorityFilter,
       }),
     );
-  }, [dispatch, currentPage, debouncedSearch, statusFilter]);
+  }, [dispatch, currentPage, debouncedSearch, statusFilter, priorityFilter]);
 
   useEffect(() => {
     loadData();
@@ -143,14 +144,6 @@ const JobDashBoard = () => {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('id', {
-        header: 'Job ID',
-        cell: (info) => (
-          <span className="font-mono text-xs text-gray-500">
-            {info.getValue().substring(0, 8)}...
-          </span>
-        ),
-      }),
       columnHelper.accessor('partId', {
         header: 'Part',
         cell: (info) => {
