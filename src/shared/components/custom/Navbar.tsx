@@ -1,14 +1,14 @@
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from '../ui/dropdown-menu';
 
-import { Link, useNavigate } from "react-router-dom";
-import { logoutUser } from "@/features/auth/authThunk";
-import { notifyError, notifySuccess } from "@/shared/utils/toasterUtils";
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from '@/features/auth/authThunk';
+import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '../../constants/messageConstants';
 
 const Navbar = () => {
@@ -21,9 +21,11 @@ const Navbar = () => {
     try {
       await dispatch(logoutUser()).unwrap();
       notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.LOGOUT);
-      navigate("/auth/login");
+      navigate('/auth/login');
     } catch (error) {
-      notifyError((error as string) || FRONTEND_MESSAGE_CONSTANTS.ERROR.LOGOUT_FAILED);
+      notifyError(
+        (error as string) || FRONTEND_MESSAGE_CONSTANTS.ERROR.LOGOUT_FAILED,
+      );
     }
   }
 
@@ -50,26 +52,23 @@ const Navbar = () => {
           <DropdownMenuTrigger>
             <button className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-sm overflow-hidden">
               {user?.profileImage ? (
-                <img src={user.profileImage} alt="Avatar" className="w-full h-full object-cover" />
+                <img
+                  src={user.profileImage}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                user?.name?.[0] || "U"
+                user?.name?.[0] || 'U'
               )}
             </button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem onClick={() => navigate("/profile")}>
+            <DropdownMenuItem onClick={() => navigate('/profile')}>
               Profile
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => navigate("/settings")}>
-              Settings
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="text-red-500"
-            >
+            <DropdownMenuItem onClick={handleLogout} className="text-red-500">
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -78,6 +77,5 @@ const Navbar = () => {
     </div>
   );
 };
-
 
 export default Navbar;

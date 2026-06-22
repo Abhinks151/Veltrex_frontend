@@ -23,40 +23,36 @@ type Notification = {
 const DUMMY_NOTIFICATIONS: Notification[] = [
   {
     id: 1,
-    title: 'Session Updated',
-    message:
-      "The Fitness session 'Fitness Session' is updated with new details.",
+    title: 'raw material low stock',
+    message: "The raw material 'raw material' is low in stock.",
     time: '6 hours ago',
     read: false,
   },
   {
     id: 2,
-    title: 'Session Created',
-    message:
-      "New Fitness session 'Fitness Session' is scheduled on '02 Apr 2026 08:00 PM'.",
+    title: 'Production log',
+    message: "New production log 'production log' is added.",
     time: '6 hours ago',
     read: false,
   },
   {
     id: 3,
-    title: 'Exam Scheduled',
-    message:
-      "The 'Module 32' exam is scheduled for Abhin ks in batch 'BCR320' on 03 Apr 2026 12:00 PM.",
+    title: 'Production log',
+    message: "The production log 'production log' is added.",
     time: '9 hours ago',
     read: false,
   },
   {
     id: 4,
-    title: 'Session Updated',
-    message:
-      "The Fitness session 'Fitness Session' is updated with new details.",
+    title: 'Production log',
+    message: "The production log 'production log' is added.",
     time: '9 hours ago',
     read: true,
   },
   {
     id: 5,
-    title: 'New Task Assigned',
-    message: "You have been assigned a new task: 'Review CNC batch BCR320'.",
+    title: 'Production log',
+    message: "The production log 'production log' is added.",
     time: '1 day ago',
     read: true,
   },
@@ -268,9 +264,7 @@ const PlatformNavbar = () => {
             <DropdownMenuItem onClick={() => navigate('/platform/profile')}>
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/settings')}>
-              Settings
-            </DropdownMenuItem>
+
             <DropdownMenuItem onClick={handleLogout} className="text-red-500">
               Logout
             </DropdownMenuItem>

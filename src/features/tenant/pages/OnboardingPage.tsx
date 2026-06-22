@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { tenant } from '@/features/tenant/tenantThunk';
+import { updateUser } from '@/features/auth/authSlice';
 import { type tenantFormData } from '@/features/tenant/validators/tenant.schema';
 import { tenantService } from '@/services/tenantService';
 
@@ -59,6 +60,9 @@ const OnboardingPage = () => {
 
       const tenantId = tenantRes.data?.id;
       if (!tenantId) throw new Error('Tenant ID not returned');
+
+      // Update auth store with new tenantId
+      dispatch(updateUser({ tenantId }));
 
       if (selectedPlan.price > 0) {
         const isLoaded = await loadRazorpay();

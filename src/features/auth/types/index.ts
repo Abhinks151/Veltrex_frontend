@@ -15,6 +15,7 @@ export interface AuthUser {
   name: string;
   role: string;
   profileImage: string;
+  tenantId?: string;
 }
 
 export interface LoginResponse {

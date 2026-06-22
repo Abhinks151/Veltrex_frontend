@@ -15,6 +15,7 @@ export const jobService = {
     limit: number;
     search?: string;
     status?: string;
+    priority?: string;
   }) =>
     axiosInstance.get<ApiResponse<{ items: Job[]; total: number }>>(
       API_ENDPOINTS.JOB.LIST,

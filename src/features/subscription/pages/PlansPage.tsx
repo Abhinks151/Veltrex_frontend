@@ -207,7 +207,7 @@ const PlansPage = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {mode === 'upgrade'
               ? 'Scale your manufacturing with professional tools and priority support.'
-              : 'Select a plan to unlock full access to machines, fixtures, and analytics.'}
+              : 'Select a plan to unblock full access to machines, fixtures, and analytics.'}
           </p>
         </div>
 

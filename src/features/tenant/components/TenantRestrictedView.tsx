@@ -35,8 +35,7 @@ const TenantRestrictedView = ({
             <h1
               className={`text-4xl font-extrabold tracking-tight ${isExpired ? 'text-amber-500' : 'text-destructive'}`}
             >
-              {isExpired ? 'Subscription' : 'Access'}{' '}
-              <span className="text-foreground">Restricted</span>
+              Access <span className="text-foreground">Restricted</span>
             </h1>
             <p className="text-muted-foreground text-lg mt-3 max-w-md mx-auto">
               {isExpired
@@ -55,7 +54,7 @@ const TenantRestrictedView = ({
             <div className="h-2 w-2 rounded-full bg-current animate-pulse shrink-0" />
             <p>
               {isExpired
-                ? 'Upgrade to a premium plan to instantly unlock all machines and analytics features.'
+                ? 'Choose a premium plan to instantly unblock all machines and analytics features.'
                 : 'Access to the platform is restricted. This could be due to policy violations or administrative action.'}
             </p>
           </div>
