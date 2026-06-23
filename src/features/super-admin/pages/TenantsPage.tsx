@@ -27,6 +27,7 @@ const TenantsPage = () => {
     'all' | 'active' | 'blocked'
   >('all');
 
+  const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -35,7 +36,7 @@ const TenantsPage = () => {
       setLoading(true);
       const res = await superAdminService.getAllTenants({
         page: currentPage + 1,
-        limit: PAGINATION_LIMIT,
+        limit: pageSize,
         search: debouncedSearch,
         status: statusFilter,
       });
@@ -48,7 +49,7 @@ const TenantsPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, debouncedSearch, statusFilter]);
+  }, [currentPage, pageSize, debouncedSearch, statusFilter]);
 
   useEffect(() => {
     fetchData();
@@ -57,7 +58,7 @@ const TenantsPage = () => {
   // Reset to first page when search or filter changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedSearch, statusFilter]);
+  }, [debouncedSearch, statusFilter, pageSize]);
 
   const handleToggleBlock = async (id: string, currentlyBlocked: boolean) => {
     try {
@@ -189,17 +190,30 @@ const TenantsPage = () => {
           </Button>
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) =>
-            setStatusFilter(e.target.value as 'all' | 'active' | 'blocked')
-          }
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-        >
-          <option value="all">All</option>
-          <option value="active">Active</option>
-          <option value="blocked">Blocked</option>
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+          >
+            <option value={10}>10 per page</option>
+            <option value={25}>25 per page</option>
+            <option value={100}>100 per page</option>
+            <option value={10000}>All</option>
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as 'all' | 'active' | 'blocked')
+            }
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </div>
       </div>
 
       <div className="relative">
@@ -213,8 +227,9 @@ const TenantsPage = () => {
           columns={columns as any}
           data={data}
           manualPagination={true}
-          pageCount={Math.ceil(totalCount / PAGINATION_LIMIT)}
+          pageCount={Math.ceil(totalCount / pageSize)}
           pageIndex={currentPage}
+          pageSize={pageSize}
           onPageChange={setCurrentPage}
         />
       </div>

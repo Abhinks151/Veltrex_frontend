@@ -24,7 +24,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-[#f8f9fc] h-screen flex flex-col border-r border-gray-200">
+    <div className="fixed top-0 left-0 w-64 h-screen bg-[#f8f9fc] border-r border-gray-200 flex flex-col">
       <div className="p-6 flex items-center gap-3">
         <div className="bg-[#1e1b4b] p-2 rounded-lg">
           <TerminalSquare className="text-white w-6 h-6" />

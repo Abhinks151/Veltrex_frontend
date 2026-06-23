@@ -49,6 +49,7 @@ const PlansPage = () => {
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'active' | 'blocked'
   >('all');
+  const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -67,7 +68,7 @@ const PlansPage = () => {
       setLoading(true);
       const res = await planService.getAllPlans({
         page: currentPage + 1,
-        limit: PAGINATION_LIMIT,
+        limit: pageSize,
         search: debouncedSearch,
         status: statusFilter,
       });
@@ -79,7 +80,7 @@ const PlansPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, debouncedSearch, statusFilter]);
+  }, [currentPage, pageSize, debouncedSearch, statusFilter]);
 
   useEffect(() => {
     fetchData();
@@ -87,7 +88,7 @@ const PlansPage = () => {
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedSearch, statusFilter]);
+  }, [debouncedSearch, statusFilter, pageSize]);
 
   const handleOpenModal = (plan: Plan | null = null) => {
     if (plan) {
@@ -348,17 +349,30 @@ const PlansPage = () => {
           </Button>
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) =>
-            setStatusFilter(e.target.value as 'all' | 'active' | 'blocked')
-          }
-          className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50/50"
-        >
-          <option value="all">All Status</option>
-          <option value="active">Active Plans</option>
-          <option value="blocked">Blocked Plans</option>
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50/50"
+          >
+            <option value={10}>10 per page</option>
+            <option value={25}>25 per page</option>
+            <option value={100}>100 per page</option>
+            <option value={10000}>All</option>
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as 'all' | 'active' | 'blocked')
+            }
+            className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50/50"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active Plans</option>
+            <option value="blocked">Blocked Plans</option>
+          </select>
+        </div>
       </div>
 
       <div className="relative">
@@ -372,8 +386,9 @@ const PlansPage = () => {
             columns={columns}
             data={data}
             manualPagination={true}
-            pageCount={Math.ceil(totalCount / PAGINATION_LIMIT)}
+            pageCount={Math.ceil(totalCount / pageSize)}
             pageIndex={currentPage}
+            pageSize={pageSize}
             onPageChange={setCurrentPage}
           />
         </div>
