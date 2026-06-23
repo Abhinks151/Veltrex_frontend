@@ -1,17 +1,18 @@
-import { PAGINATION_LIMIT } from "@/shared/constants/constant";
+import { PAGINATION_LIMIT } from '@/shared/constants/constant';
 import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
+} from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 
 interface DataTableProps<TData, TValue = unknown> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageCount?: number;
   pageIndex?: number;
+  pageSize?: number;
   onPageChange?: (page: number) => void;
   manualPagination?: boolean;
 }
@@ -21,6 +22,7 @@ export function DataTable<TData, TValue = unknown>({
   data,
   pageCount,
   pageIndex,
+  pageSize = PAGINATION_LIMIT,
   onPageChange,
   manualPagination = false,
 }: DataTableProps<TData, TValue>) {
@@ -29,29 +31,40 @@ export function DataTable<TData, TValue = unknown>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: manualPagination ? undefined : getPaginationRowModel(),
+    getPaginationRowModel: manualPagination
+      ? undefined
+      : getPaginationRowModel(),
     manualPagination,
     pageCount,
-    state: manualPagination ? {
-      pagination: {
-        pageIndex: pageIndex || 0,
-        pageSize: PAGINATION_LIMIT,
-      }
-    } : undefined,
-    onPaginationChange: manualPagination ? (updater) => {
-      if (onPageChange) {
-        const newState = typeof updater === 'function' ? updater({
-          pageIndex: pageIndex || 0,
-          pageSize: PAGINATION_LIMIT,
-        }) : updater;
-        onPageChange(newState.pageIndex);
-      }
-    } : undefined,
-    initialState: !manualPagination ? {
-      pagination: {
-        pageSize: PAGINATION_LIMIT,
-      },
-    } : undefined,
+    state: manualPagination
+      ? {
+          pagination: {
+            pageIndex: pageIndex || 0,
+            pageSize: pageSize,
+          },
+        }
+      : undefined,
+    onPaginationChange: manualPagination
+      ? (updater) => {
+          if (onPageChange) {
+            const newState =
+              typeof updater === 'function'
+                ? updater({
+                    pageIndex: pageIndex || 0,
+                    pageSize: pageSize,
+                  })
+                : updater;
+            onPageChange(newState.pageIndex);
+          }
+        }
+      : undefined,
+    initialState: !manualPagination
+      ? {
+          pagination: {
+            pageSize: pageSize,
+          },
+        }
+      : undefined,
   });
 
   return (
@@ -69,9 +82,9 @@ export function DataTable<TData, TValue = unknown>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </th>
                 ))}
               </tr>
@@ -81,7 +94,10 @@ export function DataTable<TData, TValue = unknown>({
           <tbody className="bg-white divide-y divide-gray-200">
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="divide-x divide-gray-200 hover:bg-gray-50 transition-colors">
+                <tr
+                  key={row.id}
+                  className="divide-x divide-gray-200 hover:bg-gray-50 transition-colors"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
@@ -89,7 +105,7 @@ export function DataTable<TData, TValue = unknown>({
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </td>
                   ))}
@@ -111,7 +127,7 @@ export function DataTable<TData, TValue = unknown>({
 
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-gray-500">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
           {table.getPageCount() || 1}
         </div>
         <div className="flex space-x-2">
