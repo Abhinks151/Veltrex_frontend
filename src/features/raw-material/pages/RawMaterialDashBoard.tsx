@@ -343,8 +343,9 @@ const RawMaterialDashBoard = () => {
           columns={columns as any[]}
           data={rawMaterials}
           manualPagination
-          pageCount={Math.ceil(total / PAGINATION_LIMIT)}
+          pageCount={Math.ceil(total / pageSize)}
           pageIndex={currentPage}
+          pageSize={pageSize}
           onPageChange={setCurrentPage}
         />
       </div>

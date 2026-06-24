@@ -416,7 +416,8 @@ const PartDashBoard = () => {
           columns={columns as unknown as any[]}
           data={parts}
           manualPagination
-          pageCount={Math.ceil(total / PAGINATION_LIMIT)}
+          pageCount={Math.ceil(total / pageSize)}
+          pageSize={pageSize}
           pageIndex={currentPage}
           onPageChange={setCurrentPage}
         />

@@ -6,7 +6,7 @@ export const jobSchema = z.object({
   quantity: z.number().min(1, 'Quantity must be at least 1'),
   priority: z.nativeEnum(JobPriority),
   repeat: z.boolean().default(false),
-  assignedToUserId: z.string().uuid().nullable().optional(),
+  assignedToUserId: z.string().uuid('Please select a valid employee'),
   status: z.nativeEnum(JobStatus).optional(),
 });
 

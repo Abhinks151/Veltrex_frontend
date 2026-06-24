@@ -329,8 +329,9 @@ const FixtureDashBoard = () => {
           columns={columns as unknown as any[]}
           data={fixtures}
           manualPagination
-          pageCount={Math.ceil(total / PAGINATION_LIMIT)}
+          pageCount={Math.ceil(total / pageSize)}
           pageIndex={currentPage}
+          pageSize={pageSize}
           onPageChange={setCurrentPage}
         />
       </div>
