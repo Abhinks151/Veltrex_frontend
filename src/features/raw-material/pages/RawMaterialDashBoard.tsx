@@ -30,6 +30,8 @@ const RawMaterialDashBoard = () => {
     (state) => state.rawMaterial,
   );
 
+  const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
+
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
   const [currentPage, setCurrentPage] = useState(0);
@@ -59,11 +61,11 @@ const RawMaterialDashBoard = () => {
     dispatch(
       fetchRawMaterials({
         page: currentPage + 1,
-        limit: PAGINATION_LIMIT,
+        limit: pageSize,
         search: debouncedSearch,
       }),
     );
-  }, [dispatch, currentPage, debouncedSearch]);
+  }, [dispatch, pageSize, currentPage, debouncedSearch]);
 
   useEffect(() => {
     loadData();
@@ -307,6 +309,17 @@ const RawMaterialDashBoard = () => {
           />
         </div>
         <div className="flex items-center gap-2">
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+          >
+            <option value={10}>10 per page</option>
+            <option value={25}>25 per page</option>
+            <option value={100}>100 per page</option>
+            <option value={10000}>All</option>
+          </select>
+
           <Button
             variant="secondary"
             onClick={() => loadData()}

@@ -35,6 +35,8 @@ const PartDashBoard = () => {
   const dispatch = useAppDispatch();
   const { parts, total, loading } = useAppSelector((state) => state.part);
 
+  const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
+
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
   const [currentPage, setCurrentPage] = useState(0);
@@ -59,13 +61,20 @@ const PartDashBoard = () => {
     dispatch(
       fetchParts({
         page: currentPage + 1,
-        limit: PAGINATION_LIMIT,
+        limit: pageSize,
         search: debouncedSearch,
         status: statusFilter,
         priority: priorityFilter,
       }),
     );
-  }, [dispatch, currentPage, debouncedSearch, statusFilter, priorityFilter]);
+  }, [
+    dispatch,
+    currentPage,
+    pageSize,
+    debouncedSearch,
+    statusFilter,
+    priorityFilter,
+  ]);
 
   useEffect(() => {
     loadData();
@@ -347,6 +356,18 @@ const PartDashBoard = () => {
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Status Filter */}
+
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+          >
+            <option value={10}>10 per page</option>
+            <option value={25}>25 per page</option>
+            <option value={100}>100 per page</option>
+            <option value={10000}>All</option>
+          </select>
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
