@@ -88,6 +88,7 @@ const JobDashBoard = () => {
       if (result.success) {
         notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.JOB_CREATED);
         setIsAddModalOpen(false);
+        loadData();
       }
     } catch (error) {
       const errorMessage =
@@ -361,8 +362,9 @@ const JobDashBoard = () => {
           columns={columns as unknown as any[]}
           data={jobs}
           manualPagination
-          pageCount={Math.ceil(total / PAGINATION_LIMIT)}
+          pageCount={Math.ceil(total / pageSize)}
           pageIndex={currentPage}
+          pageSize={pageSize}
           onPageChange={setCurrentPage}
         />
       </div>
