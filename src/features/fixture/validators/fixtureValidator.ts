@@ -1,9 +1,8 @@
 import { z } from 'zod';
-import { FixtureType } from '@/shared/types/fixture-type.enum';
 
 export const fixtureSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters'),
-  type: z.nativeEnum(FixtureType),
+  type: z.string().min(1, 'Type is required'),
   dimensions: z.object({
     width: z.number().positive('Width must be positive'),
     length: z.number().positive('Length must be positive'),

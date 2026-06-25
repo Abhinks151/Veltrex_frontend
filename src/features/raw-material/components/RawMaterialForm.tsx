@@ -7,7 +7,7 @@ import {
   rawMaterialSchema,
   type RawMaterialFormData,
 } from '../validators/rawMaterialValidator';
-import { DimensionUnit } from '@/features/fixture/types/dimensionConstants';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 interface RawMaterialFormProps {
   initialData?: Partial<RawMaterialFormData>;
@@ -34,7 +34,7 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
         width: 0,
         length: 0,
         height: 0,
-        unit: 'mm',
+        unit: 'MM',
       },
     },
   });
@@ -89,24 +89,12 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
         </div>
 
         {/* Unit */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Dimension Unit
-          </label>
-          <select
-            {...register('dimensions.unit')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={DimensionUnit.MM}>mm</option>
-            <option value={DimensionUnit.CM}>cm</option>
-            <option value={DimensionUnit.INCH}>in</option>
-          </select>
-          {errors.dimensions?.unit && (
-            <p className="text-xs text-red-500">
-              {errors.dimensions.unit.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('dimensions.unit')}
+          category="UNIT"
+          label="Dimension Unit"
+          error={errors.dimensions?.unit?.message as string}
+        />
 
         {/* Width */}
         <div className="space-y-1">

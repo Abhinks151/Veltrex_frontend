@@ -7,8 +7,7 @@ import {
   fixtureSchema,
   type FixtureFormData,
 } from '../validators/fixtureValidator';
-import { FixtureType } from '@/shared/types/fixture-type.enum';
-import { DimensionUnit } from '../types/dimensionConstants';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 interface FixtureFormProps {
   initialData?: Partial<FixtureFormData>;
@@ -29,12 +28,12 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
     resolver: zodResolver(fixtureSchema) as Resolver<FixtureFormData>,
     defaultValues: (initialData as FixtureFormData) || {
       name: '',
-      type: FixtureType.MILL,
+      type: 'MILL',
       dimensions: {
         width: 0,
         length: 0,
         height: 0,
-        unit: 'mm',
+        unit: 'MM',
       },
     },
   });
@@ -59,23 +58,12 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
         </div>
 
         {/* Type */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Fixture Type
-          </label>
-          <select
-            {...register('type')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={FixtureType.MILL}>Mill</option>
-            <option value={FixtureType.LATHE}>Lathe</option>
-          </select>
-          {errors.type && (
-            <p className="text-xs text-red-500">
-              {errors.type.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('type')}
+          category="FIXTURE_TYPE"
+          label="Fixture Type"
+          error={errors.type?.message as string}
+        />
 
         {/* Width */}
         <div className="space-y-1">
@@ -123,22 +111,12 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
         </div>
 
         {/* Unit */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">Unit</label>
-          <select
-            {...register('dimensions.unit')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={DimensionUnit.MM}>mm</option>
-            <option value={DimensionUnit.CM}>cm</option>
-            <option value={DimensionUnit.INCH}>in</option>
-          </select>
-          {errors.dimensions?.unit && (
-            <p className="text-xs text-red-500">
-              {errors.dimensions.unit.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('dimensions.unit')}
+          category="UNIT"
+          label="Unit"
+          error={errors.dimensions?.unit?.message as string}
+        />
       </div>
 
       <div className="flex justify-end gap-3 pt-4">

@@ -8,6 +8,7 @@ import RawMaterialReducer from '@/features/raw-material/rawMaterialSlice';
 import EmployeeReducer from '@/features/employee/employeeSlice';
 import JobReducer from '@/features/job/jobSlice';
 import PartReducer from '@/features/part/partSlice';
+import LookupReducer from '@/shared/store/lookupSlice';
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     employee: EmployeeReducer,
     job: JobReducer,
     part: PartReducer,
+    lookups: LookupReducer,
   },
 });
 

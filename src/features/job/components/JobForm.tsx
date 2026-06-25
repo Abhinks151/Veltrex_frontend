@@ -4,11 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
 import { jobSchema, type JobFormData } from '../validators/jobValidator';
-import { JobPriority, JobStatus } from '../types';
+import { JobStatus } from '../types';
 import { partService } from '@/services/partService';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { fetchEmployees } from '@/features/employee/employeeThunk';
 import { UserRole } from '@/features/employee/types';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 interface JobFormProps {
   initialData?: Partial<JobFormData>;
@@ -37,7 +38,7 @@ const JobForm: React.FC<JobFormProps> = ({
     defaultValues: initialData || {
       partId: '',
       quantity: 1,
-      priority: JobPriority.MEDIUM,
+      priority: 'MEDIUM',
       repeat: false,
       status: JobStatus.PENDING,
     },
@@ -118,26 +119,12 @@ const JobForm: React.FC<JobFormProps> = ({
           )}
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Priority
-          </label>
-          <select
-            {...register('priority')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            {Object.values(JobPriority).map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-          {errors.priority && (
-            <p className="text-xs text-red-500">
-              {errors.priority.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('priority')}
+          category="PRIORITY"
+          label="Priority"
+          error={errors.priority?.message as string}
+        />
 
         {/* Assignee Selection */}
         <div className="space-y-1">
