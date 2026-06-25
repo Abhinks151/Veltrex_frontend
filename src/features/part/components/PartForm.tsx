@@ -4,16 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
 import { partSchema, type PartFormData } from '../validators/partValidator';
-import {
-  OperationType,
-  PartPriority,
-  type Part,
-  type PartDimensions,
-} from '../types';
+import { type Part, type PartDimensions } from '../types';
 import { FileText, X } from 'lucide-react';
 import { machineService } from '@/services/machineService';
 import { fixtureService } from '@/services/fixtureService';
 import { rawMaterialService } from '@/services/rawMaterialService';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 const SELECT_CLASS =
   'w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]';
@@ -53,12 +49,12 @@ const PartForm: React.FC<PartFormProps> = ({
       rawMaterialId: initialData?.rawMaterialId ?? '',
       cycleTime: initialData?.cycleTime ?? '',
       setupTime: initialData?.setupTime ?? '',
-      priority: initialData?.priority ?? PartPriority.MEDIUM,
+      priority: initialData?.priority ?? 'MEDIUM',
       dimensions: (initialData?.dimensions as PartDimensions) ?? {
         width: 0,
         length: 0,
         height: 0,
-        unit: 'mm',
+        unit: 'MM',
       },
     },
   });
@@ -222,32 +218,22 @@ const PartForm: React.FC<PartFormProps> = ({
           <Input {...register('material')} placeholder="e.g. Aluminium 6061" />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Operation Type
-          </label>
-          <select {...register('operationType')} className={SELECT_CLASS}>
-            <option value="">Select operation type</option>
-            <option value={OperationType.MILL}>Mill</option>
-            <option value={OperationType.LATHE}>Lathe</option>
-          </select>
-        </div>
+        <LookupSelect
+          {...register('operationType')}
+          category="OP_TYPE"
+          label="Operation Type"
+          error={errors.operationType?.message as string}
+        />
       </div>
 
       {/* Row 3: Priority + Cycle Time + Setup Time */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Priority
-          </label>
-          <select {...register('priority')} className={SELECT_CLASS}>
-            {Object.values(PartPriority).map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
+        <LookupSelect
+          {...register('priority')}
+          category="PRIORITY"
+          label="Priority"
+          error={errors.priority?.message as string}
+        />
 
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">
@@ -315,14 +301,12 @@ const PartForm: React.FC<PartFormProps> = ({
               </p>
             )}
           </div>
-          <div className="space-y-1">
-            <label className="text-xs text-gray-500">Unit</label>
-            <select {...register('dimensions.unit')} className={SELECT_CLASS}>
-              <option value="mm">mm</option>
-              <option value="cm">cm</option>
-              <option value="in">in</option>
-            </select>
-          </div>
+          <LookupSelect
+            {...register('dimensions.unit')}
+            category="UNIT"
+            label="Unit"
+            error={errors.dimensions?.unit?.message as string}
+          />
         </div>
       </div>
 

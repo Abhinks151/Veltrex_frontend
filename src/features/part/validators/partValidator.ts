@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { OperationType, PartPriority } from '../types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -10,7 +9,11 @@ export const partSchema = z.object({
   partNumber: z.string().trim().min(1, 'Part number is required'),
   description: z.string().trim().optional(),
   material: z.string().trim().optional(),
-  operationType: z.nativeEnum(OperationType).optional(),
+  operationType: z
+    .string()
+    .min(1, 'Operation type is required')
+    .optional()
+    .or(z.literal('')),
   machineId: z
     .string()
     .uuid('Must be a valid UUID')
@@ -44,7 +47,11 @@ export const partSchema = z.object({
     .regex(timeRegex, 'Format must be HH:MM:SS (e.g. 00:15:00)')
     .optional()
     .or(z.literal('')),
-  priority: z.nativeEnum(PartPriority).optional(),
+  priority: z
+    .string()
+    .min(1, 'Priority is required')
+    .optional()
+    .or(z.literal('')),
   setupSheet: z
     .instanceof(File)
     .refine((f) => f.size <= MAX_FILE_SIZE, 'Setup sheet must be <= 5MB')

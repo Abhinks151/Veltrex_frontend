@@ -7,8 +7,7 @@ import {
   machineSchema,
   type MachineFormData,
 } from '../validators/machineValidator';
-import { MachineType } from '@/shared/types/machine-type.enum';
-import { MachineStatus } from '@/shared/types/machine-status.enum';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 interface MachineFormProps {
   initialData?: Partial<MachineFormData>;
@@ -28,8 +27,8 @@ const MachineForm: React.FC<MachineFormProps> = ({
   } = useForm<MachineFormData>({
     resolver: zodResolver(machineSchema) as Resolver<MachineFormData>,
     defaultValues: (initialData as MachineFormData) || {
-      status: MachineStatus.IDLE,
-      type: MachineType.MILL,
+      status: 'IDLE',
+      type: 'MILL',
       name: '',
       brand: '',
     },
@@ -66,23 +65,12 @@ const MachineForm: React.FC<MachineFormProps> = ({
         </div>
 
         {/* Type */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Machine Type
-          </label>
-          <select
-            {...register('type')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={MachineType.MILL}>Mill</option>
-            <option value={MachineType.LATHE}>Lathe</option>
-          </select>
-          {errors.type && (
-            <p className="text-xs text-red-500">
-              {errors.type.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('type')}
+          category="MACHINE_TYPE"
+          label="Machine Type"
+          error={errors.type?.message as string}
+        />
 
         {/* Axis */}
         <div className="space-y-1">
@@ -166,22 +154,12 @@ const MachineForm: React.FC<MachineFormProps> = ({
         </div>
 
         {/* Status */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value={MachineStatus.IDLE}>Idle</option>
-            <option value={MachineStatus.RUNNING}>Running</option>
-            <option value={MachineStatus.MAINTENANCE}>Maintenance</option>
-          </select>
-          {errors.status && (
-            <p className="text-xs text-red-500">
-              {errors.status.message as string}
-            </p>
-          )}
-        </div>
+        <LookupSelect
+          {...register('status')}
+          category="MACHINE_STATUS"
+          label="Status"
+          error={errors.status?.message as string}
+        />
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
