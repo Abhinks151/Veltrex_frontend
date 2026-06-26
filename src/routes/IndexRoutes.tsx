@@ -2,6 +2,8 @@ import Alert from '@/pages/dev/Alret';
 import { Roles } from '@/shared/constants/rolesEnum';
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { SubdomainOnly } from '@/components/SubdomainGate';
+
 // import AuthRoutes from './AuthRoutes';
 // import LandingPage from '@/pages/LandingPage';
 // import HomePage from '@/pages/HomePage';
@@ -139,7 +141,14 @@ const IndexRoutes = () => {
                 />
               }
             >
-              <Route path="/platform/*" element={<UserRoutes />} />
+              <Route
+                path="/platform/*"
+                element={
+                  <SubdomainOnly>
+                    <UserRoutes />
+                  </SubdomainOnly>
+                }
+              />
             </Route>
 
             <Route

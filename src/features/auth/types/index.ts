@@ -16,6 +16,7 @@ export interface AuthUser {
   role: string;
   profileImage: string;
   tenantId?: string;
+  subdomain?: string;
 }
 
 export interface LoginResponse {

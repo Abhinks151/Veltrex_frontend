@@ -1,7 +1,6 @@
-import { axiosInstance } from "@/app/api/axios";
-import type { TenantRequest } from "@/features/tenant/types";
-import { API_ENDPOINTS } from "@/shared/constants/apiEnpointsConstants";
-
+import { axiosInstance } from '@/app/api/axios';
+import type { TenantRequest } from '@/features/tenant/types';
+import { API_ENDPOINTS } from '@/shared/constants/apiEnpointsConstants';
 
 export const tenantService = {
   create: async (data: TenantRequest) => {
@@ -18,5 +17,8 @@ export const tenantService = {
 
   checkName: async (name: string) => {
     return axiosInstance.get(API_ENDPOINTS.TENANT.CHECK_NAME(name));
+  },
+  checkSubdomain: async (subdomain: string) => {
+    return axiosInstance.get(API_ENDPOINTS.TENANT.CHECK_SUBDOMAIN(subdomain));
   },
 };

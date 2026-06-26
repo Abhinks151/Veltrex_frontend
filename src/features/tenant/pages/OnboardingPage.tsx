@@ -33,17 +33,29 @@ const OnboardingPage = () => {
 
   const [step, setStep] = useState<Step>('tenant');
   const [tenantName, setTenantName] = useState('');
+  const [tenantSubdomain, setTenantSubdomain] = useState('');
   const [checkingName, setCheckingName] = useState(false);
 
   const handleTenantSubmit = async (data: tenantFormData) => {
     try {
       setCheckingName(true);
-      const res = await tenantService.checkName(data.name);
-      if (res.data?.data?.isTaken) {
+
+      // Check Name
+      const nameRes = await tenantService.checkName(data.name);
+      if (nameRes.data?.data?.isTaken) {
         notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.TENANT_NAME_TAKEN);
         return;
       }
+
+      // Check Subdomain
+      const subdomainRes = await tenantService.checkSubdomain(data.subdomain);
+      if (subdomainRes.data?.data?.isTaken) {
+        notifyError('Subdomain is already taken');
+        return;
+      }
+
       setTenantName(data.name);
+      setTenantSubdomain(data.subdomain);
       setStep('plan');
     } catch {
       notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG);
@@ -55,7 +67,11 @@ const OnboardingPage = () => {
   const handlePlanFinish = async (selectedPlan: Plan) => {
     try {
       const tenantRes = await dispatch(
-        tenant({ name: tenantName, plan: selectedPlan.code }),
+        tenant({
+          name: tenantName,
+          subdomain: tenantSubdomain,
+          plan: selectedPlan.code,
+        }),
       ).unwrap();
 
       const tenantId = tenantRes.data?.id;

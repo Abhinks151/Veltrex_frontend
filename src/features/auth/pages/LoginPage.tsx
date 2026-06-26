@@ -38,6 +38,7 @@ import type { LoginRequest } from '../types';
 import { loginUser } from '../authThunk';
 import { useNavigate } from 'react-router-dom';
 import { getTenant } from '@/features/tenant/tenantThunk';
+import { getSubdomain, getSubdomainUrl } from '@/shared/utils/subdomain';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -47,14 +48,25 @@ const LoginPage = () => {
 
   const handleLogin = async (data: LoginRequest) => {
     try {
-      await dispatch(loginUser(data)).unwrap();
+      const result = await dispatch(loginUser(data)).unwrap();
+
+      const user = result.data?.user;
+      const subdomain = user?.subdomain;
+      const currentSubdomain = getSubdomain();
+
+      if (subdomain) {
+        if (currentSubdomain === subdomain) {
+          navigate('/platform');
+        } else {
+          window.location.href = getSubdomainUrl(subdomain, '/platform');
+          return;
+        }
+      }
 
       const tenant = await dispatch(getTenant()).unwrap();
-      // console.log(res);
       if (tenant) {
-        navigate('/home');
+        navigate('/platform');
       } else {
-        // navigate('/tenant/create');
         navigate('/onboarding');
       }
     } catch (error) {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getSubdomain } from '@/shared/utils/subdomain';
 
 let accessToken: string | null = null;
 
@@ -6,8 +7,26 @@ export const setAccessToken = (token: string | null) => {
   accessToken = token;
 };
 
+const getBaseURL = () => {
+  const subdomain = getSubdomain();
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL; // e.g., http://localhost:3000
+
+  if (!subdomain) return apiBaseUrl;
+
+  try {
+    const url = new URL(apiBaseUrl);
+    // For local dev with lvh.me, we want tenant.lvh.me:3000
+    // If apiBaseUrl is http://localhost:3000, we change it to http://subdomain.lvh.me:3000
+    const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'localhost';
+    url.hostname = `${subdomain}.${baseDomain}`;
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return apiBaseUrl;
+  }
+};
+
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: getBaseURL(),
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
