@@ -6,10 +6,12 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   fetchEmployees,
   createEmployee,
+  bulkCreateEmployee,
   updateEmployee,
   toggleEmployeeBlock,
   deleteEmployee,
 } from '../employeeThunk';
+
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { useDebounce } from '@/shared/hooks/use-debounce';
@@ -20,10 +22,8 @@ import { Plus, Search, RefreshCcw, Filter } from 'lucide-react';
 import ReusableModal from '@/shared/components/custom/ReusableModal';
 import EmployeeForm from '../components/EmployeeForm';
 import type { Employee, EmployeeRequest } from '../types';
-import type {
-  EmployeeCreateFormData,
-  EmployeeUpdateFormData,
-} from '../validators/employeeValidator';
+import type { EmployeeFormSubmitData } from '../validators/employeeValidator';
+
 import Swal from 'sweetalert2';
 
 const columnHelper = createColumnHelper<Employee>();
@@ -91,17 +91,29 @@ const EmployeeDashBoard = () => {
     setCurrentPage(0);
   }, [debouncedSearch, statusFilter, sortOrder]);
 
-  const handleAddEmployee = async (
-    data: EmployeeCreateFormData | EmployeeUpdateFormData,
-  ) => {
+  const handleAddEmployee = async (data: EmployeeFormSubmitData) => {
     try {
       setIsSubmitting(true);
-      const result = await dispatch(
-        createEmployee(data as EmployeeRequest),
-      ).unwrap();
-      if (result.success) {
-        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_CREATED);
-        setIsAddModalOpen(false);
+      if ('employees' in data) {
+        const result = await dispatch(
+          bulkCreateEmployee({
+            employees: data.employees as EmployeeRequest[],
+          }),
+        ).unwrap();
+        if (result.success) {
+          notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_CREATED);
+          setIsAddModalOpen(false);
+          loadData();
+        }
+      } else {
+        const result = await dispatch(
+          createEmployee(data as EmployeeRequest),
+        ).unwrap();
+        if (result.success) {
+          notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.EMPLOYEE_CREATED);
+          setIsAddModalOpen(false);
+          loadData();
+        }
       }
     } catch (error) {
       const errorMessage =
@@ -115,9 +127,7 @@ const EmployeeDashBoard = () => {
     }
   };
 
-  const handleEditEmployee = async (
-    data: EmployeeCreateFormData | EmployeeUpdateFormData,
-  ) => {
+  const handleEditEmployee = async (data: EmployeeFormSubmitData) => {
     if (!selectedEmployee) return;
     try {
       setIsSubmitting(true);
@@ -441,8 +451,8 @@ const EmployeeDashBoard = () => {
       <ReusableModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Add New Employee"
-        maxWidth="max-w-md"
+        title="Add New Employees"
+        maxWidth="max-w-2xl"
       >
         <EmployeeForm onSubmit={handleAddEmployee} loading={isSubmitting} />
       </ReusableModal>

@@ -14,3 +14,17 @@ export const employeeUpdateSchema = z.object({
 
 export type EmployeeCreateFormData = z.infer<typeof employeeCreateSchema>;
 export type EmployeeUpdateFormData = z.infer<typeof employeeUpdateSchema>;
+
+export const bulkEmployeeCreateSchema = z.object({
+  employees: z
+    .array(employeeCreateSchema)
+    .min(1, 'At least one employee is required'),
+});
+
+export type BulkEmployeeCreateFormData = z.infer<
+  typeof bulkEmployeeCreateSchema
+>;
+
+export type EmployeeFormSubmitData =
+  | BulkEmployeeCreateFormData
+  | EmployeeUpdateFormData;

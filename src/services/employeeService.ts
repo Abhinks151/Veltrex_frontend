@@ -21,6 +21,12 @@ export const employeeService = {
   create: (data: EmployeeRequest) =>
     axiosInstance.post<ApiResponse<Employee>>('/platform/employees', data),
 
+  bulkCreate: (data: { employees: EmployeeRequest[] }) =>
+    axiosInstance.post<ApiResponse<Employee[]>>(
+      '/platform/employees/bulk',
+      data,
+    ),
+
   edit: (id: string, data: Partial<EmployeeRequest>) =>
     axiosInstance.patch<ApiResponse<Employee>>(
       `/platform/employees/${id}`,
