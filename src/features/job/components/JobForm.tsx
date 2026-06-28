@@ -6,9 +6,6 @@ import { Button } from '@/shared/components/ui/button';
 import { jobSchema, type JobFormData } from '../validators/jobValidator';
 import { JobStatus } from '../types';
 import { partService } from '@/services/partService';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { fetchEmployees } from '@/features/employee/employeeThunk';
-import { UserRole } from '@/features/employee/types';
 import LookupSelect from '@/shared/components/LookupSelect';
 
 interface JobFormProps {
@@ -22,8 +19,6 @@ const JobForm: React.FC<JobFormProps> = ({
   onSubmit,
   loading = false,
 }) => {
-  const dispatch = useAppDispatch();
-  const { employees } = useAppSelector((state) => state.employee);
   const [parts, setParts] = useState<
     { id: string; name: string; partNumber: string }[]
   >([]);
@@ -56,26 +51,13 @@ const JobForm: React.FC<JobFormProps> = ({
       }
     };
     loadParts();
-
-    dispatch(fetchEmployees({ page: 1, limit: 100 }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (initialData?.partId && parts.length > 0) {
       setValue('partId', initialData.partId);
     }
   }, [parts, initialData?.partId, setValue]);
-
-  useEffect(() => {
-    if (initialData?.assignedToUserId && employees.length > 0) {
-      setValue('assignedToUserId', initialData.assignedToUserId || '');
-    }
-  }, [employees, initialData?.assignedToUserId, setValue]);
-
-  const eligibleAssignees = employees.filter(
-    (emp) =>
-      emp.role === UserRole.MACHINIST || emp.role === UserRole.MAINTENANCE,
-  );
 
   return (
     <form
@@ -125,32 +107,6 @@ const JobForm: React.FC<JobFormProps> = ({
           label="Priority"
           error={errors.priority?.message as string}
         />
-
-        {/* Assignee Selection */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-gray-700">
-            Assigned To
-          </label>
-          <select
-            {...register('assignedToUserId')}
-            onChange={(e) =>
-              setValue('assignedToUserId', e.target.value || null)
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-          >
-            <option value="">Unassigned</option>
-            {eligibleAssignees.map((emp) => (
-              <option key={emp.id} value={emp.id}>
-                {emp.name} ({emp.role})
-              </option>
-            ))}
-          </select>
-          {errors.assignedToUserId && (
-            <p className="text-xs text-red-500">
-              {errors.assignedToUserId.message as string}
-            </p>
-          )}
-        </div>
 
         {initialData && (
           <div className="space-y-1">
