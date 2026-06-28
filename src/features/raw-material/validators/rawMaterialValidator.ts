@@ -10,6 +10,7 @@ export const rawMaterialSchema = z.object({
   }),
   material: z.string().trim().min(1, 'Material is required'),
   minQty: z.number().int().min(0, 'Minimum quantity cannot be negative'),
+  currentQty: z.number().int().min(0, 'Current quantity cannot be negative'),
 });
 
 export type RawMaterialFormData = z.infer<typeof rawMaterialSchema>;

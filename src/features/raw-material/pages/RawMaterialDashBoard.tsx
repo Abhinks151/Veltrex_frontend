@@ -203,6 +203,26 @@ const RawMaterialDashBoard = () => {
           <span className="text-gray-700 font-medium">{info.getValue()}</span>
         ),
       }),
+      columnHelper.accessor('currentQty', {
+        header: 'In Stock',
+        cell: (info) => {
+          const current = info.getValue();
+          const min = info.row.original.minQty;
+          const isLow = current < min;
+          return (
+            <span
+              className={`font-semibold ${isLow ? 'text-red-600' : 'text-green-700'}`}
+            >
+              {current}
+              {isLow && (
+                <span className="ml-1 text-xs font-normal text-red-500">
+                  (low)
+                </span>
+              )}
+            </span>
+          );
+        },
+      }),
       columnHelper.accessor('dimensions', {
         header: 'Dimensions',
         cell: (info) => {

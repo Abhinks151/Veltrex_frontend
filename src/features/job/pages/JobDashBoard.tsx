@@ -3,7 +3,6 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '@/shared/components/custom/DataTable';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { fetchJobs, createJob, updateJob, deleteJob } from '../jobThunk';
-import { fetchEmployees } from '@/features/employee/employeeThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { useDebounce } from '@/shared/hooks/use-debounce';
@@ -23,7 +22,6 @@ const columnHelper = createColumnHelper<Job>();
 const JobDashBoard = () => {
   const dispatch = useAppDispatch();
   const { jobs, total, loading } = useAppSelector((state) => state.job);
-  const { employees } = useAppSelector((state) => state.employee);
 
   const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
 
@@ -74,8 +72,7 @@ const JobDashBoard = () => {
 
   useEffect(() => {
     loadData();
-    dispatch(fetchEmployees({ page: 1, limit: 100 }));
-  }, [loadData, dispatch]);
+  }, [loadData]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -211,22 +208,6 @@ const JobDashBoard = () => {
           );
         },
       }),
-      columnHelper.accessor('assignedToUserId', {
-        header: 'Assigned To',
-        cell: (info) => {
-          const userId = info.getValue();
-          if (!userId)
-            return (
-              <span className="text-gray-400 italic text-xs">Unassigned</span>
-            );
-          const user = employees.find((e) => e.id === userId);
-          return (
-            <span className="text-sm font-medium">
-              {user?.name || 'Loading...'}
-            </span>
-          );
-        },
-      }),
       columnHelper.display({
         id: 'actions',
         header: 'Actions',
@@ -259,7 +240,7 @@ const JobDashBoard = () => {
       }),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [employees],
+    [],
   );
 
   return (

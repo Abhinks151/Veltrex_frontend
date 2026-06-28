@@ -21,7 +21,6 @@ export interface Job {
   repeat: boolean;
   status: JobStatus;
   createdByUserId: string;
-  assignedToUserId: string | null;
   isDeleted: boolean;
   part?: {
     name: string;
@@ -36,6 +35,5 @@ export interface JobRequest {
   quantity: number;
   priority: JobPriority;
   repeat?: boolean;
-  assignedToUserId?: string | null;
   status?: JobStatus;
 }

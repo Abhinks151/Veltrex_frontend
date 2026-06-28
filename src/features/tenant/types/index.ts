@@ -9,6 +9,7 @@ export interface TenantType {
 
 export interface TenantRequest {
   name: string;
+  subdomain: string;
   plan?: string; // plan code e.g. 'TRIAL', 'LIFETIME'
 }
 

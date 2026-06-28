@@ -10,6 +10,7 @@ export interface RawMaterial {
   };
   material: string;
   minQty: number;
+  currentQty: number;
   isBlocked: boolean;
   isDeleted: boolean;
   createdAt: string;
@@ -26,4 +27,5 @@ export interface RawMaterialRequest {
   };
   material: string;
   minQty: number;
+  currentQty: number;
 }

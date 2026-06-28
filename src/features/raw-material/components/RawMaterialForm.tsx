@@ -30,6 +30,7 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
       name: '',
       material: '',
       minQty: 0,
+      currentQty: 0,
       dimensions: {
         width: 0,
         length: 0,
@@ -84,6 +85,23 @@ const RawMaterialForm: React.FC<RawMaterialFormProps> = ({
           {errors.minQty && (
             <p className="text-xs text-red-500">
               {errors.minQty.message as string}
+            </p>
+          )}
+        </div>
+
+        {/* Current Stock */}
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">
+            Current Stock
+          </label>
+          <Input
+            type="number"
+            {...register('currentQty', { valueAsNumber: true })}
+            placeholder="e.g. 50"
+          />
+          {errors.currentQty && (
+            <p className="text-xs text-red-500">
+              {errors.currentQty.message as string}
             </p>
           )}
         </div>

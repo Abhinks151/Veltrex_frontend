@@ -32,6 +32,8 @@ export const API_ENDPOINTS = {
     CREATE: '/tenant/create',
     GET: '/tenant/get',
     CHECK_NAME: (name: string) => `/tenant/check-name/${name}`,
+    CHECK_SUBDOMAIN: (subdomain: string) =>
+      `/tenant/check-subdomain/${subdomain}`,
     UPDATE: (id: string) => `/tenant/update/${id}`,
   },
 

@@ -12,15 +12,21 @@ import TenantRestrictedView from '@/features/tenant/components/TenantRestrictedV
 import Loader from '@/pages/Loader';
 import SubscriptionBanner from '@/features/subscription/components/SubscriptionBanner';
 import Swal from 'sweetalert2';
+import { getSubdomain, getSubdomainUrl } from '@/shared/utils/subdomain';
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const subdomain = getSubdomain();
+    if (subdomain) {
+      navigate('/platform');
+      return;
+    }
     dispatch(getTenant());
     dispatch(getSubscription());
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   const {
     name,
@@ -134,7 +140,21 @@ const HomePage = () => {
           </div>
 
           {/* <Button className="bg-white text-indigo-700 hover:bg-gray-100"> */}
-          <Link to="/platform/login">
+          <Link
+            to={
+              user?.subdomain
+                ? getSubdomainUrl(user.subdomain, '/platform')
+                : '/platform'
+            }
+            onClick={(e) => {
+              if (user?.subdomain) {
+                e.preventDefault();
+                window.location.assign(
+                  getSubdomainUrl(user.subdomain, '/platform'),
+                );
+              }
+            }}
+          >
             <Button variant={'primary'}>Go to Veltrex</Button>
           </Link>
         </div>

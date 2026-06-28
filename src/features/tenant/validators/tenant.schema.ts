@@ -5,6 +5,13 @@ export const tenantSchema = z.object({
   name: z
     .string()
     .min(3, FRONTEND_MESSAGE_CONSTANTS.VALIDATION.NAME_MIN_LENGTH_3),
+  subdomain: z
+    .string()
+    .min(3, 'Subdomain must be at least 3 characters')
+    .regex(
+      /^[a-z0-9-]+$/,
+      'Subdomain can only contain lowercase letters, numbers, and hyphens',
+    ),
 });
 
 export type tenantFormData = z.infer<typeof tenantSchema>;
