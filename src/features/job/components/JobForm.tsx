@@ -134,22 +134,6 @@ const JobForm: React.FC<JobFormProps> = ({
             )}
           </div>
         )}
-
-        {/* Repeat Toggle */}
-        <div className="flex items-center space-x-2 pt-6">
-          <input
-            {...register('repeat')}
-            type="checkbox"
-            id="repeat"
-            className="w-4 h-4 text-[#4f46e5] border-gray-300 rounded focus:ring-[#4f46e5]"
-          />
-          <label
-            htmlFor="repeat"
-            className="text-sm font-semibold text-gray-700"
-          >
-            Repeat Job?
-          </label>
-        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4">

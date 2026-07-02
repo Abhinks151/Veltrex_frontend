@@ -40,11 +40,9 @@ const ProductionShiftDashboard = () => {
     new Set(),
   );
 
-  // Track previous shifts to handle resetting state during render
   const [prevProductionShifts, setPrevProductionShifts] =
     useState(productionShifts);
 
-  // Sync state during rendering instead of an effect to avoid lint errors and extra DOM paints
   if (productionShifts !== prevProductionShifts) {
     setPrevProductionShifts(productionShifts);
     setExpandedShiftIds(new Set());
@@ -130,7 +128,7 @@ const ProductionShiftDashboard = () => {
             <input
               type="date"
               value={dateFilter}
-              min={today}
+              min={!isAdmin ? today : undefined}
               onChange={(e) => {
                 setDateFilter(e.target.value);
                 setCurrentPage(0);
