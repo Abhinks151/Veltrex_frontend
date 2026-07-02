@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, useFieldArray, type Resolver } from 'react-hook-form';
+import {
+  useForm,
+  useFieldArray,
+  useWatch,
+  type Resolver,
+} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   shiftTemplateSchema,
@@ -36,7 +41,6 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
     control,
     setValue,
     reset,
-    watch,
     setError,
     formState: { errors },
   } = useForm<ShiftTemplateFormData>({
@@ -55,15 +59,6 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
     name: 'jobs',
   });
 
-  // Native <select> elements bound via register() are uncontrolled: RHF sets
-  // their value directly on the DOM node. If setValue()/reset() runs before
-  // the matching <option> exists (i.e. before employees/jobs have loaded from
-  // the API), the browser can't bind the value and the select silently stays
-  // on its default empty option — with nothing to re-trigger it later.
-  //
-  // Fix: wait until BOTH initialData and the relevant lookup list(s) are
-  // ready, then apply everything atomically with reset(). This also replaces
-  // the old chain of individual setValue() calls, which is more error-prone.
   useEffect(() => {
     if (!initialData) return;
 
@@ -117,8 +112,6 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
     'w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]';
   const errorClass = 'text-xs text-red-500 mt-1';
 
-  // Local date string (not UTC) so "today" matches what the date picker
-  // shows the user, regardless of timezone offset.
   const toDateInputValue = (d: Date) => {
     const offset = d.getTimezoneOffset();
     return new Date(d.getTime() - offset * 60 * 1000)
@@ -127,16 +120,11 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
   };
   const todayStr = toDateInputValue(new Date());
 
-  // Watch startDate so the End Date field's min bound updates live as the
-  // user picks a start date.
-  const startDateValue = watch('startDate');
+  const startDateValue = useWatch({ control, name: 'startDate' });
   const endDateMin =
     startDateValue && startDateValue > todayStr ? startDateValue : todayStr;
 
   const handleFormSubmit = (data: ShiftTemplateFormData) => {
-    // Belt-and-suspenders check: the min attribute on the date inputs stops
-    // most invalid picks, but a user can still type/paste an out-of-range
-    // date in some browsers, so re-validate before submitting.
     if (data.startDate < todayStr) {
       setError('startDate', {
         type: 'manual',
