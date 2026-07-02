@@ -1,4 +1,5 @@
 import Alert from '@/pages/dev/Alret';
+import Loader from '@/pages/Loader';
 import { Roles } from '@/shared/constants/rolesEnum';
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -52,7 +53,7 @@ const TableSample = React.lazy(() => import('@/pages/dev/TableSample'));
 const Menu = React.lazy(() => import('@/pages/dev/Menu'));
 const PricingPage = React.lazy(() => import('@/pages/PricingPage'));
 const NotFoundPage = React.lazy(() => import('@/pages/NotFoundPage'));
-const Loader = React.lazy(() => import('@/pages/Loader'));
+// Loader is imported statically above — it cannot be lazy-loaded when used as a Suspense fallback
 const OnboardingPage = React.lazy(
   () => import('@/features/tenant/pages/OnboardingPage'),
 );

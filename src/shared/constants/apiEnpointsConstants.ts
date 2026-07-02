@@ -81,8 +81,19 @@ export const API_ENDPOINTS = {
     CREATE: '/part/create',
     LIST: '/part/list',
     ACTIVE: '/part/active',
+    GET_BY_ID: (id: string) => `/part/${id}`,
     EDIT: (id: string) => `/part/edit/${id}`,
     BLOCK: (id: string) => `/part/block/${id}`,
     DELETE: (id: string) => `/part/delete/${id}`,
+  },
+  SHIFT: {
+    CREATE_TEMPLATE: '/shift/template/create',
+    LIST_TEMPLATES: '/shift/template/list',
+    EDIT_TEMPLATE: (id: string) => `/shift/template/edit/${id}`,
+    DELETE_TEMPLATE: (id: string) => `/shift/template/delete/${id}`,
+    GENERATE: (templateId: string) =>
+      `/shift/production/generate/${templateId}`,
+    LIST_PRODUCTION: '/shift/production/list',
+    UPDATE_JOB_PROGRESS: (id: string) => `/shift/production/job-progress/${id}`,
   },
 };

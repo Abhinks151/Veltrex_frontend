@@ -40,6 +40,11 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     PART_UPDATED: 'Part updated successfully',
     PART_DELETED: 'Part deleted successfully',
     PART_BLOCK_TOGGLED: 'Part status updated',
+    SHIFT_TEMPLATE_CREATED: 'Shift template created successfully',
+    SHIFT_TEMPLATE_UPDATED: 'Shift template updated successfully',
+    SHIFT_TEMPLATE_DELETED: 'Shift template deleted successfully',
+    PRODUCTION_SHIFT_GENERATED: 'Production shift generated for today!',
+    SHIFT_JOB_PROGRESS_UPDATED: 'Job progress updated',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',

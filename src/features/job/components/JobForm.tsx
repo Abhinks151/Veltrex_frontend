@@ -93,6 +93,10 @@ const JobForm: React.FC<JobFormProps> = ({
             type="number"
             {...register('quantity', { valueAsNumber: true })}
             placeholder="Enter quantity"
+            disabled={
+              initialData?.status === JobStatus.IN_PROGRESS ||
+              initialData?.status === JobStatus.COMPLETED
+            }
           />
           {errors.quantity && (
             <p className="text-xs text-red-500">
