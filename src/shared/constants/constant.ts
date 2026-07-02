@@ -69,13 +69,13 @@ export const UserNavItems = [
     role: [Roles.ADMIN],
   },
   {
-    name: 'Shift Templates',
+    name: 'Shift Structures',
     path: '/platform/shift-templates',
     icon: CalendarClock,
     role: [Roles.ADMIN],
   },
   {
-    name: 'Shifts',
+    name: 'Daily Shifts',
     path: '/platform/shifts',
     icon: ClipboardList,
     role: [Roles.ADMIN, Roles.MACHINIST],
