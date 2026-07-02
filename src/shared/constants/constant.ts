@@ -9,6 +9,8 @@ import {
   Component,
   Briefcase,
   Ticket,
+  CalendarClock,
+  ClipboardList,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -65,6 +67,18 @@ export const UserNavItems = [
     path: '/platform/jobs',
     icon: Briefcase,
     role: [Roles.ADMIN],
+  },
+  {
+    name: 'Shift Templates',
+    path: '/platform/shift-templates',
+    icon: CalendarClock,
+    role: [Roles.ADMIN],
+  },
+  {
+    name: 'Shifts',
+    path: '/platform/shifts',
+    icon: ClipboardList,
+    role: [Roles.ADMIN, Roles.MACHINIST],
   },
   {
     name: 'Tickets',

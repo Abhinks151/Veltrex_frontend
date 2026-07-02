@@ -33,6 +33,12 @@ const JobDashBoard = React.lazy(
 const PartDashBoard = React.lazy(
   () => import('@/features/part/pages/PartDashBoard'),
 );
+const ShiftTemplateDashboard = React.lazy(
+  () => import('@/features/shift/pages/ShiftTemplateDashboard'),
+);
+const ProductionShiftDashboard = React.lazy(
+  () => import('@/features/shift/pages/ProductionShiftDashboard'),
+);
 
 const UserRoutes = () => {
   return (
@@ -42,16 +48,21 @@ const UserRoutes = () => {
           <Route element={<UserLayout />}>
             <Route path="/" element={<UserDashBoard />} />
             <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/jobs" element={<JobDashBoard />} />
+            <Route path="/shifts" element={<ProductionShiftDashboard />} />
 
             <Route
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}
             >
+              <Route path="/jobs" element={<JobDashBoard />} />
               <Route path="/employees" element={<EmployeeDashBoard />} />
               <Route path="/machines" element={<MachineDashBoard />} />
               <Route path="/fixtures" element={<FixtureDashBoard />} />
               <Route path="/raw-materials" element={<RawMaterialDashBoard />} />
               <Route path="/parts" element={<PartDashBoard />} />
+              <Route
+                path="/shift-templates"
+                element={<ShiftTemplateDashboard />}
+              />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

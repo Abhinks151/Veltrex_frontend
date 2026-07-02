@@ -9,6 +9,7 @@ import EmployeeReducer from '@/features/employee/employeeSlice';
 import JobReducer from '@/features/job/jobSlice';
 import PartReducer from '@/features/part/partSlice';
 import LookupReducer from '@/shared/store/lookupSlice';
+import ShiftReducer from '@/features/shift/shiftSlice';
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     job: JobReducer,
     part: PartReducer,
     lookups: LookupReducer,
+    shift: ShiftReducer,
   },
 });
 

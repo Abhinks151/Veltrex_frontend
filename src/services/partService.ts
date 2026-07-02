@@ -33,4 +33,7 @@ export const partService = {
 
   getActive: () =>
     axiosInstance.get<ApiResponse<Part[]>>(API_ENDPOINTS.PART.ACTIVE),
+
+  getById: (id: string) =>
+    axiosInstance.get<ApiResponse<Part>>(API_ENDPOINTS.PART.GET_BY_ID(id)),
 };
