@@ -28,6 +28,7 @@ export interface Part {
   machineId: string | null;
   fixtureId: string | null;
   rawMaterialId: string | null;
+  ncProgramId: string | null;
   dimensions: PartDimensions | null;
   cycleTime: string | null;
   setupTime: string | null;
@@ -51,6 +52,7 @@ export interface PartRequest {
   machineId?: string;
   fixtureId?: string;
   rawMaterialId?: string;
+  ncProgramId?: string;
   dimensions?: PartDimensions;
   cycleTime?: string;
   setupTime?: string;

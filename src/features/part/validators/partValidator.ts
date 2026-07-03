@@ -29,6 +29,11 @@ export const partSchema = z.object({
     .uuid('Must be a valid UUID')
     .optional()
     .or(z.literal('')),
+  ncProgramId: z
+    .string()
+    .uuid('Must be a valid UUID')
+    .optional()
+    .or(z.literal('')),
   dimensions: z
     .object({
       width: z.number().nonnegative('Width cannot be negative'),

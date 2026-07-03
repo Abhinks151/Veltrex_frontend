@@ -45,6 +45,12 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     SHIFT_TEMPLATE_DELETED: 'Shift template deleted successfully',
     PRODUCTION_SHIFT_GENERATED: 'Production shift generated for today!',
     SHIFT_JOB_PROGRESS_UPDATED: 'Job progress updated',
+    NC_PROGRAM_CREATED: 'NC Program created successfully',
+    NC_PROGRAM_UPDATED: 'NC Program updated successfully',
+    VERSION_BLOCKED: 'Version blocked successfully',
+    VERSION_UNBLOCKED: 'Version unblocked successfully',
+    VERSION_DELETED: 'Version deleted successfully',
+    VERSION_ADDED: 'New version uploaded successfully',
   },
   ERROR: {
     LOGOUT_FAILED: 'Logout failed',
@@ -96,6 +102,12 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
       'Could not load payment gateway. Please check your connection.',
     ACCESS_RESTRICTED_EMPLOYEE:
       'Organization access suspended. Contact your administrator.',
+    FAILED_FETCH_NC_PROGRAMS: 'Failed to fetch NC Programs',
+    NC_PROGRAM_CREATION_FAILED: 'NC Program creation failed',
+    NC_PROGRAM_UPDATE_FAILED: 'NC Program update failed',
+    VERSION_BLOCK_FAILED: 'Failed to update version block status',
+    VERSION_DELETE_FAILED: 'Failed to delete version',
+    VERSION_ADD_FAILED: 'Failed to add new version',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',

@@ -39,6 +39,9 @@ const ShiftTemplateDashboard = React.lazy(
 const ProductionShiftDashboard = React.lazy(
   () => import('@/features/shift/pages/ProductionShiftDashboard'),
 );
+const NcProgramDashBoard = React.lazy(
+  () => import('@/features/ncProgram/pages/NcProgramDashBoard'),
+);
 
 const UserRoutes = () => {
   return (
@@ -59,6 +62,7 @@ const UserRoutes = () => {
               <Route path="/fixtures" element={<FixtureDashBoard />} />
               <Route path="/raw-materials" element={<RawMaterialDashBoard />} />
               <Route path="/parts" element={<PartDashBoard />} />
+              <Route path="/nc-programs" element={<NcProgramDashBoard />} />
               <Route
                 path="/shift-templates"
                 element={<ShiftTemplateDashboard />}
