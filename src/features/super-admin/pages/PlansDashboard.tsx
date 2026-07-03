@@ -4,13 +4,18 @@ import { DataTable } from '@/shared/components/custom/DataTable';
 import { planService, type Plan } from '@/services/planService';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { Input } from '@/shared/components/ui/input';
-import { Button, buttonVariants } from '@/shared/components/ui/button';
-import ReusableModal from '@/shared/components/custom/ReusableModal';
+import { Button } from '@/shared/components/ui/button';
+import { buttonVariants } from '@/shared/components/ui/button';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 import { Plus } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { DEBOUNCE_DELAY, PAGINATION_LIMIT } from '@/shared/constants/constant';
+import PlanForm, { type PlanFormData } from '../components/PlanForm';
+
+type PlanPayload = Omit<PlanFormData, 'durationDays'> & {
+  durationDays: number | null;
+};
 
 interface AxiosError {
   response?: {
@@ -37,7 +42,7 @@ const swalWithBootstrapButtons = Swal.mixin({
   buttonsStyling: false,
 });
 
-const PlansPage = () => {
+const PlansDashboard = () => {
   const [data, setData] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,16 +57,6 @@ const PlansPage = () => {
   const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-
-  // Form State
-  const [formData, setFormData] = useState({
-    code: '',
-    name: '',
-    description: '',
-    price: 0,
-    currency: 'INR',
-    durationDays: '' as string | number,
-  });
 
   const fetchData = useCallback(async () => {
     try {
@@ -91,27 +86,7 @@ const PlansPage = () => {
   }, [debouncedSearch, statusFilter, pageSize]);
 
   const handleOpenModal = (plan: Plan | null = null) => {
-    if (plan) {
-      setSelectedPlan(plan);
-      setFormData({
-        code: plan.code,
-        name: plan.name,
-        description: plan.description || '',
-        price: plan.price,
-        currency: plan.currency,
-        durationDays: plan.durationDays ?? '',
-      });
-    } else {
-      setSelectedPlan(null);
-      setFormData({
-        code: '',
-        name: '',
-        description: '',
-        price: 0,
-        currency: 'INR',
-        durationDays: '',
-      });
-    }
+    setSelectedPlan(plan);
     setIsModalOpen(true);
   };
 
@@ -171,20 +146,10 @@ const PlansPage = () => {
     [data.length, currentPage, fetchData],
   );
 
-  const handleSubmit = async () => {
-    if (formData.price < 0) {
-      notifyError('Price cannot be negative');
-      return;
-    }
-
-    if (formData.durationDays !== '' && Number(formData.durationDays) < 0) {
-      notifyError('Duration days cannot be negative');
-      return;
-    }
-
+  const handleFormSubmit = async (formData: PlanFormData) => {
     try {
       setSubmitting(true);
-      const payload = {
+      const payload: PlanPayload = {
         ...formData,
         durationDays:
           formData.durationDays === '' ? null : Number(formData.durationDays),
@@ -394,112 +359,15 @@ const PlansPage = () => {
         </div>
       </div>
 
-      <ReusableModal
+      <PlanForm
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedPlan ? 'Edit Plan' : 'Create New Plan'}
-        showFooter
-        onSubmit={handleSubmit}
-        submitText={selectedPlan ? 'Update Plan' : 'Create Plan'}
-        loading={submitting}
-        maxWidth="max-w-xl"
-      >
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Code (Unique identifier)
-              </label>
-              <Input
-                disabled={!!selectedPlan}
-                placeholder="e.g. TRIAL, PREMIUM"
-                value={formData.code}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    code: e.target.value.toUpperCase(),
-                  })
-                }
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Name
-              </label>
-              <Input
-                placeholder="e.g. Free Trial"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">
-              Description
-            </label>
-            <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm min-h-[80px]"
-              placeholder="What's included in this plan?"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Price
-              </label>
-              <Input
-                type="number"
-                value={formData.price}
-                onChange={(e) =>
-                  setFormData({ ...formData, price: Number(e.target.value) })
-                }
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Currency
-              </label>
-              <Input
-                placeholder="INR"
-                value={formData.currency}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    currency: e.target.value.toUpperCase(),
-                  })
-                }
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Duration (Days)
-              </label>
-              <Input
-                type="number"
-                placeholder="Leave empty for lifetime"
-                value={formData.durationDays}
-                onChange={(e) =>
-                  setFormData({ ...formData, durationDays: e.target.value })
-                }
-              />
-            </div>
-          </div>
-          <p className="text-[11px] text-gray-400 italic">
-            * Duration in days. Set to 0 or leave empty for a
-            "lifetime/unlimited" plan.
-          </p>
-        </div>
-      </ReusableModal>
+        onSubmit={handleFormSubmit}
+        submitting={submitting}
+        selectedPlan={selectedPlan}
+      />
     </div>
   );
 };
 
-export default PlansPage;
+export default PlansDashboard;

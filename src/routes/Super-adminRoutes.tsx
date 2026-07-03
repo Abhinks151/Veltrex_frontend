@@ -18,7 +18,7 @@ const TenantsPage = React.lazy(
   () => import('@/features/super-admin/pages/TenantsPage'),
 );
 const PlansPage = React.lazy(
-  () => import('@/features/super-admin/pages/PlansPage'),
+  () => import('@/features/super-admin/pages/PlansDashboard'),
 );
 
 const SuperAdminRoutes = () => {
