@@ -9,6 +9,7 @@ import { FileText, X } from 'lucide-react';
 import { machineService } from '@/services/machineService';
 import { fixtureService } from '@/services/fixtureService';
 import { rawMaterialService } from '@/services/rawMaterialService';
+import { ncProgramService } from '@/services/ncProgramService';
 import LookupSelect from '@/shared/components/LookupSelect';
 
 const SELECT_CLASS =
@@ -30,6 +31,9 @@ const PartForm: React.FC<PartFormProps> = ({
   const [materials, setMaterials] = useState<{ id: string; name: string }[]>(
     [],
   );
+  const [ncPrograms, setNcPrograms] = useState<{ id: string; name: string }[]>(
+    [],
+  );
 
   const {
     register,
@@ -47,6 +51,7 @@ const PartForm: React.FC<PartFormProps> = ({
       machineId: initialData?.machineId ?? '',
       fixtureId: initialData?.fixtureId ?? '',
       rawMaterialId: initialData?.rawMaterialId ?? '',
+      ncProgramId: initialData?.ncProgramId ?? '',
       cycleTime: initialData?.cycleTime ?? '',
       setupTime: initialData?.setupTime ?? '',
       priority: initialData?.priority ?? 'MEDIUM',
@@ -62,14 +67,16 @@ const PartForm: React.FC<PartFormProps> = ({
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const [mRes, fRes, rmRes] = await Promise.all([
+        const [mRes, fRes, rmRes, ncRes] = await Promise.all([
           machineService.getActive(),
           fixtureService.getActive(),
           rawMaterialService.getActive(),
+          ncProgramService.getActive(),
         ]);
         if (mRes.data.success) setMachines(mRes.data.data || []);
         if (fRes.data.success) setFixtures(fRes.data.data || []);
         if (rmRes.data.success) setMaterials(rmRes.data.data || []);
+        if (ncRes.data.success) setNcPrograms(ncRes.data.data || []);
       } catch (err) {
         console.error('Failed to load form options', err);
       }
@@ -130,6 +137,8 @@ const PartForm: React.FC<PartFormProps> = ({
       formData.append('fixtureId', data.fixtureId);
     if (data.rawMaterialId && data.rawMaterialId !== '')
       formData.append('rawMaterialId', data.rawMaterialId);
+    if (data.ncProgramId && data.ncProgramId !== '')
+      formData.append('ncProgramId', data.ncProgramId);
 
     if (data.cycleTime) formData.append('cycleTime', data.cycleTime);
     if (data.setupTime) formData.append('setupTime', data.setupTime);
@@ -203,6 +212,20 @@ const PartForm: React.FC<PartFormProps> = ({
             {materials.map((rm) => (
               <option key={rm.id} value={rm.id}>
                 {rm.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">
+            NC Program
+          </label>
+          <select {...register('ncProgramId')} className={SELECT_CLASS}>
+            <option value="">No NC Program</option>
+            {ncPrograms.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
               </option>
             ))}
           </select>

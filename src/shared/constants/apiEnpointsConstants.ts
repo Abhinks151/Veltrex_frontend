@@ -96,4 +96,15 @@ export const API_ENDPOINTS = {
     LIST_PRODUCTION: '/shift/production/list',
     UPDATE_JOB_PROGRESS: (id: string) => `/shift/production/job-progress/${id}`,
   },
+  NC_PROGRAM: {
+    CREATE: '/nc-program/create',
+    LIST: '/nc-program/list',
+    ACTIVE: '/nc-program/active',
+    GET_BY_ID: (id: string) => `/nc-program/${id}`,
+    EDIT: (id: string) => `/nc-program/edit/${id}`,
+    ADD_VERSION: (id: string) => `/nc-program/${id}/version`,
+    VERSION_BY_ID: (id: string) => `/nc-program/version/${id}`,
+    BLOCK_VERSION: (id: string) => `/nc-program/version/${id}/block`,
+    DELETE_VERSION: (id: string) => `/nc-program/version/${id}/delete`,
+  },
 };

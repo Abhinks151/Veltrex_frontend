@@ -1,5 +1,3 @@
-import Alert from '@/pages/dev/Alret';
-import Loader from '@/pages/Loader';
 import { Roles } from '@/shared/constants/rolesEnum';
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -28,6 +26,9 @@ const AuthRoutes = React.lazy(() => import('./AuthRoutes'));
 const LandingPage = React.lazy(() => import('@/pages/LandingPage'));
 const HomePage = React.lazy(() => import('@/features/tenant/pages/HomePage'));
 const Sample = React.lazy(() => import('@/pages/dev/Sample'));
+const Alert = React.lazy(() => import('@/pages/dev/Alret'));
+const Program = React.lazy(() => import('@/pages/dev/Program'));
+const Loader = React.lazy(() => import('@/pages/Loader'));
 const ProtectedRoute = React.lazy(() => import('@/pages/ProtectedRoute'));
 const RoleProtectedRoute = React.lazy(
   () => import('@/pages/RoleProtectedRoute'),
@@ -166,6 +167,7 @@ const IndexRoutes = () => {
           <Route path="/menu" element={<Menu />} />
           <Route path="/loader" element={<Loader />} />
           <Route path="/alert" element={<Alert />} />
+          <Route path="/program" element={<Program />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -11,6 +11,7 @@ import {
   Ticket,
   CalendarClock,
   ClipboardList,
+  FileCode,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -60,6 +61,12 @@ export const UserNavItems = [
     name: 'Parts',
     path: '/platform/parts',
     icon: Component,
+    role: [Roles.ADMIN],
+  },
+  {
+    name: 'NC Programs',
+    path: '/platform/nc-programs',
+    icon: FileCode,
     role: [Roles.ADMIN],
   },
   {
