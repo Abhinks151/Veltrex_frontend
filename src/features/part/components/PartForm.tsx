@@ -243,7 +243,7 @@ const PartForm: React.FC<PartFormProps> = ({
 
         <LookupSelect
           {...register('operationType')}
-          category="OP_TYPE"
+          category="MACHINE_TYPE"
           label="Operation Type"
           error={errors.operationType?.message as string}
         />

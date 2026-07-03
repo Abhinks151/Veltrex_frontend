@@ -40,7 +40,7 @@ const NcProgramTable: React.FC<NcProgramTableProps> = ({
                 {program.name}
               </span>
               <span className="text-xs text-gray-500">
-                {program.versions?.length || 0} version(s)
+                {program.versions?.length || 0} versions
               </span>
             </div>
           );

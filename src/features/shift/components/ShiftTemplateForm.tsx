@@ -20,6 +20,7 @@ import { jobService } from '@/services/jobService';
 // import type { Machine } from '@/features/machine/types';
 import type { Employee } from '@/features/employee/types';
 import type { Job } from '@/features/job/types';
+import LookupSelect from '@/shared/components/LookupSelect';
 
 interface ShiftTemplateFormProps {
   initialData?: Partial<ShiftTemplateFormData>;
@@ -181,7 +182,7 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
 
       {/* Row 2: Shift Type & Repeat Type */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-1">
+        {/* <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">
             Shift Type
           </label>
@@ -195,7 +196,15 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
           {errors.shiftType && (
             <p className={errorClass}>{errors.shiftType.message}</p>
           )}
-        </div>
+        </div> */}
+        <LookupSelect
+          category="SHIFT_TYPE"
+          label="Shift Type"
+          placeholder="Select Shift Type"
+          error={errors.shiftType?.message}
+          className={selectClass}
+          {...register('shiftType')}
+        />
 
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">Repeat</label>

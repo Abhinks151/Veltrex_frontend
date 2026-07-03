@@ -462,16 +462,16 @@ const NcProgramDashBoard = () => {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => openViewModal(version)}
-                              className="h-7 px-2 text-xs"
-                            >
-                              View
-                            </Button>
                             {!version.isDeleted && (
                               <>
+                                <Button
+                                  variant="secondary"
+                                  size="sm"
+                                  onClick={() => openViewModal(version)}
+                                  className="h-7 px-2 text-xs"
+                                >
+                                  View
+                                </Button>
                                 <Button
                                   variant="secondary"
                                   size="sm"
