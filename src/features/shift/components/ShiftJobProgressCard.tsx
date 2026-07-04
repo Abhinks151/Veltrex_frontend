@@ -8,7 +8,16 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { partService } from '@/services/partService';
 import type { Part } from '@/features/part/types';
-import { Eye, X, FileText, Layers, Clock, Lock, Pencil } from 'lucide-react';
+import {
+  Eye,
+  X,
+  FileText,
+  Layers,
+  Clock,
+  Lock,
+  Pencil,
+  Download,
+} from 'lucide-react';
 
 interface ShiftJobProgressCardProps {
   job: ShiftJob;
@@ -40,14 +49,10 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  // Editing state: the input only appears once "Update Quantity" is clicked.
   const [isEditing, setIsEditing] = useState(false);
-  // The person enters how many pieces they've completed *since the last
-  // update* (an increment), not the new running total.
   const [incrementQty, setIncrementQty] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
-  // Part detail modal state
   const [partDetails, setPartDetails] = useState<Part | null>(null);
   const [partLoading, setPartLoading] = useState(false);
   const [showPartModal, setShowPartModal] = useState(false);
@@ -62,8 +67,6 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
   const canUpdate =
     !isAdmin && !past && job.status !== ShiftJobStatus.COMPLETED;
 
-  // Live preview of what the update will result in, clamped so the total
-  // can never exceed the assigned quantity.
   const previewTotal = Math.min(
     job.assignedQuantity,
     job.completedQuantity + incrementQty,
@@ -424,7 +427,8 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
 
                   {/* Documents */}
                   {(partDetails.setupSheet ||
-                    partDetails.engineeringDrawing) && (
+                    partDetails.engineeringDrawing ||
+                    partDetails.ncProgramFileUrl) && (
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
                         <FileText size={13} /> Documents
@@ -450,6 +454,17 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
                           >
                             <FileText size={14} />
                             View Engineering Drawing
+                          </a>
+                        )}
+                        {partDetails.ncProgramFileUrl && (
+                          <a
+                            href={partDetails.ncProgramFileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-2.5 text-sm font-semibold text-[#4f46e5] hover:bg-indigo-100 transition-colors"
+                          >
+                            <Download size={14} />
+                            Download NC Program
                           </a>
                         )}
                       </div>

@@ -29,6 +29,7 @@ export interface Part {
   fixtureId: string | null;
   rawMaterialId: string | null;
   ncProgramId: string | null;
+  ncProgramFileUrl: string | null;
   dimensions: PartDimensions | null;
   cycleTime: string | null;
   setupTime: string | null;
