@@ -53,6 +53,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     VERSION_ADDED: 'New version uploaded successfully',
   },
   ERROR: {
+    INVALID_INCREMENT_QUANTITY: 'Enter how many pieces you completed',
+    PART_INFORMATION_NOT_AVAILABLE: 'Part information not available',
+    FAILED_TO_LOAD_PART_DETAILS: 'Failed to load part details',
     LOGOUT_FAILED: 'Logout failed',
     TOKEN_REQUIRED: 'Token is required',
     SOMETHING_WENT_WRONG: 'Something went wrong',
@@ -108,6 +111,13 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     VERSION_BLOCK_FAILED: 'Failed to update version block status',
     VERSION_DELETE_FAILED: 'Failed to delete version',
     VERSION_ADD_FAILED: 'Failed to add new version',
+    FAILED_FETCH_SHIFT_TEMPLATES: 'Failed to fetch shift templates',
+    SHIFT_TEMPLATE_CREATION_FAILED: 'Shift template creation failed',
+    SHIFT_TEMPLATE_UPDATE_FAILED: 'Shift template update failed',
+    SHIFT_TEMPLATE_DELETION_FAILED: 'Shift template deletion failed',
+    FAILED_FETCH_PRODUCTION_SHIFTS: 'Failed to fetch production shifts',
+    PRODUCTION_SHIFT_GENERATION_FAILED: 'Production shift generation failed',
+    SHIFT_JOB_PROGRESS_UPDATE_FAILED: 'Shift job progress update failed',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',

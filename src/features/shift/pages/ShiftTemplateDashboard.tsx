@@ -19,6 +19,7 @@ import type { ShiftTemplate } from '../types';
 import { ShiftType, ShiftRepeatType } from '../types';
 import type { ShiftTemplateFormData } from '../validators/shiftValidator';
 import Swal from 'sweetalert2';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 const columnHelper = createColumnHelper<ShiftTemplate>();
 
@@ -64,12 +65,17 @@ const ShiftTemplateDashboard = () => {
       setIsSubmitting(true);
       const result = await dispatch(createShiftTemplate(data)).unwrap();
       if (result.success) {
-        notifySuccess('Shift template created successfully');
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.SHIFT_TEMPLATE_CREATED,
+        );
         setIsAddModalOpen(false);
         loadData();
       }
     } catch (error) {
-      notifyError((error as string) || 'Failed to create shift template');
+      notifyError(
+        (error as string) ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_CREATION_FAILED,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -83,13 +89,18 @@ const ShiftTemplateDashboard = () => {
         updateShiftTemplate({ id: selectedTemplate.id, data }),
       ).unwrap();
       if (result.success) {
-        notifySuccess('Shift template updated successfully');
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.SHIFT_TEMPLATE_UPDATED,
+        );
         setIsEditModalOpen(false);
         setSelectedTemplate(null);
         loadData();
       }
     } catch (error) {
-      notifyError((error as string) || 'Failed to update shift template');
+      notifyError(
+        (error as string) ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_UPDATE_FAILED,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +126,10 @@ const ShiftTemplateDashboard = () => {
           loadData();
         }
       } catch (error) {
-        notifyError((error as string) || 'Failed to delete shift template');
+        notifyError(
+          (error as string) ||
+            FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_DELETION_FAILED,
+        );
       }
     }
   };
@@ -126,10 +140,15 @@ const ShiftTemplateDashboard = () => {
         generateProductionShift(templateId),
       ).unwrap();
       if (result.success) {
-        notifySuccess('Production shift generated for today!');
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.PRODUCTION_SHIFT_GENERATED,
+        );
       }
     } catch (error) {
-      notifyError((error as string) || 'Failed to generate production shift');
+      notifyError(
+        (error as string) ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.PRODUCTION_SHIFT_GENERATION_FAILED,
+      );
     }
   };
 

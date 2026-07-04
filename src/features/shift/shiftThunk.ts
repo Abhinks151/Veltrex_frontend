@@ -10,8 +10,6 @@ import type { ApiResponse } from '@/shared/types/apiResponse';
 import axios from 'axios';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
-// ── Shift Templates ─────────────────────────────────────────────────────────
-
 export const fetchShiftTemplates = createAsyncThunk<
   ApiResponse<{ items: ShiftTemplate[]; total: number }>,
   { page: number; limit: number },
@@ -23,7 +21,8 @@ export const fetchShiftTemplates = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to fetch shift templates',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_FETCH_SHIFT_TEMPLATES,
       );
     }
     return rejectWithValue(
@@ -43,7 +42,8 @@ export const createShiftTemplate = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to create shift template',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_CREATION_FAILED,
       );
     }
     return rejectWithValue(
@@ -63,7 +63,8 @@ export const updateShiftTemplate = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to update shift template',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_UPDATE_FAILED,
       );
     }
     return rejectWithValue(
@@ -83,7 +84,8 @@ export const deleteShiftTemplate = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to delete shift template',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_TEMPLATE_DELETION_FAILED,
       );
     }
     return rejectWithValue(
@@ -91,8 +93,6 @@ export const deleteShiftTemplate = createAsyncThunk<
     );
   }
 });
-
-// ── Production Shifts ────────────────────────────────────────────────────────
 
 export const fetchProductionShifts = createAsyncThunk<
   ApiResponse<{ items: ProductionShift[]; total: number }>,
@@ -105,7 +105,8 @@ export const fetchProductionShifts = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to fetch production shifts',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_FETCH_PRODUCTION_SHIFTS,
       );
     }
     return rejectWithValue(
@@ -125,7 +126,8 @@ export const generateProductionShift = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data.message || 'Failed to generate production shift',
+        error.response?.data.message ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.PRODUCTION_SHIFT_GENERATION_FAILED,
       );
     }
     return rejectWithValue(
@@ -150,7 +152,8 @@ export const updateShiftJobProgress = createAsyncThunk<
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(
-          error.response?.data.message || 'Failed to update job progress',
+          error.response?.data.message ||
+            FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_JOB_PROGRESS_UPDATE_FAILED,
         );
       }
       return rejectWithValue(
