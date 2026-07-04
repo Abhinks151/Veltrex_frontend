@@ -38,7 +38,6 @@ const shiftSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ─── Fetch Templates ──────────────────────────────────────────────
       .addCase(fetchShiftTemplates.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -53,7 +52,6 @@ const shiftSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // ─── Create Template ──────────────────────────────────────────────
       .addCase(createShiftTemplate.fulfilled, (state, action) => {
         if (action.payload.data) {
           state.templates.unshift(action.payload.data);
@@ -61,7 +59,7 @@ const shiftSlice = createSlice({
         }
       })
 
-      // ─── Update Template ──────────────────────────────────────────────
+      //update
       .addCase(updateShiftTemplate.fulfilled, (state, action) => {
         if (action.payload.data) {
           const idx = state.templates.findIndex(
@@ -71,7 +69,7 @@ const shiftSlice = createSlice({
         }
       })
 
-      // ─── Delete Template ──────────────────────────────────────────────
+      //delete
       .addCase(deleteShiftTemplate.fulfilled, (state, action) => {
         if (action.payload.data) {
           state.templates = state.templates.filter(
@@ -81,7 +79,6 @@ const shiftSlice = createSlice({
         }
       })
 
-      // ─── Fetch Production Shifts ──────────────────────────────────────
       .addCase(fetchProductionShifts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,7 +93,6 @@ const shiftSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // ─── Generate Production Shift ────────────────────────────────────
       .addCase(generateProductionShift.fulfilled, (state, action) => {
         if (action.payload.data) {
           state.productionShifts.unshift(action.payload.data);
@@ -104,7 +100,6 @@ const shiftSlice = createSlice({
         }
       })
 
-      // ─── Update Shift Job Progress ────────────────────────────────────
       .addCase(updateShiftJobProgress.fulfilled, (state, action) => {
         const updatedJob = action.payload.data;
         if (!updatedJob) return;

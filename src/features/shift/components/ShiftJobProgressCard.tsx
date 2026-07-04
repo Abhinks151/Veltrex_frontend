@@ -18,6 +18,7 @@ import {
   Pencil,
   Download,
 } from 'lucide-react';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
 
 interface ShiftJobProgressCardProps {
   job: ShiftJob;
@@ -85,7 +86,7 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
 
   const handleUpdate = async () => {
     if (incrementQty <= 0) {
-      notifyError('Enter how many pieces you completed');
+      notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.INVALID_INCREMENT_QUANTITY);
       return;
     }
     try {
@@ -94,13 +95,18 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
         updateShiftJobProgress({ id: job.id, completedQuantity: previewTotal }),
       ).unwrap();
       if (result.success) {
-        notifySuccess('Job progress updated');
+        notifySuccess(
+          FRONTEND_MESSAGE_CONSTANTS.SUCCESS.SHIFT_JOB_PROGRESS_UPDATED,
+        );
         setIsEditing(false);
         setIncrementQty(0);
         onUpdated?.();
       }
     } catch (error) {
-      notifyError((error as string) || 'Failed to update progress');
+      notifyError(
+        (error as string) ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.SHIFT_JOB_PROGRESS_UPDATE_FAILED,
+      );
     } finally {
       setLoading(false);
     }
@@ -109,7 +115,9 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
   const handleViewPart = async () => {
     const partId = job.job?.partId;
     if (!partId) {
-      notifyError('Part information not available');
+      notifyError(
+        FRONTEND_MESSAGE_CONSTANTS.ERROR.PART_INFORMATION_NOT_AVAILABLE,
+      );
       return;
     }
     try {
@@ -120,7 +128,7 @@ const ShiftJobProgressCard: React.FC<ShiftJobProgressCardProps> = ({
         setPartDetails(res.data.data);
       }
     } catch {
-      notifyError('Failed to load part details');
+      notifyError(FRONTEND_MESSAGE_CONSTANTS.ERROR.FAILED_TO_LOAD_PART_DETAILS);
       setShowPartModal(false);
     } finally {
       setPartLoading(false);
