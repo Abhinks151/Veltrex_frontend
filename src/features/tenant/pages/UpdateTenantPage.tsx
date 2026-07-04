@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import UpdateTenantForm from '../components/UpdateTenantForm';
 import { getTenant, updateTenant } from '../tenantThunk';
 import { useNavigate } from 'react-router-dom';
-import type { TenantRequest } from '../types';
+import type { TenantUpdateData } from '../types';
 import { useEffect } from 'react';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
@@ -25,7 +25,7 @@ const UpdateTenantPage = () => {
     return;
   }
 
-  const handleUpdate = async (data: TenantRequest) => {
+  const handleUpdate = async (data: TenantUpdateData) => {
     try {
       if (!id) {
         notifyError(

@@ -13,8 +13,12 @@ export interface TenantRequest {
   plan?: string; // plan code e.g. 'TRIAL', 'LIFETIME'
 }
 
+export interface TenantUpdateData {
+  name: string;
+}
+
 export interface TenantUpdateRequest {
-  data: TenantRequest;
+  data: TenantUpdateData;
   id: string;
 }
 

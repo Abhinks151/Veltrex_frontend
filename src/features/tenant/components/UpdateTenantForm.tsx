@@ -8,9 +8,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Error from '@/shared/components/custom/Error';
 import { notifyError } from '@/shared/utils/toasterUtils';
 import { useEffect } from 'react';
-import { tenantSchema, type tenantFormData } from '../validators/tenant.schema';
+import {
+  updateTenantSchema,
+  type updateTenantFormData,
+} from '../validators/tenant.schema';
 
-const UpdateTenantForm = ({ onSubmit, data, loading, error }: UpdateTenantFormProps) => {
+const UpdateTenantForm = ({
+  onSubmit,
+  data,
+  loading,
+  error,
+}: UpdateTenantFormProps) => {
   // const [email, setEmail] = useState<string>('');
   // const [password, setPassword] = useState<string>('');
   useEffect(() => {
@@ -24,8 +32,8 @@ const UpdateTenantForm = ({ onSubmit, data, loading, error }: UpdateTenantFormPr
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<tenantFormData>({
-    resolver: zodResolver(tenantSchema),
+  } = useForm<updateTenantFormData>({
+    resolver: zodResolver(updateTenantSchema),
   });
 
   useEffect(() => {
@@ -84,7 +92,10 @@ const UpdateTenantForm = ({ onSubmit, data, loading, error }: UpdateTenantFormPr
         <div className="text-center mt-4">
           <p>
             Go back to Home page.{' '}
-            <Link to="/home" className="text-blue-500 hover:underline cursor-pointer">
+            <Link
+              to="/home"
+              className="text-blue-500 hover:underline cursor-pointer"
+            >
               Home
             </Link>
           </p>
