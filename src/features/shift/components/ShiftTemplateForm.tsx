@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   useForm,
   useFieldArray,
@@ -122,8 +122,35 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
   const todayStr = toDateInputValue(new Date());
 
   const startDateValue = useWatch({ control, name: 'startDate' });
+  const endDateValue = useWatch({ control, name: 'endDate' });
   const endDateMin =
     startDateValue && startDateValue > todayStr ? startDateValue : todayStr;
+
+  const getWorkingDays = (start: string, end: string) => {
+    if (!start || !end) return 0;
+
+    const current = new Date(start);
+    const last = new Date(end);
+
+    let count = 0;
+
+    while (current <= last) {
+      const day = current.getDay(); // 0 = Sun, 6 = Sat
+
+      if (day !== 0 && day !== 6) {
+        count++;
+      }
+
+      current.setDate(current.getDate() + 1);
+    }
+
+    return count;
+  };
+
+  const workingDays = useMemo(
+    () => getWorkingDays(startDateValue, endDateValue),
+    [startDateValue, endDateValue],
+  );
 
   const handleFormSubmit = (data: ShiftTemplateFormData) => {
     if (data.startDate < todayStr) {
@@ -240,6 +267,12 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
           )}
         </div>
       </div>
+      {startDateValue && endDateValue && (
+        <p className="text-sm text-muted-foreground">
+          Selected working days:{' '}
+          <span className="font-medium">{workingDays}</span>
+        </p>
+      )}
 
       {/* Row 4: Jobs */}
       <div className="space-y-3">
