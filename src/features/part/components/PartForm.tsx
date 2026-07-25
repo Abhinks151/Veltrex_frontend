@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
@@ -39,6 +39,7 @@ const PartForm: React.FC<PartFormProps> = ({
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<PartFormData>({
     resolver: zodResolver(partSchema) as Resolver<PartFormData>,
@@ -63,6 +64,14 @@ const PartForm: React.FC<PartFormProps> = ({
       },
     },
   });
+
+  const machineId = useWatch({ control, name: 'machineId' });
+  const fixtureId = useWatch({ control, name: 'fixtureId' });
+  const rawMaterialId = useWatch({ control, name: 'rawMaterialId' });
+  const ncProgramId = useWatch({ control, name: 'ncProgramId' });
+  const operationType = useWatch({ control, name: 'operationType' });
+  const priority = useWatch({ control, name: 'priority' });
+  const dimensionsUnit = useWatch({ control, name: 'dimensions.unit' });
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -101,6 +110,12 @@ const PartForm: React.FC<PartFormProps> = ({
       setValue('rawMaterialId', initialData.rawMaterialId);
     }
   }, [materials, initialData?.rawMaterialId, setValue]);
+
+  useEffect(() => {
+    if (initialData?.ncProgramId && ncPrograms.length > 0) {
+      setValue('ncProgramId', initialData.ncProgramId);
+    }
+  }, [ncPrograms, initialData?.ncProgramId, setValue]);
 
   const [setupSheetFile, setSetupSheetFile] = useState<File | null>(null);
   const [engineeringDrawingFile, setEngDrawingFile] = useState<File | null>(
@@ -181,7 +196,11 @@ const PartForm: React.FC<PartFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">Machine</label>
-          <select {...register('machineId')} className={SELECT_CLASS}>
+          <select
+            {...register('machineId')}
+            className={SELECT_CLASS}
+            value={machineId}
+          >
             <option value="">No machine</option>
             {machines.map((m) => (
               <option key={m.id} value={m.id}>
@@ -193,7 +212,11 @@ const PartForm: React.FC<PartFormProps> = ({
 
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">Fixture</label>
-          <select {...register('fixtureId')} className={SELECT_CLASS}>
+          <select
+            {...register('fixtureId')}
+            className={SELECT_CLASS}
+            value={fixtureId}
+          >
             <option value="">No fixture</option>
             {fixtures.map((f) => (
               <option key={f.id} value={f.id}>
@@ -207,7 +230,11 @@ const PartForm: React.FC<PartFormProps> = ({
           <label className="text-sm font-semibold text-gray-700">
             Raw Material
           </label>
-          <select {...register('rawMaterialId')} className={SELECT_CLASS}>
+          <select
+            {...register('rawMaterialId')}
+            className={SELECT_CLASS}
+            value={rawMaterialId}
+          >
             <option value="">No raw material</option>
             {materials.map((rm) => (
               <option key={rm.id} value={rm.id}>
@@ -221,7 +248,11 @@ const PartForm: React.FC<PartFormProps> = ({
           <label className="text-sm font-semibold text-gray-700">
             NC Program
           </label>
-          <select {...register('ncProgramId')} className={SELECT_CLASS}>
+          <select
+            {...register('ncProgramId')}
+            className={SELECT_CLASS}
+            value={ncProgramId}
+          >
             <option value="">No NC Program</option>
             {ncPrograms.map((p) => (
               <option key={p.id} value={p.id}>
@@ -246,6 +277,7 @@ const PartForm: React.FC<PartFormProps> = ({
           category="MACHINE_TYPE"
           label="Operation Type"
           error={errors.operationType?.message as string}
+          value={operationType}
         />
       </div>
 
@@ -256,6 +288,7 @@ const PartForm: React.FC<PartFormProps> = ({
           category="PRIORITY"
           label="Priority"
           error={errors.priority?.message as string}
+          value={priority}
         />
 
         <div className="space-y-1">
@@ -329,6 +362,7 @@ const PartForm: React.FC<PartFormProps> = ({
             category="UNIT"
             label="Unit"
             error={errors.dimensions?.unit?.message as string}
+            value={dimensionsUnit}
           />
         </div>
       </div>

@@ -55,6 +55,11 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
     },
   });
 
+  const employeeId = useWatch({ control, name: 'employeeId' });
+  const shiftType = useWatch({ control, name: 'shiftType' });
+  const repeatType = useWatch({ control, name: 'repeatType' });
+  const jobsArray = useWatch({ control, name: 'jobs' });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'jobs',
@@ -63,19 +68,30 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
   useEffect(() => {
     if (!initialData) return;
 
-    const needsEmployeeList = !!initialData.employeeId;
-    const needsJobList = !!initialData.jobs && initialData.jobs.length > 0;
-
-    if (needsEmployeeList && employees.length === 0) return;
-    if (needsJobList && jobs.length === 0) return;
-
     reset({
       shiftType: ShiftType.MORNING,
       repeatType: ShiftRepeatType.DAILY,
       jobs: [{ jobId: '', assignedQuantity: 1, sequence: 1 }],
       ...initialData,
     });
-  }, [initialData, employees, jobs, reset]);
+  }, [initialData, reset]);
+
+  useEffect(() => {
+    if (!initialData?.employeeId || employees.length === 0) return;
+    setValue('employeeId', initialData.employeeId);
+  }, [employees, initialData?.employeeId, setValue]);
+
+  useEffect(() => {
+    if (
+      !initialData?.jobs ||
+      initialData.jobs.length === 0 ||
+      jobs.length === 0
+    )
+      return;
+    initialData.jobs.forEach((job, index) => {
+      setValue(`jobs.${index}.jobId`, job.jobId);
+    });
+  }, [jobs, initialData?.jobs, setValue]);
 
   useEffect(() => {
     const loadLookups = async () => {
@@ -193,7 +209,11 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
           <label className="text-sm font-semibold text-gray-700">
             Employee (Machinist)
           </label>
-          <select {...register('employeeId')} className={selectClass}>
+          <select
+            {...register('employeeId')}
+            className={selectClass}
+            value={employeeId}
+          >
             <option value="">Select an employee</option>
             {employees.map((e) => (
               <option key={e.id} value={e.id}>
@@ -231,11 +251,16 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
           error={errors.shiftType?.message}
           className={selectClass}
           {...register('shiftType')}
+          value={shiftType}
         />
 
         <div className="space-y-1">
           <label className="text-sm font-semibold text-gray-700">Repeat</label>
-          <select {...register('repeatType')} className={selectClass}>
+          <select
+            {...register('repeatType')}
+            className={selectClass}
+            value={repeatType}
+          >
             <option value={ShiftRepeatType.NONE}>One-time (No repeat)</option>
             <option value={ShiftRepeatType.DAILY}>Daily</option>
           </select>
@@ -324,6 +349,7 @@ const ShiftTemplateForm: React.FC<ShiftTemplateFormProps> = ({
                     handleJobSelectChange(index, e.target.value);
                   }}
                   className={selectClass}
+                  value={jobsArray?.[index]?.jobId || ''}
                 >
                   <option value="">Select a job</option>
                   {jobs.map((j) => (
