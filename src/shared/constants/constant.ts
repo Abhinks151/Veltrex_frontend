@@ -94,3 +94,12 @@ export const UserNavItems = [
     role: [Roles.MAINTENANCE],
   },
 ];
+
+export const DocumentationNavLinks = [
+  { href: '#overview', label: 'Overview' },
+  { href: '#problem', label: 'Problem' },
+  { href: '#demo', label: 'Demo' },
+  // { href: '#tech-stack', label: 'Tech Stack' },
+  // { href: '#architecture', label: 'Architecture' },
+  { href: '#features', label: 'Features' },
+];

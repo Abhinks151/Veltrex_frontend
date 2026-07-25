@@ -54,7 +54,7 @@ const TableSample = React.lazy(() => import('@/pages/dev/TableSample'));
 const Menu = React.lazy(() => import('@/pages/dev/Menu'));
 const PricingPage = React.lazy(() => import('@/pages/PricingPage'));
 const NotFoundPage = React.lazy(() => import('@/pages/NotFoundPage'));
-// Loader is imported statically above — it cannot be lazy-loaded when used as a Suspense fallback
+const DocumentationPage = React.lazy(() => import('@/pages/DocumentationPage'));
 const OnboardingPage = React.lazy(
   () => import('@/features/tenant/pages/OnboardingPage'),
 );
@@ -168,6 +168,7 @@ const IndexRoutes = () => {
           <Route path="/loader" element={<Loader />} />
           <Route path="/alert" element={<Alert />} />
           <Route path="/program" element={<Program />} />
+          <Route path="/docs" element={<DocumentationPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

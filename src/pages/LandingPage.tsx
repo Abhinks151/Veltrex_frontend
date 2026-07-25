@@ -26,8 +26,14 @@ const LandingPage = () => {
         <div className="font-semibold text-lg">Veltrex</div>
 
         <div className="flex items-center gap-6 text-sm text-gray-600">
-          <a href="#">Features</a>
-          <a href="#">How it works</a>
+          {/* <a href="#" className="hover:text-gray-900 transition-colors">Features</a> */}
+          {/* <a href="#" className="hover:text-gray-900 transition-colors">How it works</a> */}
+          <Link
+            to="/docs"
+            className="hover:text-[#3B2E8C] font-medium transition-colors"
+          >
+            Documentation
+          </Link>
           <Link to={'/auth/login'}>
             <Button variant="primary" size="sm">
               Have an account
