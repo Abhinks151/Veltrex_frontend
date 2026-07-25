@@ -14,6 +14,81 @@ import SubscriptionBanner from '@/features/subscription/components/SubscriptionB
 import Swal from 'sweetalert2';
 import { getSubdomain, getSubdomainUrl } from '@/shared/utils/subdomain';
 
+const formatDate = (date: string | number | Date) =>
+  new Date(date).toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+
+const Panel = ({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <div
+    className={`bg-white rounded-xl shadow-sm border border-gray-100 ${className}`}
+  >
+    {children}
+  </div>
+);
+
+const StatusPill = ({
+  tone,
+  children,
+}: {
+  tone: 'blue' | 'green' | 'orange';
+  children: React.ReactNode;
+}) => {
+  const toneStyles: Record<typeof tone, string> = {
+    blue: 'bg-blue-100 text-blue-600',
+    green: 'bg-green-100 text-green-600',
+    orange: 'bg-orange-100 text-orange-600',
+  };
+  return (
+    <span
+      className={`text-xs font-medium px-2 py-1 rounded ${toneStyles[tone]}`}
+    >
+      {children}
+    </span>
+  );
+};
+
+const OrganizationPanel = ({ name }: { name?: string | null }) => (
+  <Panel className="p-6">
+    <div className="flex items-start justify-between gap-6">
+      <div>
+        <p className="text-xs font-semibold tracking-wide text-gray-400 mb-1">
+          {name ? 'ACTIVE ORGANIZATION' : 'SETUP REQUIRED'}
+        </p>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {name || 'Organization Setup'}
+        </h2>
+        <p className="text-gray-500 text-sm mt-1 max-w-md">
+          {name
+            ? 'Manage your organization assets, team members, and monitor industrial output.'
+            : 'Create your organization to start using the platform.'}
+        </p>
+      </div>
+
+      <Link
+        to={name ? '/tenant/update' : '/tenant/create'}
+        className="shrink-0"
+      >
+        <Button variant="primary">
+          {name ? 'Edit Organization' : 'Create Organization'}
+        </Button>
+      </Link>
+    </div>
+  </Panel>
+);
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -118,18 +193,29 @@ const HomePage = () => {
     return <TenantRestrictedView reason="expired" />;
   }
 
+  const platformUrl = user?.subdomain
+    ? getSubdomainUrl(user.subdomain, '/platform')
+    : '/platform';
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <SubscriptionBanner />
       <Navbar />
 
-      <div className="p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Welcome to Veltrex</h1>
-        <p className="text-gray-500 mb-8">
-          Manage your subscription and set up your organization to get started.
-        </p>
+      <div className="flex-1 w-full max-w-6xl mx-auto px-6 py-10 md:px-8 md:py-12">
+        {/* Page header */}
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Welcome to Veltrex
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Manage your subscription and set up your organization to get
+            started.
+          </p>
+        </header>
 
-        <div className="bg-gradient-to-r from-indigo-800 to-indigo-600 text-white rounded-xl p-6 flex justify-between items-center shadow-md mb-6">
+        {/* Primary action banner */}
+        <div className="bg-gradient-to-r from-indigo-800 to-indigo-600 text-white rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-md mb-8">
           <div>
             <h2 className="text-lg font-semibold">
               Initialize Your Operations
@@ -139,123 +225,76 @@ const HomePage = () => {
             </p>
           </div>
 
-          {/* <Button className="bg-white text-indigo-700 hover:bg-gray-100"> */}
           <Link
-            to={
-              user?.subdomain
-                ? getSubdomainUrl(user.subdomain, '/platform')
-                : '/platform'
-            }
+            to={platformUrl}
             onClick={(e) => {
               if (user?.subdomain) {
                 e.preventDefault();
-                window.location.assign(
-                  getSubdomainUrl(user.subdomain, '/platform'),
-                );
+                window.location.assign(platformUrl);
               }
             }}
+            className="shrink-0"
           >
-            <Button variant={'primary'}>Go to Veltrex</Button>
+            <Button variant="primary">Go to Veltrex</Button>
           </Link>
         </div>
 
-        {name && (
-          <div className="bg-white p-6 rounded-xl shadow-sm flex justify-between items-center mb-6">
-            <div>
-              <p className="text-xs text-gray-400 mb-1">ACTIVE ORGANIZATION</p>
-              <h2 className="text-lg font-semibold">{name}</h2>
-              <p className="text-gray-500 text-sm mt-1">
-                Manage your organization assets, team members, and monitor
-                industrial output.
-              </p>
-            </div>
+        {/* Organization status */}
+        <div className="mb-6">
+          <OrganizationPanel name={name} />
+        </div>
 
-            <Link to="/tenant/update">
-              <Button variant="primary">Edit Organization</Button>
-            </Link>
-          </div>
-        )}
-
-        {!name && (
-          <div className="bg-white p-6 rounded-xl shadow-sm flex justify-between items-center mb-6">
-            <div>
-              <p className="text-xs text-gray-400 mb-1">SETUP REQUIRED</p>
-              <h2 className="text-lg font-semibold">Organization Setup</h2>
-              <p className="text-gray-500 text-sm mt-1">
-                Create your organization to start using the platform.
-              </p>
-            </div>
-
-            <Link to="/tenant/create">
-              <Button>Create Organization</Button>
-            </Link>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-6">
+        {/* Subscription + Next steps */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Subscription */}
-          <div className="bg-white p-6 rounded-xl shadow-sm">
+          <Panel className="p-6 lg:col-span-2">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold">Subscription</h3>
+              <h3 className="font-semibold text-gray-900">Subscription</h3>
               <div className="flex items-center gap-2">
                 {isTrialActive && (
-                  <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-600">
-                    Free Trial
-                  </span>
+                  <StatusPill tone="blue">Free Trial</StatusPill>
                 )}
-                <span
-                  className={`text-xs px-2 py-1 rounded ${status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}
-                >
+                <StatusPill tone={status === 'ACTIVE' ? 'green' : 'orange'}>
                   {status || 'INACTIVE'}
-                </span>
+                </StatusPill>
               </div>
             </div>
 
             {isTrialActive && endDate && (
               <div className="mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-700">
-                Your free trial ends on{' '}
-                <strong>
-                  {new Date(endDate).toLocaleDateString('en-IN', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </strong>
-                . Upgrade before it expires to avoid interruption.
+                Your free trial ends on <strong>{formatDate(endDate)}</strong>.
+                Upgrade before it expires to avoid interruption.
               </div>
             )}
 
-            <div className="text-sm text-gray-500 space-y-2">
-              <p>
-                Plan: {plan ? `${plan.name} Subscription` : 'No Active Plan'}
-              </p>
-              <p>
-                Billing:{' '}
-                {plan
-                  ? plan.price === 0
-                    ? 'Free Trial'
-                    : `${plan.currency} ${plan.price.toLocaleString()} / ${plan.durationDays ? `${plan.durationDays} days` : 'lifetime'}`
-                  : 'N/A'}
-              </p>
-              {!isTrialPlan && plan?.durationDays && (
-                <p>
-                  Next Billing:{' '}
-                  {endDate
-                    ? new Date(endDate).toLocaleDateString('en-IN', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })
+            <dl className="text-sm text-gray-500 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 mb-4">
+              <div className="flex gap-1">
+                <dt className="text-gray-400">Plan:</dt>
+                <dd>{plan ? `${plan.name} Subscription` : 'No Active Plan'}</dd>
+              </div>
+              <div className="flex gap-1">
+                <dt className="text-gray-400">Billing:</dt>
+                <dd>
+                  {plan
+                    ? plan.price === 0
+                      ? 'Free Trial'
+                      : `${plan.currency} ${plan.price.toLocaleString()} / ${plan.durationDays ? `${plan.durationDays} days` : 'lifetime'}`
                     : 'N/A'}
-                </p>
+                </dd>
+              </div>
+              {!isTrialPlan && plan?.durationDays && (
+                <div className="flex gap-1">
+                  <dt className="text-gray-400">Next Billing:</dt>
+                  <dd>{endDate ? formatDate(endDate) : 'N/A'}</dd>
+                </div>
               )}
-            </div>
+            </dl>
 
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-gray-100">
               {isTrialActive && (
                 <Button
                   variant="primary"
-                  className="w-full hover:opacity-90 transition-all font-semibold"
+                  className="sm:w-auto font-semibold hover:opacity-90 transition-all"
                   onClick={() => navigate('/plans?mode=upgrade')}
                 >
                   Upgrade to Pro
@@ -273,28 +312,33 @@ const HomePage = () => {
                     : 'Unblock access to platform'}
               </button>
             </div>
-          </div>
+          </Panel>
 
           {/* Next Steps */}
-          <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="font-semibold mb-4">Next Steps</h3>
+          <Panel className="p-6 flex flex-col">
+            <h3 className="font-semibold text-gray-900 mb-4">Next Steps</h3>
 
-            <ul className="space-y-4 text-sm text-gray-600">
-              <li>
-                <strong>01</strong> Create your organization
+            <ol className="space-y-4 text-sm text-gray-600 flex-1">
+              <li className="flex gap-3">
+                <span className="font-semibold text-indigo-600">01</span>
+                <span>Create your organization</span>
               </li>
-              <li>
-                <strong>02</strong> Add machines and team members
+              <li className="flex gap-3">
+                <span className="font-semibold text-indigo-600">02</span>
+                <span>Add machines and team members</span>
               </li>
-              <li>
-                <strong>03</strong> Start scheduling jobs
+              <li className="flex gap-3">
+                <span className="font-semibold text-indigo-600">03</span>
+                <span>Start scheduling jobs</span>
               </li>
-            </ul>
+            </ol>
 
-            <Link to="/docs">
-              <Button variant="primary">View Documentation</Button>
+            <Link to="/docs" className="mt-6">
+              <Button variant="primary" className="w-full">
+                View Documentation
+              </Button>
             </Link>
-          </div>
+          </Panel>
         </div>
       </div>
     </div>
