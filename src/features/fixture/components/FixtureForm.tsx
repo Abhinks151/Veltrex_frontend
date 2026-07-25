@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
@@ -23,6 +23,8 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
   const {
     register,
     handleSubmit,
+    control,
+    reset,
     formState: { errors },
   } = useForm<FixtureFormData>({
     resolver: zodResolver(fixtureSchema) as Resolver<FixtureFormData>,
@@ -37,6 +39,15 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
       },
     },
   });
+
+  const type = useWatch({ control, name: 'type' });
+  const unit = useWatch({ control, name: 'dimensions.unit' });
+
+  React.useEffect(() => {
+    if (initialData) {
+      reset(initialData as FixtureFormData);
+    }
+  }, [initialData, reset]);
 
   return (
     <form
@@ -63,6 +74,7 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
           category="MACHINE_TYPE"
           label="Fixture Type"
           error={errors.type?.message as string}
+          value={type}
         />
 
         {/* Width */}
@@ -116,6 +128,7 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
           category="UNIT"
           label="Unit"
           error={errors.dimensions?.unit?.message as string}
+          value={unit}
         />
       </div>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
@@ -27,6 +27,8 @@ const JobForm: React.FC<JobFormProps> = ({
     register,
     handleSubmit,
     setValue,
+    control,
+    reset,
     formState: { errors },
   } = useForm<JobFormData>({
     resolver: zodResolver(jobSchema) as Resolver<JobFormData>,
@@ -38,6 +40,16 @@ const JobForm: React.FC<JobFormProps> = ({
       status: JobStatus.PENDING,
     },
   });
+
+  const partId = useWatch({ control, name: 'partId' });
+  const priority = useWatch({ control, name: 'priority' });
+  const status = useWatch({ control, name: 'status' });
+
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
 
   useEffect(() => {
     const loadParts = async () => {
@@ -70,6 +82,7 @@ const JobForm: React.FC<JobFormProps> = ({
           <select
             {...register('partId')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+            value={partId}
           >
             <option value="">Select a part</option>
             {parts.map((part) => (
@@ -110,6 +123,7 @@ const JobForm: React.FC<JobFormProps> = ({
           category="PRIORITY"
           label="Priority"
           error={errors.priority?.message as string}
+          value={priority}
         />
 
         {initialData && (
@@ -120,6 +134,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <select
               {...register('status')}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+              value={status}
             >
               {Object.values(JobStatus).map((s) => (
                 <option key={s} value={s}>
