@@ -103,3 +103,40 @@ export const DocumentationNavLinks = [
   // { href: '#architecture', label: 'Architecture' },
   { href: '#features', label: 'Features' },
 ];
+
+export const flowSteps = ['Inquiry', 'Work Order', 'Production', 'Delivery'];
+
+export const Features = [
+  {
+    icon: '📊',
+    title: 'Interactive Dashboard',
+    desc: 'A daily overview of operations, production activity, and current work status at a glance.',
+  },
+  {
+    icon: '👥',
+    title: 'Customer Management',
+    desc: 'Organized records — contacts, job history, and ongoing projects.',
+  },
+  {
+    icon: '📋',
+    title: 'Work Order Management',
+    desc: 'Track orders from initiation to completion in one place.',
+  },
+  {
+    icon: '🏭',
+    title: 'Production Tracking',
+    desc: 'Full visibility into every stage of the machining lifecycle.',
+  },
+  {
+    icon: '🧑‍🔧',
+    title: 'Employee Management',
+    desc: 'Role-based access, tuned to each person\u2019s responsibilities.',
+  },
+  {
+    icon: '🗄️',
+    title: 'Centralized Records',
+    desc: 'One secure system, no more scattered paperwork.',
+  },
+];
+
+export const YOUTUBE_VIDEO_ID = 'KtBefDeECVU';

@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/shared/components/ui/button';
-
-const YOUTUBE_VIDEO_ID = 'KtBefDeECVU';
+import {
+  DocumentationNavLinks,
+  Features,
+  YOUTUBE_VIDEO_ID,
+} from '@/shared/constants/constant';
 
 const Section = ({
   id,
@@ -43,13 +46,6 @@ const FeatureCard = ({
 );
 
 const DocumentationPage = () => {
-  const DocumentationNavLinks = [
-    { href: '#overview', label: 'Overview' },
-    { href: '#problem', label: 'Problem' },
-    { href: '#demo', label: 'Demo' },
-    { href: '#features', label: 'Features' },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       {/* Header */}
@@ -314,49 +310,12 @@ const DocumentationPage = () => {
         {/* Features */}
         <Section id="features" title="Key Features">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                icon: '📊',
-                title: 'Interactive Dashboard',
-                description:
-                  'Get an overview of daily operations with quick access to important business information, production activities, and current work status.',
-              },
-              {
-                icon: '👥',
-                title: 'Customer Management',
-                description:
-                  'Maintain organized customer records, making it easy to access contact information, job history, and ongoing projects.',
-              },
-              {
-                icon: '📋',
-                title: 'Work Order Management',
-                description:
-                  'Create, organize, and monitor work orders from initiation to completion while keeping all related information in one place.',
-              },
-              {
-                icon: '🏭',
-                title: 'Production Tracking',
-                description:
-                  'Monitor the progress of machining jobs throughout the production lifecycle, ensuring better visibility into current operations.',
-              },
-              {
-                icon: '🧑‍🔧',
-                title: 'Employee Management',
-                description:
-                  'Manage employee information and provide controlled access to different parts of the platform based on responsibilities.',
-              },
-              {
-                icon: '🗄️',
-                title: 'Centralized Records',
-                description:
-                  'Store operational information in one secure location, reducing dependency on manual paperwork and disconnected spreadsheets.',
-              },
-            ].map((f) => (
+            {Features.map((f) => (
               <FeatureCard
                 key={f.title}
                 icon={f.icon}
                 title={f.title}
-                description={f.description}
+                description={f.desc}
               />
             ))}
           </div>
