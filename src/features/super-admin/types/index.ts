@@ -21,3 +21,29 @@ export type User = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type DashboardTenant = {
+  id: string;
+  name: string;
+  subdomain: string;
+  createdAt: string;
+  isBlocked: boolean;
+  ownerName: string;
+  ownerEmail: string;
+  planStatus: string;
+  planName: string;
+};
+
+export type ChartDataPoint = {
+  label: string;
+  count: number;
+};
+
+export type DashboardStats = {
+  totalTenants: number;
+  tenantGrowthPercentage: number;
+  totalUsers: number;
+  totalRevenue: number;
+  recentTenants: DashboardTenant[];
+  chartData: ChartDataPoint[];
+};

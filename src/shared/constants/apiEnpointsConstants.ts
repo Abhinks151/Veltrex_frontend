@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   },
 
   SUPER_ADMIN: {
+    DASHBOARD: '/super-admin/dashboard',
     TENANTS: '/super-admin/tenants',
     USERS: '/super-admin/users',
     TOGGLE_USER_BLOCK: (id: string) => `/super-admin/users/${id}/toggle-block`,

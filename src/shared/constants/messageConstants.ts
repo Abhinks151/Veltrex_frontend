@@ -118,6 +118,9 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     FAILED_FETCH_PRODUCTION_SHIFTS: 'Failed to fetch production shifts',
     PRODUCTION_SHIFT_GENERATION_FAILED: 'Production shift generation failed',
     SHIFT_JOB_PROGRESS_UPDATE_FAILED: 'Shift job progress update failed',
+    FAILED_FETCH_DASHBOARD: 'Failed to fetch dashboard statistics',
+    VALIDATION_DATE_REQUIRED: 'Start date and End date are required.',
+    VALIDATION_DATE_END_BEFORE_START: 'End date cannot be before start date.',
   },
   VALIDATION: {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',
