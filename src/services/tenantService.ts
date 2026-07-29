@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/app/api/axios';
-import type { TenantRequest } from '@/features/tenant/types';
+import type { TenantRequest, TenantUpdateData } from '@/features/tenant/types';
 import { API_ENDPOINTS } from '@/shared/constants/apiEnpointsConstants';
 
 export const tenantService = {
@@ -11,7 +11,7 @@ export const tenantService = {
     return axiosInstance.get(API_ENDPOINTS.TENANT.GET);
   },
 
-  update: async (data: TenantRequest, id: string) => {
+  update: async (data: TenantUpdateData, id: string) => {
     return axiosInstance.patch(API_ENDPOINTS.TENANT.UPDATE(id), data);
   },
 
