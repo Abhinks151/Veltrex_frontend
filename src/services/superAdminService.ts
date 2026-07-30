@@ -44,4 +44,12 @@ export const superAdminService = {
       { name },
     );
   },
+
+  getRevenueStats: async (params?: {
+    range?: string;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    return axiosInstance.get(API_ENDPOINTS.SUPER_ADMIN.REVENUE, { params });
+  },
 };
