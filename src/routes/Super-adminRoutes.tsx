@@ -17,6 +17,9 @@ const DashBoard = React.lazy(
 const TenantsPage = React.lazy(
   () => import('@/features/super-admin/pages/TenantsPage'),
 );
+const RevenuePage = React.lazy(
+  () => import('@/features/super-admin/pages/RevenueDashboard'),
+);
 const PlansPage = React.lazy(
   () => import('@/features/super-admin/pages/PlansDashboard'),
 );
@@ -29,6 +32,7 @@ const SuperAdminRoutes = () => {
           <Route path="/" element={<DashBoard />} />
           <Route path="/tenants" element={<TenantsPage />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/revenue" element={<RevenuePage />} />
           <Route path="/plans" element={<PlansPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

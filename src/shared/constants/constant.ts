@@ -12,6 +12,7 @@ import {
   CalendarClock,
   ClipboardList,
   FileCode,
+  Coins,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -23,6 +24,7 @@ export const navItems = [
   { name: 'Dashboard', path: '/super-admin', icon: LayoutDashboard },
   { name: 'Tenants', path: '/super-admin/tenants', icon: Building },
   { name: 'Users', path: '/super-admin/users', icon: Users },
+  { name: 'Revenue', path: '/super-admin/revenue', icon: Coins },
   { name: 'Plans', path: '/super-admin/plans', icon: CreditCard },
 ];
 
