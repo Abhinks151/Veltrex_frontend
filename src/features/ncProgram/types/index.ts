@@ -43,3 +43,14 @@ export interface CreateNcProgramPayload {
 export interface AddVersionPayload {
   description?: string;
 }
+
+export interface CreateNcProgramFromEditorPayload {
+  name: string;
+  content: string;
+  description?: string;
+}
+
+export interface AddVersionFromEditorPayload {
+  content: string;
+  description?: string;
+}

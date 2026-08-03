@@ -7,6 +7,9 @@ import {
   addProgramVersion,
   blockProgramVersion,
   deleteProgramVersion,
+  createNcProgramFromEditor,
+  addProgramVersionFromEditor,
+  fetchVersionContent,
 } from '../ncProgramThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
@@ -16,8 +19,7 @@ import { Input } from '@/shared/components/ui/input';
 import { Button, buttonVariants } from '@/shared/components/ui/button';
 import { Plus, Search, RefreshCcw } from 'lucide-react';
 import ReusableModal from '@/shared/components/custom/ReusableModal';
-import NcProgramForm from '../components/NcProgramForm';
-import AddVersionForm from '../components/AddVersionForm';
+import NcEditorModal from '../components/NcEditorModal';
 import NcProgramTable from '../components/NcProgramTable';
 import VersionViewModalContent from '../components/VersionViewModalContent';
 import type { NcProgram, ProgramVersion } from '../types';
@@ -161,6 +163,84 @@ const NcProgramDashBoard = () => {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCreateProgramFromEditor = async (
+    content: string,
+    description?: string,
+    name?: string,
+  ) => {
+    if (!name) return;
+    try {
+      setIsSubmitting(true);
+      const result = await dispatch(
+        createNcProgramFromEditor({ name, content, description }),
+      ).unwrap();
+      if (result.success) {
+        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.NC_PROGRAM_CREATED);
+        setIsAddModalOpen(false);
+      }
+    } catch (error) {
+      const errorMessage =
+        (error as { message?: string })?.message || (error as string);
+      notifyError(
+        errorMessage ||
+          FRONTEND_MESSAGE_CONSTANTS.ERROR.NC_PROGRAM_CREATION_FAILED,
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAddVersionFromEditor = async (
+    content: string,
+    description?: string,
+  ) => {
+    if (!selectedProgram) return;
+    try {
+      setIsSubmitting(true);
+      const result = await dispatch(
+        addProgramVersionFromEditor({
+          programId: selectedProgram.id,
+          content,
+          description,
+        }),
+      ).unwrap();
+      if (result.success) {
+        notifySuccess(FRONTEND_MESSAGE_CONSTANTS.SUCCESS.VERSION_ADDED);
+        setIsAddVersionModalOpen(false);
+        setSelectedProgram(null);
+      }
+    } catch (error) {
+      const errorMessage =
+        (error as { message?: string })?.message || (error as string);
+      notifyError(
+        errorMessage || FRONTEND_MESSAGE_CONSTANTS.ERROR.VERSION_ADD_FAILED,
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLoadPreviousVersionContent = async (): Promise<string> => {
+    if (!selectedProgram) return '';
+    const versions = selectedProgram.versions || [];
+    if (!versions.length) {
+      throw new Error('No previous version exists');
+    }
+    const latest = [...versions].reverse().find((v) => !v.isDeleted);
+    if (!latest) {
+      throw new Error('No active previous version found');
+    }
+    try {
+      const result = await dispatch(fetchVersionContent(latest.id)).unwrap();
+      return result.data?.content || '';
+    } catch (error) {
+      const errorMessage =
+        (error as { message?: string })?.message || (error as string);
+      notifyError(errorMessage || 'Failed to fetch previous version content');
+      throw error;
     }
   };
 
@@ -318,14 +398,15 @@ const NcProgramDashBoard = () => {
       </div>
 
       {/* Create Modal */}
-      <ReusableModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title="Create NC Program"
-        maxWidth="max-w-xl"
-      >
-        <NcProgramForm onSubmit={handleCreateProgram} loading={isSubmitting} />
-      </ReusableModal>
+      {isAddModalOpen && (
+        <NcEditorModal
+          mode="create"
+          loading={isSubmitting}
+          onClose={() => setIsAddModalOpen(false)}
+          onSubmitFile={handleCreateProgram}
+          onSubmitEditor={handleCreateProgramFromEditor}
+        />
+      )}
 
       {/* Edit Modal */}
       <ReusableModal
@@ -365,17 +446,20 @@ const NcProgramDashBoard = () => {
       </ReusableModal>
 
       {/* Add Version Modal */}
-      <ReusableModal
-        isOpen={isAddVersionModalOpen}
-        onClose={() => {
-          setIsAddVersionModalOpen(false);
-          setSelectedProgram(null);
-        }}
-        title={`Add Version — ${selectedProgram?.name || ''}`}
-        maxWidth="max-w-xl"
-      >
-        <AddVersionForm onSubmit={handleAddVersion} loading={isSubmitting} />
-      </ReusableModal>
+      {isAddVersionModalOpen && (
+        <NcEditorModal
+          mode="addVersion"
+          programName={selectedProgram?.name}
+          loading={isSubmitting}
+          onClose={() => {
+            setIsAddVersionModalOpen(false);
+            setSelectedProgram(null);
+          }}
+          onSubmitFile={handleAddVersion}
+          onSubmitEditor={handleAddVersionFromEditor}
+          loadPreviousContent={handleLoadPreviousVersionContent}
+        />
+      )}
 
       {/* View Version Modal */}
       <ReusableModal

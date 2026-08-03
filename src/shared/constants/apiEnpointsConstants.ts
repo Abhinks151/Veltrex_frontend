@@ -108,5 +108,9 @@ export const API_ENDPOINTS = {
     VERSION_BY_ID: (id: string) => `/nc-program/version/${id}`,
     BLOCK_VERSION: (id: string) => `/nc-program/version/${id}/block`,
     DELETE_VERSION: (id: string) => `/nc-program/version/${id}/delete`,
+    CREATE_FROM_EDITOR: '/nc-program/create-from-editor',
+    ADD_VERSION_FROM_EDITOR: (id: string) =>
+      `/nc-program/${id}/version-from-editor`,
+    VERSION_CONTENT: (id: string) => `/nc-program/version/${id}/content`,
   },
 };

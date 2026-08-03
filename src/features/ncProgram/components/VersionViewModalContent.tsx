@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ProgramVersion } from '../types';
 import { FileText, Download } from 'lucide-react';
+import { ncProgramService } from '@/services/ncProgramService';
 
 interface VersionViewModalContentProps {
   version: ProgramVersion;
@@ -92,8 +93,33 @@ const VersionViewModalContent: React.FC<VersionViewModalContentProps> = ({
         <div className="pt-2 border-t border-gray-100">
           <a
             href={version.fileUrl}
-            target="_blank"
-            rel="noreferrer"
+            onClick={async (e) => {
+              e.preventDefault();
+              try {
+                const response = await ncProgramService.getVersionContent(
+                  version.id,
+                );
+                if (response.data.success && response.data.data?.content) {
+                  const content = response.data.data.content;
+                  const blob = new Blob([content], { type: 'text/plain' });
+                  const blobUrl = URL.createObjectURL(blob);
+                  const tempLink = document.createElement('a');
+                  tempLink.href = blobUrl;
+                  tempLink.setAttribute(
+                    'download',
+                    version.fileName || 'program.nc',
+                  );
+                  document.body.appendChild(tempLink);
+                  tempLink.click();
+                  document.body.removeChild(tempLink);
+                  URL.revokeObjectURL(blobUrl);
+                } else {
+                  throw new Error('Failed to resolve content string');
+                }
+              } catch {
+                window.open(version.fileUrl, '_blank', 'noopener,noreferrer');
+              }
+            }}
             className="inline-flex items-center gap-2 text-sm font-semibold text-[#4f46e5] hover:underline"
           >
             <Download size={15} />
