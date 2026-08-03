@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { ShiftTemplate, ProductionShift } from './types';
+import type {
+  ShiftTemplate,
+  ProductionShift,
+  MachinistDashboardStats,
+} from './types';
 import {
   fetchShiftTemplates,
   createShiftTemplate,
@@ -8,6 +12,7 @@ import {
   fetchProductionShifts,
   generateProductionShift,
   updateShiftJobProgress,
+  fetchMachinistDashboard,
 } from './shiftThunk';
 
 interface ShiftState {
@@ -17,6 +22,8 @@ interface ShiftState {
   totalProductionShifts: number;
   loading: boolean;
   error: string | null;
+  machinistDashboard: MachinistDashboardStats | null;
+  machinistDashboardLoading: boolean;
 }
 
 const initialState: ShiftState = {
@@ -26,6 +33,8 @@ const initialState: ShiftState = {
   totalProductionShifts: 0,
   loading: false,
   error: null,
+  machinistDashboard: null,
+  machinistDashboardLoading: false,
 };
 
 const shiftSlice = createSlice({
@@ -112,6 +121,19 @@ const shiftSlice = createSlice({
           );
           if (jobIdx !== -1) shift.shiftJobs[jobIdx] = updatedJob;
         }
+      })
+
+      .addCase(fetchMachinistDashboard.pending, (state) => {
+        state.machinistDashboardLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchMachinistDashboard.fulfilled, (state, action) => {
+        state.machinistDashboardLoading = false;
+        state.machinistDashboard = action.payload.data ?? null;
+      })
+      .addCase(fetchMachinistDashboard.rejected, (state, action) => {
+        state.machinistDashboardLoading = false;
+        state.error = action.payload as string;
       });
   },
 });

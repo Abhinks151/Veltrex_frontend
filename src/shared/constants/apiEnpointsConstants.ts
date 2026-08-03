@@ -97,6 +97,7 @@ export const API_ENDPOINTS = {
       `/shift/production/generate/${templateId}`,
     LIST_PRODUCTION: '/shift/production/list',
     UPDATE_JOB_PROGRESS: (id: string) => `/shift/production/job-progress/${id}`,
+    MACHINIST_DASHBOARD: '/shift/machinist/dashboard',
   },
   NC_PROGRAM: {
     CREATE: '/nc-program/create',

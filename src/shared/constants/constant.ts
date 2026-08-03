@@ -142,3 +142,48 @@ export const Features = [
 ];
 
 export const YOUTUBE_VIDEO_ID = 'KtBefDeECVU';
+
+export const statusConfig: Record<
+  string,
+  { label: string; color: string; bg: string; dot: string }
+> = {
+  PENDING: {
+    label: 'Not Started',
+    color: 'text-yellow-700',
+    bg: 'bg-yellow-100',
+    dot: 'bg-yellow-400',
+  },
+  IN_PROGRESS: {
+    label: 'In Progress',
+    color: 'text-blue-700',
+    bg: 'bg-blue-100',
+    dot: 'bg-blue-500',
+  },
+  COMPLETED: {
+    label: 'Completed',
+    color: 'text-green-700',
+    bg: 'bg-green-100',
+    dot: 'bg-green-500',
+  },
+};
+
+export const shiftStatusConfig: Record<
+  string,
+  { label: string; color: string; bg: string }
+> = {
+  PENDING: {
+    label: 'Not Started',
+    color: 'text-yellow-700',
+    bg: 'bg-yellow-100',
+  },
+  IN_PROGRESS: {
+    label: 'In Progress',
+    color: 'text-blue-700',
+    bg: 'bg-blue-100',
+  },
+  COMPLETED: {
+    label: 'Completed',
+    color: 'text-green-700',
+    bg: 'bg-green-100',
+  },
+};

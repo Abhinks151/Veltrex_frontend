@@ -94,3 +94,31 @@ export interface CreateShiftTemplateRequest {
     sequence: number;
   }[];
 }
+
+export interface MachinistDashboardJobItem {
+  id: string;
+  partName: string;
+  partNumber: string;
+  assignedQuantity: number;
+  completedQuantity: number;
+  status: string;
+  sequence: number;
+}
+
+export interface MachinistDashboardTodayShift {
+  id: string;
+  shiftType: string;
+  status: string;
+  date: string;
+}
+
+export interface MachinistDashboardStats {
+  todayShift: MachinistDashboardTodayShift | null;
+  totalAssignedParts: number;
+  totalCompletedParts: number;
+  totalRemainingParts: number;
+  pendingJobsCount: number;
+  inProgressJobsCount: number;
+  completedJobsCount: number;
+  jobs: MachinistDashboardJobItem[];
+}
