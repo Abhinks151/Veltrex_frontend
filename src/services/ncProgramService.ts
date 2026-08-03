@@ -62,4 +62,28 @@ export const ncProgramService = {
     axiosInstance.delete<ApiResponse<ProgramVersion>>(
       API_ENDPOINTS.NC_PROGRAM.DELETE_VERSION(id),
     ),
+
+  createFromEditor: (data: {
+    name: string;
+    content: string;
+    description?: string;
+  }) =>
+    axiosInstance.post<ApiResponse<NcProgram>>(
+      API_ENDPOINTS.NC_PROGRAM.CREATE_FROM_EDITOR,
+      data,
+    ),
+
+  addVersionFromEditor: (
+    id: string,
+    data: { content: string; description?: string },
+  ) =>
+    axiosInstance.post<ApiResponse<ProgramVersion>>(
+      API_ENDPOINTS.NC_PROGRAM.ADD_VERSION_FROM_EDITOR(id),
+      data,
+    ),
+
+  getVersionContent: (id: string) =>
+    axiosInstance.get<ApiResponse<{ content: string }>>(
+      API_ENDPOINTS.NC_PROGRAM.VERSION_CONTENT(id),
+    ),
 };

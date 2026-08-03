@@ -7,6 +7,8 @@ import {
   addProgramVersion,
   blockProgramVersion,
   deleteProgramVersion,
+  createNcProgramFromEditor,
+  addProgramVersionFromEditor,
 } from './ncProgramThunk';
 
 interface NcProgramState {
@@ -54,6 +56,12 @@ const ncProgramSlice = createSlice({
           state.total += 1;
         }
       })
+      .addCase(createNcProgramFromEditor.fulfilled, (state, action) => {
+        if (action.payload.data) {
+          state.programs.unshift(action.payload.data);
+          state.total += 1;
+        }
+      })
       // Edit (rename)
       .addCase(editNcProgram.fulfilled, (state, action) => {
         if (action.payload.data) {
@@ -69,6 +77,17 @@ const ncProgramSlice = createSlice({
         }
       })
       .addCase(addProgramVersion.fulfilled, (state, action) => {
+        if (action.payload.data) {
+          const version = action.payload.data;
+          const programIndex = state.programs.findIndex(
+            (p) => p.id === version.programId,
+          );
+          if (programIndex !== -1) {
+            state.programs[programIndex].versions.push(version);
+          }
+        }
+      })
+      .addCase(addProgramVersionFromEditor.fulfilled, (state, action) => {
         if (action.payload.data) {
           const version = action.payload.data;
           const programIndex = state.programs.findIndex(

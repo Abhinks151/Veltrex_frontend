@@ -127,3 +127,69 @@ export const deleteProgramVersion = createAsyncThunk<
     );
   }
 });
+
+export const createNcProgramFromEditor = createAsyncThunk<
+  ApiResponse<NcProgram>,
+  { name: string; content: string; description?: string },
+  { rejectValue: string }
+>('ncProgram/createFromEditor', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await ncProgramService.createFromEditor(payload);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(
+        error.response?.data.message || 'NC Program creation failed',
+      );
+    }
+    return rejectWithValue(
+      FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG,
+    );
+  }
+});
+
+export const addProgramVersionFromEditor = createAsyncThunk<
+  ApiResponse<ProgramVersion>,
+  { programId: string; content: string; description?: string },
+  { rejectValue: string }
+>(
+  'ncProgram/addVersionFromEditor',
+  async ({ programId, content, description }, { rejectWithValue }) => {
+    try {
+      const response = await ncProgramService.addVersionFromEditor(programId, {
+        content,
+        description,
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(
+          error.response?.data.message || 'Failed to add version',
+        );
+      }
+      return rejectWithValue(
+        FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG,
+      );
+    }
+  },
+);
+
+export const fetchVersionContent = createAsyncThunk<
+  ApiResponse<{ content: string }>,
+  string,
+  { rejectValue: string }
+>('ncProgram/fetchVersionContent', async (versionId, { rejectWithValue }) => {
+  try {
+    const response = await ncProgramService.getVersionContent(versionId);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(
+        error.response?.data.message || 'Failed to load version content',
+      );
+    }
+    return rejectWithValue(
+      FRONTEND_MESSAGE_CONSTANTS.ERROR.SOMETHING_WENT_WRONG,
+    );
+  }
+});

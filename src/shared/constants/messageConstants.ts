@@ -111,6 +111,8 @@ export const FRONTEND_MESSAGE_CONSTANTS = {
     VERSION_BLOCK_FAILED: 'Failed to update version block status',
     VERSION_DELETE_FAILED: 'Failed to delete version',
     VERSION_ADD_FAILED: 'Failed to add new version',
+    NC_EDITOR_CONTENT_EMPTY: 'Editor content cannot be empty',
+    FAILED_FETCH_VERSION_CONTENT: 'Failed to load version content for editing',
     FAILED_FETCH_SHIFT_TEMPLATES: 'Failed to fetch shift templates',
     SHIFT_TEMPLATE_CREATION_FAILED: 'Shift template creation failed',
     SHIFT_TEMPLATE_UPDATE_FAILED: 'Shift template update failed',
