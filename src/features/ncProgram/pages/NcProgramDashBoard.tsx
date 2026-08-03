@@ -10,6 +10,7 @@ import {
   createNcProgramFromEditor,
   addProgramVersionFromEditor,
   fetchVersionContent,
+  deleteNcProgram,
 } from '../ncProgramThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
@@ -307,6 +308,39 @@ const NcProgramDashBoard = () => {
     [dispatch, swalWithButtons],
   );
 
+  const handleDeleteProgram = useCallback(
+    async (program: NcProgram) => {
+      const result = await swalWithButtons.fire({
+        title: 'Are you sure?',
+        text: `Do you want to delete the NC program "${program.name}"? You won't be able to revert this!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true,
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await dispatch(deleteNcProgram(program.id)).unwrap();
+          notifySuccess(
+            FRONTEND_MESSAGE_CONSTANTS.SUCCESS.NC_PROGRAM_DELETED ||
+              'NC Program deleted successfully',
+          );
+        } catch (error) {
+          const errorMessage =
+            (error as { message?: string })?.message || (error as string);
+          notifyError(
+            errorMessage ||
+              FRONTEND_MESSAGE_CONSTANTS.ERROR.NC_PROGRAM_DELETE_FAILED ||
+              'Failed to delete NC program',
+          );
+        }
+      }
+    },
+    [dispatch, swalWithButtons],
+  );
+
   const openEditModal = (program: NcProgram) => {
     setSelectedProgram(program);
     resetEdit({ name: program.name });
@@ -394,6 +428,7 @@ const NcProgramDashBoard = () => {
             setSelectedProgram(program);
             setIsVersionsModalOpen(true);
           }}
+          onDeleteProgram={handleDeleteProgram}
         />
       </div>
 

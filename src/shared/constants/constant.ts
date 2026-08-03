@@ -22,9 +22,9 @@ export const DEBOUNCE_DELAY = 500;
 
 export const navItems = [
   { name: 'Dashboard', path: '/super-admin', icon: LayoutDashboard },
+  { name: 'Revenue', path: '/super-admin/revenue', icon: Coins },
   { name: 'Tenants', path: '/super-admin/tenants', icon: Building },
   { name: 'Users', path: '/super-admin/users', icon: Users },
-  { name: 'Revenue', path: '/super-admin/revenue', icon: Coins },
   { name: 'Plans', path: '/super-admin/plans', icon: CreditCard },
 ];
 

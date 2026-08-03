@@ -9,6 +9,7 @@ import {
   deleteProgramVersion,
   createNcProgramFromEditor,
   addProgramVersionFromEditor,
+  deleteNcProgram,
 } from './ncProgramThunk';
 
 interface NcProgramState {
@@ -131,6 +132,23 @@ const ncProgramSlice = createSlice({
             }
           }
         }
+      })
+      // Delete NC Program
+      .addCase(deleteNcProgram.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteNcProgram.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.data) {
+          const deletedId = action.payload.data.id;
+          state.programs = state.programs.filter((p) => p.id !== deletedId);
+          state.total = Math.max(0, state.total - 1);
+        }
+      })
+      .addCase(deleteNcProgram.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

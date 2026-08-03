@@ -105,6 +105,7 @@ export const API_ENDPOINTS = {
     ACTIVE: '/nc-program/active',
     GET_BY_ID: (id: string) => `/nc-program/${id}`,
     EDIT: (id: string) => `/nc-program/edit/${id}`,
+    DELETE: (id: string) => `/nc-program/delete/${id}`,
     ADD_VERSION: (id: string) => `/nc-program/${id}/version`,
     VERSION_BY_ID: (id: string) => `/nc-program/version/${id}`,
     BLOCK_VERSION: (id: string) => `/nc-program/version/${id}/block`,
