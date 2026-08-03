@@ -86,4 +86,8 @@ export const ncProgramService = {
     axiosInstance.get<ApiResponse<{ content: string }>>(
       API_ENDPOINTS.NC_PROGRAM.VERSION_CONTENT(id),
     ),
+  delete: (id: string) =>
+    axiosInstance.delete<ApiResponse<NcProgram>>(
+      API_ENDPOINTS.NC_PROGRAM.DELETE(id),
+    ),
 };

@@ -14,6 +14,7 @@ interface NcProgramTableProps {
   onAddVersion: (program: NcProgram) => void;
   onEditProgram: (program: NcProgram) => void;
   onShowVersions: (program: NcProgram) => void;
+  onDeleteProgram: (program: NcProgram) => void;
 }
 
 const columnHelper = createColumnHelper<NcProgram>();
@@ -27,6 +28,7 @@ const NcProgramTable: React.FC<NcProgramTableProps> = ({
   onAddVersion,
   onEditProgram,
   onShowVersions,
+  onDeleteProgram,
 }) => {
   const columns: ColumnDef<NcProgram, unknown>[] = useMemo(
     () => [
@@ -141,12 +143,20 @@ const NcProgramTable: React.FC<NcProgramTableProps> = ({
               >
                 Versions
               </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => onDeleteProgram(program)}
+                className="h-8 px-3 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                Delete
+              </Button>
             </div>
           );
         },
       }) as ColumnDef<NcProgram, unknown>,
     ],
-    [onEditProgram, onAddVersion, onShowVersions],
+    [onEditProgram, onAddVersion, onShowVersions, onDeleteProgram],
   );
 
   return (
