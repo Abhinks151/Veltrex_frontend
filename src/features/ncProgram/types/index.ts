@@ -19,6 +19,8 @@ export interface NcProgram {
   id: string;
   tenantId: string;
   name: string;
+  isDeleted: boolean;
+  isBlocked: boolean;
   createdAt: string;
   updatedAt: string;
   versions: ProgramVersion[];

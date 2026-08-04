@@ -81,14 +81,14 @@ const NcProgramTable: React.FC<NcProgramTableProps> = ({
           const versions = program.versions || [];
           const latest = versions[versions.length - 1];
           if (!latest) return <span className="text-gray-400">—</span>;
-          if (latest.isDeleted) {
+          if (program.isDeleted) {
             return (
               <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-medium">
                 Deleted
               </span>
             );
           }
-          if (latest.isBlocked) {
+          if (program.isBlocked) {
             return (
               <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
                 Blocked
