@@ -42,6 +42,15 @@ const ProductionShiftDashboard = React.lazy(
 const NcProgramDashBoard = React.lazy(
   () => import('@/features/ncProgram/pages/NcProgramDashBoard'),
 );
+const MachinistMaintenanceDashboard = React.lazy(
+  () => import('@/features/maintenance/pages/MachinistMaintenanceDashboard'),
+);
+const MaintenanceTechnicianDashboard = React.lazy(
+  () => import('@/features/maintenance/pages/MaintenanceTechnicianDashboard'),
+);
+const AdminMaintenanceLogs = React.lazy(
+  () => import('@/features/maintenance/pages/AdminMaintenanceLogs'),
+);
 
 const UserRoutes = () => {
   return (
@@ -53,6 +62,29 @@ const UserRoutes = () => {
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/shifts" element={<ProductionShiftDashboard />} />
 
+            {/* Machinist Maintenance */}
+            <Route
+              element={<RoleProtectedRoute allowedRoles={[Roles.MACHINIST]} />}
+            >
+              <Route
+                path="/maintenance/machinist"
+                element={<MachinistMaintenanceDashboard />}
+              />
+            </Route>
+
+            {/* Maintenance Technician Maintenance */}
+            <Route
+              element={
+                <RoleProtectedRoute allowedRoles={[Roles.MAINTENANCE]} />
+              }
+            >
+              <Route
+                path="/maintenance/technician"
+                element={<MaintenanceTechnicianDashboard />}
+              />
+            </Route>
+
+            {/* Admin Protected Routes */}
             <Route
               element={<RoleProtectedRoute allowedRoles={[Roles.ADMIN]} />}
             >
@@ -63,6 +95,10 @@ const UserRoutes = () => {
               <Route path="/raw-materials" element={<RawMaterialDashBoard />} />
               <Route path="/parts" element={<PartDashBoard />} />
               <Route path="/nc-programs" element={<NcProgramDashBoard />} />
+              <Route
+                path="/maintenance/logs"
+                element={<AdminMaintenanceLogs />}
+              />
               <Route
                 path="/shift-templates"
                 element={<ShiftTemplateDashboard />}

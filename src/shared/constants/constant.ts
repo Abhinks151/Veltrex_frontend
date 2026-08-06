@@ -13,6 +13,7 @@ import {
   ClipboardList,
   FileCode,
   Coins,
+  Wrench,
 } from 'lucide-react';
 import { Roles } from './rolesEnum';
 
@@ -90,10 +91,22 @@ export const UserNavItems = [
     role: [Roles.ADMIN, Roles.MACHINIST],
   },
   {
-    name: 'Tickets',
-    path: '/platform/tickets',
+    name: 'Report Malfunction',
+    path: '/platform/maintenance/machinist',
+    icon: Wrench,
+    role: [Roles.MACHINIST],
+  },
+  {
+    name: 'Tech Queue',
+    path: '/platform/maintenance/technician',
     icon: Ticket,
     role: [Roles.MAINTENANCE],
+  },
+  {
+    name: 'Audit Logs',
+    path: '/platform/maintenance/logs',
+    icon: ClipboardList,
+    role: [Roles.ADMIN],
   },
 ];
 
