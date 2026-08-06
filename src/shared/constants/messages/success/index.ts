@@ -9,6 +9,7 @@ import { JOB_SUCCESS } from './job.success';
 import { PART_SUCCESS } from './part.success';
 import { SHIFT_SUCCESS } from './shift.success';
 import { NC_PROGRAM_SUCCESS } from './nc-program.success';
+import { MAINTENANCE_SUCCESS } from './maintenance.success';
 
 export const SUCCESS_MESSAGES = {
   ...AUTH_SUCCESS,
@@ -22,6 +23,7 @@ export const SUCCESS_MESSAGES = {
   ...PART_SUCCESS,
   ...SHIFT_SUCCESS,
   ...NC_PROGRAM_SUCCESS,
+  ...MAINTENANCE_SUCCESS,
 } as const;
 
 export {
@@ -36,4 +38,5 @@ export {
   PART_SUCCESS,
   SHIFT_SUCCESS,
   NC_PROGRAM_SUCCESS,
+  MAINTENANCE_SUCCESS,
 };

@@ -10,6 +10,7 @@ import { SUBSCRIPTION_ERRORS } from './subscription.errors';
 import { NC_PROGRAM_ERRORS } from './nc-program.errors';
 import { SHIFT_ERRORS } from './shift.errors';
 import { SUPER_ADMIN_ERRORS } from './super-admin.errors';
+import { MAINTENANCE_ERRORS } from './maintenance.errors';
 
 export const ERROR_MESSAGES = {
   ...AUTH_ERRORS,
@@ -24,6 +25,7 @@ export const ERROR_MESSAGES = {
   ...NC_PROGRAM_ERRORS,
   ...SHIFT_ERRORS,
   ...SUPER_ADMIN_ERRORS,
+  ...MAINTENANCE_ERRORS,
 } as const;
 
 export {
@@ -39,4 +41,5 @@ export {
   NC_PROGRAM_ERRORS,
   SHIFT_ERRORS,
   SUPER_ADMIN_ERRORS,
+  MAINTENANCE_ERRORS,
 };

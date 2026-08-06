@@ -115,4 +115,16 @@ export const API_ENDPOINTS = {
       `/nc-program/${id}/version-from-editor`,
     VERSION_CONTENT: (id: string) => `/nc-program/version/${id}/content`,
   },
+
+  MAINTENANCE: {
+    CREATE: '/maintenance/create',
+    MACHINIST_MACHINES: '/maintenance/machinist/machines',
+    MACHINIST_TICKETS: '/maintenance/machinist/tickets',
+    OPEN_TICKETS: '/maintenance/tickets/open',
+    MY_TICKETS: '/maintenance/tickets/mine',
+    ASSIGN: (id: string) => `/maintenance/tickets/${id}/assign`,
+    RELEASE: (id: string) => `/maintenance/tickets/${id}/release`,
+    CLOSE: (id: string) => `/maintenance/tickets/${id}/close`,
+    ADMIN_LOGS: '/maintenance/admin/logs',
+  },
 };
