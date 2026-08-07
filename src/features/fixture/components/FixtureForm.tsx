@@ -71,7 +71,7 @@ const FixtureForm: React.FC<FixtureFormProps> = ({
         {/* Type */}
         <LookupSelect
           {...register('type')}
-          category="MACHINE_TYPE"
+          category="TYPE"
           label="Fixture Type"
           error={errors.type?.message as string}
           value={type}

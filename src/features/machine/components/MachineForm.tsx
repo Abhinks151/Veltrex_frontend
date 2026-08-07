@@ -67,7 +67,7 @@ const MachineForm: React.FC<MachineFormProps> = ({
         {/* Type */}
         <LookupSelect
           {...register('type')}
-          category="MACHINE_TYPE"
+          category="TYPE"
           label="Machine Type"
           error={errors.type?.message as string}
         />
