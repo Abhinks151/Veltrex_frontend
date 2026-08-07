@@ -34,7 +34,7 @@ export const UserNavItems = [
     name: 'Dashboard',
     path: '/platform',
     icon: LayoutDashboard,
-    role: [Roles.ADMIN, Roles.MACHINIST, Roles.MAINTENANCE],
+    role: [Roles.ADMIN, Roles.MACHINIST],
   },
   {
     name: 'Employees',
@@ -97,7 +97,7 @@ export const UserNavItems = [
     role: [Roles.MACHINIST],
   },
   {
-    name: 'Tech Queue',
+    name: 'Dashboard',
     path: '/platform/maintenance/technician',
     icon: Ticket,
     role: [Roles.MAINTENANCE],
