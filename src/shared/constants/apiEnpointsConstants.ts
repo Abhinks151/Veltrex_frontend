@@ -98,6 +98,7 @@ export const API_ENDPOINTS = {
     LIST_PRODUCTION: '/shift/production/list',
     UPDATE_JOB_PROGRESS: (id: string) => `/shift/production/job-progress/${id}`,
     MACHINIST_DASHBOARD: '/shift/machinist/dashboard',
+    ADMIN_DASHBOARD: '/shift/admin/dashboard',
   },
   NC_PROGRAM: {
     CREATE: '/nc-program/create',
