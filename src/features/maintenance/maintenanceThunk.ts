@@ -174,3 +174,21 @@ export const fetchAdminLogs = createAsyncThunk<
     return rejectWithValue(ERR.SOMETHING_WENT_WRONG);
   }
 });
+
+export const deleteTicket = createAsyncThunk<
+  ApiResponse<MaintenanceTicket>,
+  string,
+  { rejectValue: string }
+>('maintenance/deleteTicket', async (id, { rejectWithValue }) => {
+  try {
+    const res = await maintenanceService.deleteTicket(id);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(
+        error.response?.data.message || 'Failed to delete ticket',
+      );
+    }
+    return rejectWithValue(ERR.SOMETHING_WENT_WRONG);
+  }
+});

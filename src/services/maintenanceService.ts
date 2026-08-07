@@ -56,4 +56,9 @@ export const maintenanceService = {
     axiosInstance.get<
       ApiResponse<{ items: MaintenanceTicket[]; total: number }>
     >(API_ENDPOINTS.MAINTENANCE.ADMIN_LOGS, { params }),
+
+  deleteTicket: (id: string) =>
+    axiosInstance.delete<ApiResponse<MaintenanceTicket>>(
+      API_ENDPOINTS.MAINTENANCE.DELETE(id),
+    ),
 };

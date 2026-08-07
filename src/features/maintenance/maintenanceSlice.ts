@@ -10,6 +10,7 @@ import {
   releaseTicket,
   closeTicket,
   fetchAdminLogs,
+  deleteTicket,
 } from './maintenanceThunk';
 
 interface MaintenanceState {
@@ -170,6 +171,20 @@ const maintenanceSlice = createSlice({
         }
       })
       .addCase(closeTicket.rejected, (state, action) => {
+        state.actionLoading = false;
+        state.error = action.payload as string;
+      })
+
+      //delete ticket
+      .addCase(deleteTicket.pending, (state) => {
+        state.actionLoading = true;
+      })
+      .addCase(deleteTicket.fulfilled, (state, action) => {
+        state.actionLoading = false;
+        const deleted = action.payload.data;
+        console.log(deleted);
+      })
+      .addCase(deleteTicket.rejected, (state, action) => {
         state.actionLoading = false;
         state.error = action.payload as string;
       })

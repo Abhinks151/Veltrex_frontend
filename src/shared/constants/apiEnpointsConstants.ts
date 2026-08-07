@@ -127,5 +127,6 @@ export const API_ENDPOINTS = {
     RELEASE: (id: string) => `/maintenance/tickets/${id}/release`,
     CLOSE: (id: string) => `/maintenance/tickets/${id}/close`,
     ADMIN_LOGS: '/maintenance/admin/logs',
+    DELETE: (id: string) => `/maintenance/tickets/${id}/delete`,
   },
 };
