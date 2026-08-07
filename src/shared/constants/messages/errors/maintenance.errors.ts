@@ -9,4 +9,5 @@ export const MAINTENANCE_ERRORS = {
   FAILED_RELEASE_TICKET: 'Failed to release ticket.',
   FAILED_CLOSE_TICKET: 'Failed to close ticket.',
   SOMETHING_WENT_WRONG: 'Something went wrong. Please try again.',
+  END_DATE_CANNOT_BE_BEFORE_START_DATE: 'End date cannot be before start date.',
 } as const;

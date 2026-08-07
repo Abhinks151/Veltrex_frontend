@@ -17,6 +17,7 @@ import {
   User,
   CheckCircle,
 } from 'lucide-react';
+import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messages';
 
 const statusColors = {
   OPEN: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -54,6 +55,12 @@ const AdminMaintenanceLogs = () => {
   }, []);
 
   const loadLogs = useCallback(() => {
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+      notifyError(
+        FRONTEND_MESSAGE_CONSTANTS.ERROR.END_DATE_CANNOT_BE_BEFORE_START_DATE,
+      );
+      return;
+    }
     dispatch(
       fetchAdminLogs({
         page: currentPage + 1,
@@ -172,7 +179,16 @@ const AdminMaintenanceLogs = () => {
               type="date"
               value={startDate}
               onChange={(e) => {
-                setStartDate(e.target.value);
+                const newStart = e.target.value;
+                setStartDate(newStart);
+                // Clear end date if it's now before the new start date
+                if (
+                  endDate &&
+                  newStart &&
+                  new Date(endDate) < new Date(newStart)
+                ) {
+                  setEndDate('');
+                }
                 setCurrentPage(0);
               }}
               className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-gray-800 bg-white"
@@ -187,6 +203,7 @@ const AdminMaintenanceLogs = () => {
             <input
               type="date"
               value={endDate}
+              min={startDate}
               onChange={(e) => {
                 setEndDate(e.target.value);
                 setCurrentPage(0);
