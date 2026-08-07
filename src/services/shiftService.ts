@@ -6,6 +6,7 @@ import type {
   ShiftJob,
   CreateShiftTemplateRequest,
   MachinistDashboardStats,
+  AdminDashboardStats,
 } from '@/features/shift/types';
 import { API_ENDPOINTS } from '@/shared/constants/apiEnpointsConstants';
 
@@ -62,5 +63,11 @@ export const shiftService = {
   getMachinistDashboard: () =>
     axiosInstance.get<ApiResponse<MachinistDashboardStats>>(
       API_ENDPOINTS.SHIFT.MACHINIST_DASHBOARD,
+    ),
+
+  // Admin Dashboard
+  getAdminDashboard: () =>
+    axiosInstance.get<ApiResponse<AdminDashboardStats>>(
+      API_ENDPOINTS.SHIFT.ADMIN_DASHBOARD,
     ),
 };

@@ -122,3 +122,31 @@ export interface MachinistDashboardStats {
   completedJobsCount: number;
   jobs: MachinistDashboardJobItem[];
 }
+
+export interface AdminDashboardRecentShift {
+  id: string;
+  date: string;
+  shiftType: string;
+  status: string;
+  employeeName: string;
+  employeeEmail: string;
+  jobsCount: number;
+  completedJobsCount: number;
+}
+
+export interface AdminDashboardRecentTicket {
+  id: string;
+  issue: string;
+  status: string;
+  updatedAt: string;
+  machine: { name: string; brand: string } | null;
+  assignee: { name: string } | null;
+}
+
+export interface AdminDashboardStats {
+  activeJobsCount: number;
+  completedJobsCount: number;
+  maintenanceMachinesCount: number;
+  recentShifts: AdminDashboardRecentShift[];
+  recentTickets: AdminDashboardRecentTicket[];
+}
