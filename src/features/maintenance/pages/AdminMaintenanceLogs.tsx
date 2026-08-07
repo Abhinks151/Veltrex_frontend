@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+import { createColumnHelper } from '@tanstack/react-table';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { fetchAdminLogs } from '../maintenanceThunk';
 import { machineService } from '@/services/machineService';
@@ -7,8 +8,10 @@ import { Button } from '@/shared/components/ui/button';
 import { notifyError } from '@/shared/utils/toasterUtils';
 import { clearMaintenanceError } from '../maintenanceSlice';
 import { PAGINATION_LIMIT } from '@/shared/constants/constant';
+import { DataTable } from '@/shared/components/custom/DataTable';
+import ReusableModal from '@/shared/components/custom/ReusableModal';
+import type { MaintenanceTicket } from '../types';
 import {
-  FileText,
   Calendar,
   Wrench,
   Search,
@@ -19,11 +22,13 @@ import {
 } from 'lucide-react';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messages';
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   OPEN: 'bg-blue-100 text-blue-700 border-blue-200',
   IN_PROGRESS: 'bg-amber-100 text-amber-700 border-amber-200',
   CLOSED: 'bg-green-100 text-green-700 border-green-200',
 };
+
+const columnHelper = createColumnHelper<MaintenanceTicket>();
 
 const AdminMaintenanceLogs = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +44,11 @@ const AdminMaintenanceLogs = () => {
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(PAGINATION_LIMIT);
+
+  // Modal State
+  const [selectedTicket, setSelectedTicket] =
+    useState<MaintenanceTicket | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   // Fetch machines for filter list
   useEffect(() => {
@@ -92,6 +102,94 @@ const AdminMaintenanceLogs = () => {
     setCurrentPage(0);
   };
 
+  // Define Columns for the DataTable helper
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('machine.name', {
+        header: 'Machine Details',
+        cell: (info) => {
+          const log = info.row.original;
+          return (
+            <div className="flex flex-col">
+              <span className="font-bold text-gray-900 text-sm">
+                {log.machine?.name || '—'}
+              </span>
+              <span className="text-xs text-gray-400">
+                {log.machine?.brand || 'Unknown'}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('issue', {
+        header: 'Breakdown / Issue',
+        cell: (info) => {
+          const log = info.row.original;
+          return (
+            <div className="flex flex-col max-w-sm">
+              <span
+                className="font-semibold text-gray-900 truncate"
+                title={log.issue}
+              >
+                {log.issue}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: (info) => {
+          const ticketStatus = info.getValue();
+          return (
+            <span
+              className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusColors[ticketStatus]}`}
+            >
+              {ticketStatus.replace('_', ' ')}
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor('reportedAt', {
+        header: 'Reported Date',
+        cell: (info) => {
+          const reported = info.getValue();
+          return (
+            <span className="text-gray-600 text-sm">
+              {new Date(reported).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })}
+            </span>
+          );
+        },
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: 'Action',
+        cell: (info) => {
+          const log = info.row.original;
+          return (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setSelectedTicket(log);
+                setIsDetailsModalOpen(true);
+              }}
+              className="h-8 px-3 text-xs font-semibold hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+            >
+              View
+            </Button>
+          );
+        },
+      }),
+    ],
+
+    [],
+  );
+
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto">
       {/* Header */}
@@ -122,7 +220,7 @@ const AdminMaintenanceLogs = () => {
 
       {/* Filter panel */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 pb-2 border-b border-gray-50">
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 pb-2 border-b border-gray-55">
           <Search className="h-4 w-4 text-indigo-500" />
           <span>Search & Filter Parameters</span>
         </div>
@@ -181,7 +279,6 @@ const AdminMaintenanceLogs = () => {
               onChange={(e) => {
                 const newStart = e.target.value;
                 setStartDate(newStart);
-                // Clear end date if it's now before the new start date
                 if (
                   endDate &&
                   newStart &&
@@ -214,7 +311,7 @@ const AdminMaintenanceLogs = () => {
         </div>
 
         {/* Clear filter buttons and page limits */}
-        <div className="flex wrap items-center justify-between pt-3 gap-3 border-t border-gray-55">
+        <div className="flex items-center justify-between pt-3 gap-3 border-t border-gray-100">
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-400">Rows per page:</span>
             <select
@@ -234,7 +331,7 @@ const AdminMaintenanceLogs = () => {
           {(machineId || status || startDate || endDate) && (
             <button
               onClick={handleResetFilters}
-              className="text-xs text-red-500 hover:text-red-700 font-bold flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 transition-all hover:shadow-xs"
+              className="text-xs text-red-500 hover:text-red-700 font-bold flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 transition-all hover:shadow-xs cursor-pointer"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Clear Filter Set
@@ -243,223 +340,280 @@ const AdminMaintenanceLogs = () => {
         </div>
       </div>
 
-      {/* Table listing */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden relative min-h-[450px]">
+      {/* DataTable Container */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden relative">
         {loading && (
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] z-10 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] z-10 flex items-center justify-center animate-fade-in">
             <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">Machine Details</th>
-                <th className="py-4 px-6">Breakdown / Issue</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6">Assigned Personnel</th>
-                <th className="py-4 px-6">Timeline Metrics</th>
-                <th className="py-4 px-6">Resolution Notes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 text-sm font-medium text-gray-700">
-              {adminLogs.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-20 text-center text-gray-400">
-                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                      <FileText className="h-10 w-10 text-gray-300 mb-3" />
-                      <p className="font-semibold text-gray-800">
-                        No logs found
+        <DataTable
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          columns={columns as unknown as any[]}
+          data={adminLogs}
+          manualPagination
+          pageCount={Math.ceil(totalAdminLogs / pageSize)}
+          pageIndex={currentPage}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+
+      {/* Ticket Details Modal */}
+      <ReusableModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedTicket(null);
+        }}
+        title="Maintenance Ticket Audit Log Details"
+        maxWidth="max-w-2xl"
+      >
+        {selectedTicket && (
+          <div className="space-y-6 text-gray-700">
+            {/* Header section with machine and status */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+                  Machine Details
+                </span>
+                <h3 className="text-lg font-bold text-[#1e1b4b]">
+                  {selectedTicket.machine?.name || '—'}
+                  {selectedTicket.machine?.brand && (
+                    <span className="text-gray-400 font-semibold ml-2 text-sm">
+                      ({selectedTicket.machine.brand})
+                    </span>
+                  )}
+                </h3>
+              </div>
+              <div>
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${statusColors[selectedTicket.status] || 'bg-gray-100 text-gray-600 border-gray-200'}`}
+                >
+                  {selectedTicket.status.replace('_', ' ')}
+                </span>
+              </div>
+            </div>
+
+            {/* Issue & Description */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Breakdown Issue
+              </h4>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="font-semibold text-gray-900 text-sm">
+                  {selectedTicket.issue}
+                </p>
+                {selectedTicket.description ? (
+                  <p className="text-xs text-gray-600 mt-2 whitespace-pre-wrap leading-relaxed">
+                    {selectedTicket.description}
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-400 mt-2 italic">
+                    No detailed description provided.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Personnel & Timeline Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Personnel */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Associated Personnel
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2.5">
+                    <User className="w-4 h-4 text-indigo-500 mt-0.5" />
+                    <div>
+                      <p className="text-[10px] font-semibold text-gray-400">
+                        REPORTED BY
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Try updating your filters or search fields in the filter
-                        panel.
+                      <p className="text-sm font-bold text-gray-800">
+                        {selectedTicket.creator?.name || '—'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {selectedTicket.creator?.email || ''}
                       </p>
                     </div>
-                  </td>
-                </tr>
-              ) : (
-                adminLogs.map((log) => (
-                  <tr
-                    key={log.id}
-                    className="hover:bg-gray-50/40 transition-colors"
-                  >
-                    {/* Machine Column */}
-                    <td className="py-4.5 px-6">
-                      <div className="flex flex-col">
-                        <span className="font-extrabold text-gray-900 font-sans text-sm">
-                          {log.machine?.name || '—'}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {log.machine?.brand || 'Unknown'}
-                        </span>
-                      </div>
-                    </td>
+                  </div>
 
-                    {/* Issue Column */}
-                    <td className="py-4.5 px-6 max-w-sm">
-                      <div className="space-y-1">
-                        <span
-                          className="font-semibold text-gray-900 block truncate"
-                          title={log.issue}
-                        >
-                          {log.issue}
-                        </span>
-                        {log.description && (
-                          <span
-                            className="text-xs text-gray-400 line-clamp-1 italic font-normal"
-                            title={log.description}
-                          >
-                            "{log.description}"
-                          </span>
+                  {selectedTicket.assignee && (
+                    <div className="flex items-start gap-2.5">
+                      <Wrench className="w-4 h-4 text-amber-500 mt-0.5" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-gray-400">
+                          ASSIGNED TECHNICIAN
+                        </p>
+                        <p className="text-sm font-bold text-gray-800">
+                          {selectedTicket.assignee.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {selectedTicket.assignee.email}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedTicket.resolver && (
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-gray-400">
+                          RESOLVED BY
+                        </p>
+                        <p className="text-sm font-bold text-gray-800">
+                          {selectedTicket.resolver.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {selectedTicket.resolver.email}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Timelines */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Timeline Dates
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2.5">
+                    <Calendar className="w-4 h-4 text-indigo-400 mt-0.5" />
+                    <div>
+                      <p className="text-[10px] font-semibold text-gray-400">
+                        REPORTED AT
+                      </p>
+                      <p className="text-xs font-semibold text-gray-800">
+                        {new Date(selectedTicket.reportedAt).toLocaleString(
+                          'en-IN',
+                          {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          },
                         )}
-                      </div>
-                    </td>
+                      </p>
+                    </div>
+                  </div>
 
-                    {/* Status Column */}
-                    <td className="py-4.5 px-6">
-                      <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusColors[log.status]}`}
-                      >
-                        {log.status.replace('_', ' ')}
-                      </span>
-                    </td>
-
-                    {/* Personnel Column */}
-                    <td className="py-4.5 px-6">
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-1.5 text-xs">
-                          <User
-                            size={13}
-                            className="text-indigo-400 shrink-0"
-                          />
-                          <span className="text-gray-600">
-                            Reporter: <strong>{log.creator?.name}</strong>
-                          </span>
-                        </div>
-                        {log.assignee && (
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <Wrench
-                              size={13}
-                              className="text-amber-500 shrink-0"
-                            />
-                            <span className="text-gray-600">
-                              Technician: <strong>{log.assignee.name}</strong>
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Timeline Metrics */}
-                    <td className="py-4.5 px-6 text-xs text-gray-500">
-                      <div className="space-y-1 flex flex-col font-medium">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={13} className="text-gray-300" />
-                          Reported:{' '}
-                          {new Date(log.reportedAt).toLocaleDateString(
+                  {selectedTicket.assignedAt && (
+                    <div className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-amber-400 mt-0.5" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-gray-400">
+                          ASSIGNED AT
+                        </p>
+                        <p className="text-xs font-semibold text-gray-800">
+                          {new Date(selectedTicket.assignedAt).toLocaleString(
                             'en-IN',
                             {
                               day: 'numeric',
                               month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
                             },
                           )}
-                        </span>
-                        {log.assignedAt && (
-                          <span className="flex items-center gap-1">
-                            <Clock size={13} className="text-amber-400" />
-                            Assigned:{' '}
-                            {new Date(log.assignedAt).toLocaleDateString(
-                              'en-IN',
-                              {
-                                day: 'numeric',
-                                month: 'short',
-                              },
-                            )}
-                          </span>
-                        )}
-                        {log.resolvedAt && (
-                          <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                            <CheckCircle size={13} />
-                            Closed:{' '}
-                            {new Date(log.resolvedAt).toLocaleDateString(
-                              'en-IN',
-                              {
-                                day: 'numeric',
-                                month: 'short',
-                              },
-                            )}
-                          </span>
-                        )}
+                        </p>
                       </div>
-                    </td>
+                    </div>
+                  )}
 
-                    {/* Resolution notes */}
-                    <td className="py-4.5 px-6 max-w-xs">
-                      {log.status === 'CLOSED' ? (
-                        <div className="space-y-1">
-                          <p
-                            className="text-xs text-gray-700 italic border-l-2 border-emerald-500 pl-2 line-clamp-2"
-                            title={log.reason || ''}
-                          >
-                            {log.reason || 'No resolution message recorded.'}
-                          </p>
-                          {log.actualDurationMinutes && (
-                            <span className="inline-block text-[10px] text-emerald-700 bg-emerald-50 font-bold px-1.5 py-0.5 rounded">
-                              Repaired: {log.actualDurationMinutes} mins
-                            </span>
+                  {selectedTicket.resolvedAt && (
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-gray-400">
+                          RESOLVED AT
+                        </p>
+                        <p className="text-xs font-semibold text-gray-800">
+                          {new Date(selectedTicket.resolvedAt).toLocaleString(
+                            'en-IN',
+                            {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            },
                           )}
-                        </div>
-                      ) : (
-                        <span className="text-xs text-gray-400 italic">
-                          Pending resolution
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        {/* Pagination controls */}
-        {totalAdminLogs > pageSize && (
-          <div className="flex items-center justify-between border-t border-gray-100 p-5 mt-4">
-            <span className="text-xs font-semibold text-gray-500">
-              Showing {currentPage * pageSize + 1} to{' '}
-              {Math.min((currentPage + 1) * pageSize, totalAdminLogs)} of{' '}
-              {totalAdminLogs} logs
-            </span>
-            <div className="flex gap-2">
+            {/* Resolution specifics & notes */}
+            {selectedTicket.status === 'CLOSED' && (
+              <div className="space-y-4 pt-4 border-t border-gray-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Resolution Notes
+                    </h4>
+                    <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-3.5 text-xs text-gray-700 italic">
+                      {selectedTicket.reason ||
+                        'No resolution message recorded.'}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Work Duration
+                    </h4>
+                    <div className="flex flex-col gap-2">
+                      {selectedTicket.estimatedDurationMinutes !== null && (
+                        <div className="flex items-center justify-between text-xs text-gray-600 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg">
+                          <span>Estimated Time:</span>
+                          <span className="font-bold">
+                            {selectedTicket.estimatedDurationMinutes} mins
+                          </span>
+                        </div>
+                      )}
+                      {selectedTicket.actualDurationMinutes !== null && (
+                        <div className="flex items-center justify-between text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-lg">
+                          <span>Actual Repair Time:</span>
+                          <span className="font-bold">
+                            {selectedTicket.actualDurationMinutes} mins
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Actions Footer */}
+            <div className="flex justify-end pt-4 border-t border-gray-100">
               <Button
                 variant="secondary"
-                size="sm"
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0}
-                className="rounded-lg text-xs"
+                onClick={() => {
+                  setIsDetailsModalOpen(false);
+                  setSelectedTicket(null);
+                }}
+                className="w-full sm:w-auto font-semibold"
               >
-                Previous
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setCurrentPage((p) => p + 1)}
-                disabled={(currentPage + 1) * pageSize >= totalAdminLogs}
-                className="rounded-lg text-xs"
-              >
-                Next
+                Close View
               </Button>
             </div>
           </div>
         )}
-      </div>
+      </ReusableModal>
     </div>
   );
 };
 
-// Internal icon wrapper helper
+// Clipboard list icon helper
 const ClipboardListIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
