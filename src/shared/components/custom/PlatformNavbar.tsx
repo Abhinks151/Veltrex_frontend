@@ -9,50 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '@/features/auth/authThunk';
 import { notifyError, notifySuccess } from '@/shared/utils/toasterUtils';
 import { FRONTEND_MESSAGE_CONSTANTS } from '../../constants/messageConstants';
-import NotificationBell, { type NotificationItem } from './NotificationBell';
-
-const DUMMY_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: 1,
-    title: 'Raw material low stock',
-    message: "The raw material 'raw material' is low in stock.",
-    time: '6 hours ago',
-    read: false,
-  },
-  {
-    id: 2,
-    title: 'Production log',
-    message: "New production log 'production log' is added.",
-    time: '6 hours ago',
-    read: false,
-  },
-  {
-    id: 3,
-    title: 'Production log',
-    message: "The production log 'production log' is added.",
-    time: '9 hours ago',
-    read: false,
-  },
-  {
-    id: 4,
-    title: 'Production log',
-    message: "The production log 'production log' is added.",
-    time: '9 hours ago',
-    read: true,
-  },
-  {
-    id: 5,
-    title: 'Production log',
-    message: "The production log 'production log' is added.",
-    time: '1 day ago',
-    read: true,
-  },
-];
+import NotificationBell from './NotificationBell';
+import { useNotifications } from '@/shared/hooks/useNotifications';
 
 const PlatformNavbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { notifications, markOneRead, markAllRead } = useNotifications();
 
   async function handleLogout() {
     try {
@@ -79,7 +43,11 @@ const PlatformNavbar = () => {
 
       {/* <div></div> */}
       <div className="flex items-center gap-4">
-        <NotificationBell initialNotifications={DUMMY_NOTIFICATIONS} />
+        <NotificationBell
+          notifications={notifications}
+          onMarkOneRead={markOneRead}
+          onMarkAllRead={markAllRead}
+        />
 
         {/* User Dropdown */}
         <DropdownMenu>

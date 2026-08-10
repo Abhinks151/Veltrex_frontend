@@ -2,7 +2,7 @@ import { Bell, X, Check } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export type NotificationItem = {
-  id: number;
+  id: string;
   title: string;
   message: string;
   time: string;
@@ -10,12 +10,16 @@ export type NotificationItem = {
 };
 
 type NotificationBellProps = {
-  initialNotifications: NotificationItem[];
+  notifications: NotificationItem[];
+  onMarkOneRead: (id: string) => void;
+  onMarkAllRead: () => void;
 };
 
-const NotificationBell = ({ initialNotifications }: NotificationBellProps) => {
-  const [notifications, setNotifications] =
-    useState<NotificationItem[]>(initialNotifications);
+const NotificationBell = ({
+  notifications,
+  onMarkOneRead,
+  onMarkAllRead,
+}: NotificationBellProps) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'unread' | 'all'>('unread');
   const panelRef = useRef<HTMLDivElement>(null);
@@ -26,16 +30,6 @@ const NotificationBell = ({ initialNotifications }: NotificationBellProps) => {
     activeTab === 'unread'
       ? notifications.filter((n) => !n.read)
       : notifications;
-
-  function markAllRead() {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
-
-  function markOneRead(id: number) {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, read: true } : item)),
-    );
-  }
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -124,7 +118,7 @@ const NotificationBell = ({ initialNotifications }: NotificationBellProps) => {
             </button>
 
             <button
-              onClick={markAllRead}
+              onClick={onMarkAllRead}
               title="Mark all as read"
               className="ml-auto text-gray-300 hover:text-indigo-500 transition-colors"
               aria-label="Mark all as read"
@@ -145,7 +139,7 @@ const NotificationBell = ({ initialNotifications }: NotificationBellProps) => {
               displayed.map((n) => (
                 <div
                   key={n.id}
-                  onClick={() => markOneRead(n.id)}
+                  onClick={() => !n.read && onMarkOneRead(n.id)}
                   className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${
                     !n.read ? 'bg-indigo-50/30' : ''
                   }`}
