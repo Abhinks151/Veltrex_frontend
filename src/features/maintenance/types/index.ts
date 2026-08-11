@@ -5,6 +5,7 @@ export interface MachinistMachine {
   name: string;
   brand: string;
   status: string;
+  shiftJobCompleted: boolean;
 }
 
 export interface MaintenanceTicket {
