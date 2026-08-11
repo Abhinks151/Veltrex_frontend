@@ -11,18 +11,10 @@ import { Button } from '@/shared/components/ui/button';
 import { notifySuccess, notifyError } from '@/shared/utils/toasterUtils';
 import { clearMaintenanceError } from '../maintenanceSlice';
 import { PAGINATION_LIMIT } from '@/shared/constants/constant';
-import {
-  ClipboardList,
-  UserCheck,
-  MapPin,
-  Clock,
-  ArrowRight,
-  RotateCcw,
-  CheckCircle,
-  FileCheck,
-  User,
-  X,
-} from 'lucide-react';
+import { ClipboardList, UserCheck, FileCheck, RefreshCw } from 'lucide-react';
+import { OpenTicketItem } from '../components/OpenTicketItem';
+import { ActiveTicketItem } from '../components/ActiveTicketItem';
+import { CloseTicketModal } from '../components/CloseTicketModal';
 
 const MaintenanceTechnicianDashboard = () => {
   const dispatch = useAppDispatch();
@@ -39,10 +31,8 @@ const MaintenanceTechnicianDashboard = () => {
   const [activeTab, setActiveTab] = useState<'open' | 'mine'>('open');
   const [currentPage, setCurrentPage] = useState(0);
 
-  // Close Ticket Modal Form State
   const [closingTicketId, setClosingTicketId] = useState<string | null>(null);
-  const [resolutionReason, setResolutionReason] = useState('');
-  const [actualDuration, setActualDuration] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadData = useCallback(() => {
     if (activeTab === 'open') {
@@ -55,6 +45,20 @@ const MaintenanceTechnicianDashboard = () => {
       );
     }
   }, [dispatch, activeTab, currentPage]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    if (activeTab === 'open') {
+      await dispatch(
+        fetchOpenTickets({ page: currentPage + 1, limit: PAGINATION_LIMIT }),
+      );
+    } else {
+      await dispatch(
+        fetchMyTickets({ page: currentPage + 1, limit: PAGINATION_LIMIT }),
+      );
+    }
+    setIsRefreshing(false);
+  };
 
   useEffect(() => {
     loadData();
@@ -88,35 +92,26 @@ const MaintenanceTechnicianDashboard = () => {
     }
   };
 
-  const handleCloseSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!closingTicketId) return;
-
-    if (resolutionReason.trim().length < 5) {
-      notifyError('Please write a resolution summary (at least 5 characters).');
-      return;
-    }
-
+  const handleCloseSubmit = async (
+    ticketId: string,
+    reason: string,
+    duration?: number,
+  ) => {
     const payload = {
-      reason: resolutionReason.trim(),
-      actualDurationMinutes: actualDuration
-        ? Number(actualDuration)
-        : undefined,
+      reason,
+      actualDurationMinutes: duration,
     };
 
     const res = await dispatch(
       closeTicket({
-        id: closingTicketId,
+        id: ticketId,
         data: payload,
       }),
     );
 
     if (closeTicket.fulfilled.match(res)) {
       notifySuccess('Ticket closed and machine marked as Idle successfully!');
-      // Reset Modal Form
       setClosingTicketId(null);
-      setResolutionReason('');
-      setActualDuration('');
       loadData();
     }
   };
@@ -124,19 +119,32 @@ const MaintenanceTechnicianDashboard = () => {
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto relative">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-3 bg-gradient-to-tr from-amber-500 to-amber-600 rounded-xl text-white shadow-md">
-          <ClipboardList className="h-6 w-6" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-tr from-amber-500 to-amber-600 rounded-xl text-white shadow-md">
+            <ClipboardList className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              Maintenance Operations
+            </h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Claim new machine breakdown requests, manage your active tasks,
+              and record repair details.
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Maintenance Operations
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Claim new machine breakdown requests, manage your active tasks, and
-            record repair details.
-          </p>
-        </div>
+        <Button
+          onClick={handleRefresh}
+          variant="outline"
+          disabled={loading || isRefreshing}
+          className="flex items-center gap-2 rounded-xl border-gray-200"
+        >
+          <RefreshCw
+            className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+          />
+          Refresh
+        </Button>
       </div>
 
       {/* Tabs */}
@@ -205,65 +213,12 @@ const MaintenanceTechnicianDashboard = () => {
               </div>
             ) : (
               openTickets.map((t) => (
-                <div
+                <OpenTicketItem
                   key={t.id}
-                  className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md hover:border-gray-200 transition-all flex flex-col justify-between"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {t.machine?.name} ({t.machine?.brand})
-                      </span>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        OPEN UNIT
-                      </span>
-                    </div>
-
-                    <h3 className="font-bold text-gray-800 text-base leading-snug">
-                      {t.issue}
-                    </h3>
-
-                    {t.description && (
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
-                        {t.description}
-                      </p>
-                    )}
-
-                    <div className="h-px bg-gray-50 pt-2" />
-
-                    <div className="flex flex-col gap-1.5 text-xs text-gray-400 font-medium">
-                      <span className="flex items-center gap-1.5">
-                        <Clock size={14} className="text-gray-300" />
-                        Reported:{' '}
-                        {new Date(t.reportedAt).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'short',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                      {t.estimatedDurationMinutes && (
-                        <span className="flex items-center gap-1.5 text-gray-400 font-semibold bg-gray-50 px-2 py-0.5 rounded-md w-fit">
-                          Est. Duration: {t.estimatedDurationMinutes} mins
-                        </span>
-                      )}
-                      <span className="flex items-center gap-1 bg-yellow-50 text-yellow-700 border border-yellow-100 rounded-md px-2 py-0.5 w-fit">
-                        <User className="h-3.5 w-3.5" />
-                        By: {t.creator?.name}
-                      </span>
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={() => handleAssign(t.id)}
-                    disabled={actionLoading}
-                    className="w-full mt-5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 font-bold shadow-sm flex items-center justify-center gap-2"
-                  >
-                    <span>Accept Job</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
+                  ticket={t}
+                  actionLoading={actionLoading}
+                  onAssign={handleAssign}
+                />
               ))
             )
           ) : myTickets.length === 0 ? (
@@ -276,85 +231,13 @@ const MaintenanceTechnicianDashboard = () => {
             </div>
           ) : (
             myTickets.map((t) => (
-              <div
+              <ActiveTicketItem
                 key={t.id}
-                className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md hover:border-gray-200 transition-all flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100 flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {t.machine?.name} ({t.machine?.brand})
-                    </span>
-                    <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
-                      IN PROGRESS
-                    </span>
-                  </div>
-
-                  <h3 className="font-bold text-gray-800 text-base leading-snug">
-                    {t.issue}
-                  </h3>
-
-                  {t.description && (
-                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
-                      {t.description}
-                    </p>
-                  )}
-
-                  <div className="h-px bg-gray-50 pt-2" />
-
-                  <div className="flex flex-col gap-1.5 text-xs text-gray-400 font-medium">
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={14} className="text-gray-300" />
-                      Reported:{' '}
-                      {new Date(t.reportedAt).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                    {t.assignedAt && (
-                      <span className="flex items-center gap-1.5 text-amber-600 font-medium">
-                        Started:{' '}
-                        {new Date(t.assignedAt).toLocaleTimeString('en-IN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                    )}
-                    {t.estimatedDurationMinutes && (
-                      <span className="flex items-center gap-1.5 text-gray-400 font-semibold bg-gray-50 px-2 py-0.5 rounded-md w-fit">
-                        Est. Duration: {t.estimatedDurationMinutes} mins
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1 bg-yellow-50 text-yellow-700 border border-yellow-100 rounded-md px-2 py-0.5 w-fit">
-                      <User className="h-3.5 w-3.5" />
-                      By: {t.creator?.name}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 mt-5">
-                  <Button
-                    onClick={() => handleRelease(t.id)}
-                    disabled={actionLoading}
-                    variant="secondary"
-                    className="rounded-xl py-2 font-bold text-xs flex items-center justify-center gap-1.5 border border-gray-200"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                    Release
-                  </Button>
-                  <Button
-                    onClick={() => setClosingTicketId(t.id)}
-                    disabled={actionLoading}
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-2 font-bold text-xs flex items-center justify-center gap-1.5"
-                  >
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    Close Ticket
-                  </Button>
-                </div>
-              </div>
+                ticket={t}
+                actionLoading={actionLoading}
+                onRelease={handleRelease}
+                onClose={(id) => setClosingTicketId(id)}
+              />
             ))
           )}
         </div>
@@ -422,84 +305,12 @@ const MaintenanceTechnicianDashboard = () => {
       )}
 
       {/* Close Ticket Modal */}
-      {closingTicketId && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-100 overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-emerald-50 text-emerald-800">
-              <h3 className="font-extrabold text-base flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-emerald-600" />
-                Finish Repair & Close Ticket
-              </h3>
-              <button
-                onClick={() => {
-                  setClosingTicketId(null);
-                  setResolutionReason('');
-                  setActualDuration('');
-                }}
-                className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCloseSubmit} className="p-6 space-y-5">
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                  Resolution Summary * (Min 5 characters)
-                </label>
-                <textarea
-                  value={resolutionReason}
-                  onChange={(e) => setResolutionReason(e.target.value)}
-                  rows={4}
-                  placeholder="Explain the cause, parts replaced, and test results..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors font-medium text-gray-800"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                  Actual Duration (Minutes)
-                </label>
-                <input
-                  type="number"
-                  value={actualDuration}
-                  onChange={(e) => setActualDuration(e.target.value)}
-                  placeholder="Actual minutes spent repairing"
-                  min="1"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors font-medium text-gray-800"
-                />
-              </div>
-
-              <div className="flex gap-3 justify-end pt-3">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    setClosingTicketId(null);
-                    setResolutionReason('');
-                    setActualDuration('');
-                  }}
-                  className="rounded-xl border border-gray-200 text-xs px-4"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={actionLoading}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs px-5 font-bold shadow-md hover:shadow-lg transition-all"
-                >
-                  {actionLoading ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    'Record Closure'
-                  )}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CloseTicketModal
+        ticketId={closingTicketId}
+        onClose={() => setClosingTicketId(null)}
+        onSubmit={handleCloseSubmit}
+        actionLoading={actionLoading}
+      />
     </div>
   );
 };
