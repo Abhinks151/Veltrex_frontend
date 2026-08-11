@@ -1,4 +1,4 @@
-import { AlertTriangle, PlusCircle } from 'lucide-react';
+import { AlertTriangle, PlusCircle, BanIcon } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import type { MachinistMachine } from '../types';
 
@@ -29,6 +29,8 @@ const ReportForm = ({
   onEstimatedDurationChange,
   onSubmit,
 }: ReportFormProps) => {
+  const selectedMachine = machines.find((m) => m.id === machineId);
+  const isShiftJobCompleted = selectedMachine?.shiftJobCompleted ?? false;
   return (
     <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-fit">
       <div className="p-5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white flex items-center gap-2">
@@ -49,19 +51,33 @@ const ReportForm = ({
               </span>
             </div>
           ) : (
-            <select
-              value={machineId}
-              onChange={(e) => onMachineChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors bg-white font-medium text-gray-800"
-              required
-            >
-              <option value="">Select Machine</option>
-              {machines.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name} ({m.brand}) - {m.status}
-                </option>
-              ))}
-            </select>
+            <>
+              <select
+                value={machineId}
+                onChange={(e) => onMachineChange(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors bg-white font-medium text-gray-800"
+                required
+              >
+                <option value="">Select Machine</option>
+                {machines.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} ({m.brand}) - {m.status}
+                    {m.shiftJobCompleted ? ' [Shift Completed]' : ''}
+                  </option>
+                ))}
+              </select>
+
+              {isShiftJobCompleted && (
+                <div className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+                  <BanIcon className="h-4 w-4 shrink-0 mt-0.5 text-amber-600" />
+                  <span>
+                    The shift job for this machine is already{' '}
+                    <strong>completed</strong>. You cannot report a maintenance
+                    ticket for a completed shift job.
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -108,7 +124,9 @@ const ReportForm = ({
 
         <Button
           type="submit"
-          disabled={actionLoading || machines.length === 0}
+          disabled={
+            actionLoading || machines.length === 0 || isShiftJobCompleted
+          }
           className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 font-bold shadow-md hover:shadow-lg transition-all"
         >
           {actionLoading ? (

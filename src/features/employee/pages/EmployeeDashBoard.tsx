@@ -236,11 +236,22 @@ const EmployeeDashBoard = () => {
       }) as ColumnDef<Employee, unknown>,
       columnHelper.accessor('role', {
         header: 'Role',
-        cell: (info) => (
-          <span className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium uppercase">
-            {info.getValue() as string}
-          </span>
-        ),
+        cell: (info) => {
+          const role = info.getValue() as string;
+          if (role === 'MAINTENANCE') {
+            return (
+              <span className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium uppercase">
+                {role}
+              </span>
+            );
+          } else {
+            return (
+              <span className="px-2 py-1 rounded-md bg-cyan-50 text-cyan-700 text-xs font-medium uppercase">
+                {role}
+              </span>
+            );
+          }
+        },
       }) as ColumnDef<Employee, unknown>,
       columnHelper.accessor('isBlocked', {
         header: 'Status',
