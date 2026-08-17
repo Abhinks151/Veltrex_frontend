@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FRONTEND_MESSAGE_CONSTANTS } from '@/shared/constants/messageConstants';
+import { RESERVED_SUBDOMAINS } from '@/shared/constants/reservedSubdomains';
 
 export const tenantSchema = z.object({
   name: z
@@ -11,7 +12,10 @@ export const tenantSchema = z.object({
     .regex(
       /^[a-z0-9-]+$/,
       'Subdomain can only contain lowercase letters, numbers, and hyphens',
-    ),
+    )
+    .refine((val) => !RESERVED_SUBDOMAINS.includes(val.toLowerCase()), {
+      message: 'This subdomain is reserved and cannot be used',
+    }),
 });
 
 export type tenantFormData = z.infer<typeof tenantSchema>;
