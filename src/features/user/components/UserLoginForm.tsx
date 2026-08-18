@@ -34,7 +34,7 @@ const UserLoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
     <div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-xl shadow-md p-8 w-[100]"
+        className="bg-white rounded-xl shadow-md p-8 w-[350]"
       >
         <div className="w-full text-center">
           <h2 className="text-xl font-semibold mb-1">Sign In</h2>

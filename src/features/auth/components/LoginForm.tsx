@@ -42,8 +42,6 @@
 
 // export default LoginForm;
 
-
-
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import type { LoginFormProps } from '../types/propsTypes';
@@ -65,21 +63,21 @@ const LoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
       notifyError(error);
     }
   }, [error]);
-  const { register, handleSubmit, formState: { errors } } = useForm<loginFormData>({
-    resolver: zodResolver(loginSchema)
-  })
-
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<loginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
   return (
     <div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-xl shadow-md p-8 w-[100]"
+        className="bg-white rounded-xl shadow-md p-8 w-[350]"
       >
-        <h2 className="text-xl font-semibold mb-1">
-          Sign In
-        </h2>
+        <h2 className="text-xl font-semibold mb-1">Sign In</h2>
 
         <p className="text-sm text-gray-500 mb-6">
           Welcome back! Please enter your details.
@@ -96,21 +94,19 @@ const LoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
             <Input
               placeholder="john@company.com"
               className="pl-10"
-              {...register("email")}
+              {...register('email')}
             />
           </div>
         </div>
 
         {/* Password */}
         <div className="mb-4">
-          <label className="text-sm text-gray-600 mb-1 block">
-            Password
-          </label>
+          <label className="text-sm text-gray-600 mb-1 block">Password</label>
 
           <Input
             type="password"
             placeholder="••••••••"
-            {...register("password")}
+            {...register('password')}
           />
         </div>
 
@@ -121,7 +117,6 @@ const LoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
         {/* {error && <Error message={error} />} */}
         {errors.email && <Error message={errors.email.message} />}
         {errors.password && <Error message={errors.password.message} />}
-
 
         {/* Forgot Password link */}
         <div className="text-right mb-4">
@@ -144,9 +139,16 @@ const LoginForm = ({ onSubmit, loading, error }: LoginFormProps) => {
           {loading ? 'Login...' : 'Login'}
         </Button>
 
-
         <div className="text-center mt-4">
-          <p>Don't have an account? <Link to="/auth/register" className="text-blue-500 hover:text-blue-600 hover:underline cursor-pointer">Register</Link></p>
+          <p>
+            Don't have an account?{' '}
+            <Link
+              to="/auth/register"
+              className="text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+            >
+              Register
+            </Link>
+          </p>
         </div>
       </form>
     </div>

@@ -49,7 +49,6 @@
 
 // export default RegisterForm;
 
-
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import type { RegisterFormProps } from '../types/propsTypes';
@@ -57,7 +56,10 @@ import type { RegisterFormProps } from '../types/propsTypes';
 import { User, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type registerFormData } from '../validators/register.schema';
+import {
+  registerSchema,
+  type registerFormData,
+} from '../validators/register.schema';
 import { useForm } from 'react-hook-form';
 import Error from '@/shared/components/custom/Error';
 import { notifyError } from '@/shared/utils/toasterUtils';
@@ -73,19 +75,20 @@ const RegisterForm = ({ onSubmit, loading, error }: RegisterFormProps) => {
     }
   }, [error]);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<registerFormData>({
-    resolver: zodResolver(registerSchema)
-  })
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<registerFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="bg-white rounded-xl shadow-md p-8 w-[100]"
+      className="bg-white rounded-xl shadow-md p-8 w-[350]"
     >
-      <h2 className="text-xl font-semibold mb-1">
-        Create your account
-      </h2>
+      <h2 className="text-xl font-semibold mb-1">Create your account</h2>
 
       <p className="text-sm text-gray-500 mb-6">
         Start your 30-day free trial today.
@@ -93,16 +96,14 @@ const RegisterForm = ({ onSubmit, loading, error }: RegisterFormProps) => {
 
       {/* Name */}
       <div className="mb-4">
-        <label className="text-sm text-gray-600 mb-1 block">
-          Full Name
-        </label>
+        <label className="text-sm text-gray-600 mb-1 block">Full Name</label>
 
         <div className="relative">
           <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
           <Input
             placeholder="John Doe"
             className="pl-10"
-            {...register("name")}
+            {...register('name')}
           />
         </div>
       </div>
@@ -118,21 +119,19 @@ const RegisterForm = ({ onSubmit, loading, error }: RegisterFormProps) => {
           <Input
             placeholder="john@company.com"
             className="pl-10"
-            {...register("email")}
+            {...register('email')}
           />
         </div>
       </div>
 
       {/* Password */}
       <div className="mb-4">
-        <label className="text-sm text-gray-600 mb-1 block">
-          Password
-        </label>
+        <label className="text-sm text-gray-600 mb-1 block">Password</label>
 
         <Input
           type="password"
           placeholder="••••••••"
-          {...register("password")}
+          {...register('password')}
         />
       </div>
 
@@ -146,8 +145,6 @@ const RegisterForm = ({ onSubmit, loading, error }: RegisterFormProps) => {
       {errors.email && <Error message={errors.email.message} />}
       {errors.password && <Error message={errors.password.message} />}
 
-
-
       {/* Button */}
       <Button
         type="submit"
@@ -159,11 +156,18 @@ const RegisterForm = ({ onSubmit, loading, error }: RegisterFormProps) => {
         {loading ? 'Creating account...' : 'Create Account'}
       </Button>
 
-
       <div className="text-center mt-4">
-        <p>Already have an account? <Link to="/auth/login" className="text-blue-500 hover:text-blue-600 hover:underline cursor-pointer">Login</Link></p>
+        <p>
+          Already have an account?{' '}
+          <Link
+            to="/auth/login"
+            className="text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+          >
+            Login
+          </Link>
+        </p>
       </div>
-    </form >
+    </form>
   );
 };
 
