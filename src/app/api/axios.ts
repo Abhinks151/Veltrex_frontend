@@ -7,22 +7,34 @@ export const setAccessToken = (token: string | null) => {
   accessToken = token;
 };
 
+const isLocalDev = () => {
+  const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'localhost';
+  // Local dev uses lvh.me or localhost
+  return baseDomain === 'lvh.me' || baseDomain === 'localhost';
+};
+
 const getBaseURL = () => {
   const subdomain = getSubdomain();
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL; // e.g., http://localhost:3000
 
   if (!subdomain) return apiBaseUrl;
 
-  try {
-    const url = new URL(apiBaseUrl);
-    // For local dev with lvh.me, we want tenant.lvh.me:3000
-    // If apiBaseUrl is http://localhost:3000, we change it to http://subdomain.lvh.me:3000
-    const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'localhost';
-    url.hostname = `${subdomain}.${baseDomain}`;
-    return url.toString().replace(/\/$/, '');
-  } catch {
-    return apiBaseUrl;
+  // In local dev (lvh.me), rewrite hostname to tenant.lvh.me:3000 so NestJS
+  // can read the subdomain. In production the API is always api.abhinks.site,
+  // so we never rewrite — the tenant is sent via x-tenant header instead.
+  if (isLocalDev()) {
+    try {
+      const url = new URL(apiBaseUrl);
+      const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'localhost';
+      url.hostname = `${subdomain}.${baseDomain}`;
+      return url.toString().replace(/\/$/, '');
+    } catch {
+      return apiBaseUrl;
+    }
   }
+
+  // Production: VITE_API_BASE_URL is already https://api.abhinks.site
+  return apiBaseUrl;
 };
 
 export const axiosInstance = axios.create({
@@ -33,10 +45,18 @@ export const axiosInstance = axios.create({
   },
 });
 
-// add token to request
+// add token + tenant header to every request
 axiosInstance.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  // In production the API host is fixed (api.abhinks.site), so we send the
+  // tenant subdomain as a header so the backend can resolve the tenant.
+  if (!isLocalDev()) {
+    const subdomain = getSubdomain();
+    if (subdomain) {
+      config.headers['x-tenant'] = subdomain;
+    }
   }
   return config;
 });
